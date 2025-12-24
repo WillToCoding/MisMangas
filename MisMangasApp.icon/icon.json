@@ -1,0 +1,62 @@
+{
+  "fill" : {
+    "automatic-gradient" : "extended-srgb:0.00000,0.53333,1.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "Frontal.png",
+          "name" : "Frontal",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              22.546875,
+              257.4375
+            ]
+          }
+        }
+      ],
+      "name" : "Frontal",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : "automatic",
+          "image-name" : "Fondo.png",
+          "name" : "Fondo",
+          "position" : {
+            "scale" : 1.07,
+            "translation-in-points" : [
+              -1,
+              -9
+            ]
+          }
+        }
+      ],
+      "name" : "Fondo",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

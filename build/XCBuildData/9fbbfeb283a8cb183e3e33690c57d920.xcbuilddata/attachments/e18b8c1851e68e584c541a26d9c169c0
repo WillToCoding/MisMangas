@@ -1,0 +1,41 @@
+{
+  "" : {
+    "const-values" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkAPI-primary.swiftconstvalues",
+    "dependencies" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkAPI-primary.d",
+    "diagnostics" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkAPI-primary.dia",
+    "emit-module-dependencies" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkAPI-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkAPI-primary-emit-module.dia",
+    "pch" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkAPI-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkAPI-primary.swiftdeps"
+  },
+  "/Users/sr.jc/Documents/GitHub/NetworkAPI/Sources/NetworkAPI/Extensions/UIImage.swift" : {
+    "index-unit-output-path" : "/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/UIImage.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/UIImage.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/UIImage.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/NetworkAPI/Sources/NetworkAPI/ImageDownloader.swift" : {
+    "index-unit-output-path" : "/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/ImageDownloader.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/ImageDownloader.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/ImageDownloader.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/NetworkAPI/Sources/NetworkAPI/NetworkError.swift" : {
+    "index-unit-output-path" : "/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkError.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkError.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkError.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/NetworkAPI/Sources/NetworkAPI/NetworkInteractor.swift" : {
+    "index-unit-output-path" : "/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkInteractor.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkInteractor.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/NetworkInteractor.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/NetworkAPI/Sources/NetworkAPI/URLRequest.swift" : {
+    "index-unit-output-path" : "/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/URLRequest.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/URLRequest.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/URLRequest.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/NetworkAPI/Sources/NetworkAPI/URLSession.swift" : {
+    "index-unit-output-path" : "/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/URLSession.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/URLSession.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/NetworkAPI/build/NetworkAPI.build/Release-watchos/NetworkAPI.build/Objects-normal/arm64/URLSession.o"
+  }
+}

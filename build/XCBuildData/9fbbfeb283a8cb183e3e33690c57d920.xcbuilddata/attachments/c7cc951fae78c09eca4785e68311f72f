@@ -1,0 +1,4 @@
+module NetworkAPI {
+header "NetworkAPI-Swift.h"
+export *
+}

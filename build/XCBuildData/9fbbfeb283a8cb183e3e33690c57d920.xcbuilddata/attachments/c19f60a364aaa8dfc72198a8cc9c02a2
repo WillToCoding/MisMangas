@@ -1,0 +1,81 @@
+{
+  "" : {
+    "const-values" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas watchOS Watch App-primary.swiftconstvalues",
+    "dependencies" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas watchOS Watch App-primary.d",
+    "diagnostics" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas watchOS Watch App-primary.dia",
+    "emit-module-dependencies" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas watchOS Watch App-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas watchOS Watch App-primary-emit-module.dia",
+    "pch" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas watchOS Watch App-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas watchOS Watch App-primary.swiftdeps"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas watchOS Watch App/ContentView.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/ContentView.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/ContentView.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/ContentView.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas watchOS Watch App/System/MisMangas_watchOSApp.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas_watchOSApp.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas_watchOSApp.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/MisMangas_watchOSApp.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas watchOS Watch App/WatchCollectionView.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchCollectionView.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchCollectionView.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchCollectionView.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas watchOS Watch App/WatchMangaDetailView.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchMangaDetailView.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchMangaDetailView.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchMangaDetailView.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas watchOS Watch App/WatchMangaRow.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchMangaRow.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchMangaRow.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchMangaRow.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas watchOS Watch App/WatchRootView.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchRootView.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchRootView.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/WatchRootView.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas/Model/AuthError.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/AuthError.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/AuthError.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/AuthError.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas/Model/ModelDTO.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/ModelDTO.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/ModelDTO.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/ModelDTO.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas/Network/NetworkRepository.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/NetworkRepository.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/NetworkRepository.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/NetworkRepository.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas/Network/URL.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/URL.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/URL.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/URL.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas/Storage/KeychainHelper.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/KeychainHelper.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/KeychainHelper.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/KeychainHelper.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas/ViewModel/AuthViewModel.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/AuthViewModel.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/AuthViewModel.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/AuthViewModel.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/MisMangas/ViewModel/CloudCollectionViewModel.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/CloudCollectionViewModel.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/CloudCollectionViewModel.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/CloudCollectionViewModel.o"
+  },
+  "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/GeneratedAssetSymbols.bc",
+    "object" : "/Users/sr.jc/Documents/GitHub/MisMangas/build/MisMangas.build/Release-watchos/MisMangas watchOS Watch App.build/Objects-normal/arm64_32/GeneratedAssetSymbols.o"
+  }
+}

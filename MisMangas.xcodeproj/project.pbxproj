@@ -6,33 +6,422 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E82AA1942EF9FD1600B135D4 /* MisMangasApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = E82AA1912EF9FD1600B135D4 /* MisMangasApp.icon */; };
+		E82AA1952EF9FD1600B135D4 /* MisMangasApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = E82AA1912EF9FD1600B135D4 /* MisMangasApp.icon */; };
+		E82AA1962EF9FD1600B135D4 /* MisMangasApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = E82AA1912EF9FD1600B135D4 /* MisMangasApp.icon */; };
+		E82AA19D2EFA06B200B135D4 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E82AA19C2EFA06B200B135D4 /* WidgetKit.framework */; };
+		E82AA19F2EFA06B200B135D4 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E82AA19E2EFA06B200B135D4 /* SwiftUI.framework */; };
+		E82AA1AA2EFA06B300B135D4 /* MisMangas widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E82AA19B2EFA06B200B135D4 /* MisMangas widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E82AA1B92EFA070800B135D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E82AA1B42EFA070800B135D4 /* Assets.xcassets */; };
+		E82AA1BB2EFA070800B135D4 /* MisMangas_widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1B62EFA070800B135D4 /* MisMangas_widget.swift */; };
+		E82AA1BC2EFA070800B135D4 /* MisMangas_widgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1B72EFA070800B135D4 /* MisMangas_widgetBundle.swift */; };
+		E82AA1C62EFA07C600B135D4 /* LockScreenWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1C52EFA07C600B135D4 /* LockScreenWidgetView.swift */; };
+		E82AA1C82EFA07CF00B135D4 /* WidgetManga.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1C72EFA07CF00B135D4 /* WidgetManga.swift */; };
+		E82AA1D32EFA0B7D00B135D4 /* LargeWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1D02EFA0B7D00B135D4 /* LargeWidgetView.swift */; };
+		E82AA1D42EFA0B7D00B135D4 /* MediumWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1D12EFA0B7D00B135D4 /* MediumWidgetView.swift */; };
+		E82AA1D52EFA0B7D00B135D4 /* SmallWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1D22EFA0B7D00B135D4 /* SmallWidgetView.swift */; };
+		E82AA1D62EFA0C0500B135D4 /* WidgetManga.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1C72EFA07CF00B135D4 /* WidgetManga.swift */; };
+		E82AA1D92EFA1A8600B135D4 /* WidgetImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1D82EFA1A8600B135D4 /* WidgetImageCache.swift */; };
+		E82AA1DB2EFA1AA700B135D4 /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82AA1DA2EFA1AA700B135D4 /* SharedData.swift */; };
+		E83AB4992EFAEE5300B278BC /* ShowCollectionIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB4972EFAEE5300B278BC /* ShowCollectionIntent.swift */; };
+		E83AB49A2EFAEE5300B278BC /* MisMangasShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB4952EFAEE5300B278BC /* MisMangasShortcuts.swift */; };
+		E83AB49B2EFAEE5300B278BC /* ShowCurrentReadingIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB4982EFAEE5300B278BC /* ShowCurrentReadingIntent.swift */; };
+		E83AB49C2EFAEE5300B278BC /* ReadingProgressIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB4962EFAEE5300B278BC /* ReadingProgressIntent.swift */; };
+		E83AB49E2EFB0AF600B278BC /* JikanCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB49D2EFB0AF600B278BC /* JikanCharacter.swift */; };
+		E83AB49F2EFB0AF600B278BC /* JikanCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB49D2EFB0AF600B278BC /* JikanCharacter.swift */; };
+		E83AB4A02EFB0AF600B278BC /* JikanCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB49D2EFB0AF600B278BC /* JikanCharacter.swift */; };
+		E83AB4A12EFB0AF600B278BC /* JikanCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB49D2EFB0AF600B278BC /* JikanCharacter.swift */; };
+		E83AB4A22EFB0AF600B278BC /* JikanCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83AB49D2EFB0AF600B278BC /* JikanCharacter.swift */; };
+		E84432672EEA447E00A5DF42 /* FilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432662EEA447E00A5DF42 /* FilterModel.swift */; };
+		E84432692EEA46AF00A5DF42 /* FilterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432682EEA46AF00A5DF42 /* FilterViewModel.swift */; };
+		E844326B2EEA472D00A5DF42 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844326A2EEA472D00A5DF42 /* FilterView.swift */; };
+		E844326D2EEA480E00A5DF42 /* MangaGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844326C2EEA480E00A5DF42 /* MangaGridView.swift */; };
+		E84432702EEA4B8700A5DF42 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844326E2EEA4B8700A5DF42 /* KeychainHelper.swift */; };
+		E84432722EEA4CAD00A5DF42 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432712EEA4CAD00A5DF42 /* AuthViewModel.swift */; };
+		E84432742EEA4CCA00A5DF42 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432732EEA4CCA00A5DF42 /* AuthError.swift */; };
+		E84432772EEA4FCF00A5DF42 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432752EEA4FCF00A5DF42 /* LoginView.swift */; };
+		E84432782EEA4FCF00A5DF42 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432762EEA4FCF00A5DF42 /* RegisterView.swift */; };
+		E844327A2EEA514800A5DF42 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432792EEA514800A5DF42 /* ProfileView.swift */; };
+		E844327C2EEA536D00A5DF42 /* CloudCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844327B2EEA536D00A5DF42 /* CloudCollectionViewModel.swift */; };
+		E848C9AE2EE0FFB40085B4E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E848C9AA2EE0FFB40085B4E8 /* Assets.xcassets */; };
+		E848C9AF2EE0FFB40085B4E8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9AB2EE0FFB40085B4E8 /* ContentView.swift */; };
+		E848C9B02EE0FFB40085B4E8 /* MisMangasApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9AC2EE0FFB40085B4E8 /* MisMangasApp.swift */; };
+		E848C9B62EE100BC0085B4E8 /* NetworkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = E848C9B52EE100BC0085B4E8 /* NetworkAPI */; };
+		E848C9B92EE102B80085B4E8 /* Práctica _Mis Mangas_, SDP.pdf in Resources */ = {isa = PBXBuildFile; fileRef = E848C9B82EE102B80085B4E8 /* Práctica _Mis Mangas_, SDP.pdf */; };
+		E848C9BD2EE105470085B4E8 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BC2EE105470085B4E8 /* URL.swift */; };
+		E848C9BE2EE105470085B4E8 /* NetworkRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BB2EE105470085B4E8 /* NetworkRepository.swift */; };
+		E848C9C12EE107040085B4E8 /* ModelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9C02EE107040085B4E8 /* ModelDTO.swift */; };
+		E848C9C32EE10CD50085B4E8 /* MangaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9C22EE10CD50085B4E8 /* MangaViewModel.swift */; };
+		E848C9C92EE111750085B4E8 /* MangaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9C72EE111750085B4E8 /* MangaRow.swift */; };
+		E848C9CB2EE11CBA0085B4E8 /* MangaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9CA2EE11CBA0085B4E8 /* MangaDetailView.swift */; };
+		E848C9CD2EE1217D0085B4E8 /* AddToCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9CC2EE1217D0085B4E8 /* AddToCollectionView.swift */; };
+		E848C9D22EE1218A0085B4E8 /* ModelContainer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9CF2EE1218A0085B4E8 /* ModelContainer+Extension.swift */; };
+		E848C9D32EE1218A0085B4E8 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9D02EE1218A0085B4E8 /* PreviewData.swift */; };
+		E848C9D42EE1218A0085B4E8 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9CE2EE1218A0085B4E8 /* Model.swift */; };
+		E848C9D62EE122070085B4E8 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9D52EE122070085B4E8 /* CollectionView.swift */; };
+		E848C9D82EE122620085B4E8 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9D72EE122620085B4E8 /* MainTabView.swift */; };
+		E86EEF3B2EED8E0D00B369B3 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = E86EEF3A2EED8E0D00B369B3 /* RealityKitContent */; };
+		E86EEF4C2EED8E1400B369B3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF482EED8E1400B369B3 /* ContentView.swift */; };
+		E86EEF4D2EED8E1400B369B3 /* MisMangas_visionOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF4A2EED8E1400B369B3 /* MisMangas_visionOSApp.swift */; };
+		E86EEF4E2EED8E1400B369B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E86EEF472EED8E1400B369B3 /* Assets.xcassets */; };
+		E86EEF512EED8E8800B369B3 /* ModelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9C02EE107040085B4E8 /* ModelDTO.swift */; };
+		E86EEF522EED8E8800B369B3 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432732EEA4CCA00A5DF42 /* AuthError.swift */; };
+		E86EEF532EED8E9200B369B3 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BC2EE105470085B4E8 /* URL.swift */; };
+		E86EEF542EED8E9200B369B3 /* NetworkRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BB2EE105470085B4E8 /* NetworkRepository.swift */; };
+		E86EEF552EED8E9C00B369B3 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844326E2EEA4B8700A5DF42 /* KeychainHelper.swift */; };
+		E86EEF562EED8EAF00B369B3 /* CloudCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844327B2EEA536D00A5DF42 /* CloudCollectionViewModel.swift */; };
+		E86EEF572EED8EAF00B369B3 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432712EEA4CAD00A5DF42 /* AuthViewModel.swift */; };
+		E86EEF5C2EED905100B369B3 /* VisionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF592EED905100B369B3 /* VisionCollectionView.swift */; };
+		E86EEF5D2EED905100B369B3 /* VisionRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF5A2EED905100B369B3 /* VisionRootView.swift */; };
+		E86EEF602EED914D00B369B3 /* NetworkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = E86EEF5F2EED914D00B369B3 /* NetworkAPI */; };
+		E86EEF642EED915C00B369B3 /* VisionMangaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF632EED915C00B369B3 /* VisionMangaDetailView.swift */; };
+		E86EEF652EED915C00B369B3 /* VisionImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF612EED915C00B369B3 /* VisionImmersiveView.swift */; };
+		E86EEF662EED915C00B369B3 /* VisionMangaCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF622EED915C00B369B3 /* VisionMangaCard.swift */; };
+		E86EEF682EED945400B369B3 /* VisionLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF672EED945400B369B3 /* VisionLoginView.swift */; };
+		E86EEF7C2EEDD77300B369B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E86EEF782EEDD77300B369B3 /* Assets.xcassets */; };
+		E86EEF7D2EEDD77300B369B3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF792EEDD77300B369B3 /* ContentView.swift */; };
+		E86EEF7E2EEDD77300B369B3 /* MisMangas_tvOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF7A2EEDD77300B369B3 /* MisMangas_tvOSApp.swift */; };
+		E86EEF822EEDD92300B369B3 /* NetworkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = E86EEF812EEDD92300B369B3 /* NetworkAPI */; };
+		E86EEF842EEDDA3400B369B3 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432732EEA4CCA00A5DF42 /* AuthError.swift */; };
+		E86EEF852EEDDA3400B369B3 /* ModelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9C02EE107040085B4E8 /* ModelDTO.swift */; };
+		E86EEF862EEDDA3B00B369B3 /* NetworkRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BB2EE105470085B4E8 /* NetworkRepository.swift */; };
+		E86EEF872EEDDA4200B369B3 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BC2EE105470085B4E8 /* URL.swift */; };
+		E86EEF882EEDDA4800B369B3 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844326E2EEA4B8700A5DF42 /* KeychainHelper.swift */; };
+		E86EEF892EEDDA5500B369B3 /* CloudCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844327B2EEA536D00A5DF42 /* CloudCollectionViewModel.swift */; };
+		E86EEF8A2EEDDA5500B369B3 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432712EEA4CAD00A5DF42 /* AuthViewModel.swift */; };
+		E86EEF902EEDDC4600B369B3 /* TVMangaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF8E2EEDDC4600B369B3 /* TVMangaDetailView.swift */; };
+		E86EEF912EEDDC4600B369B3 /* TVMangaCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF8D2EEDDC4600B369B3 /* TVMangaCard.swift */; };
+		E86EEF922EEDDC4600B369B3 /* TVCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF8C2EEDDC4600B369B3 /* TVCollectionView.swift */; };
+		E86EEF932EEDDC4600B369B3 /* TVRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF8F2EEDDC4600B369B3 /* TVRootView.swift */; };
+		E86EEF952EEDE0C800B369B3 /* TVLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86EEF942EEDE0C800B369B3 /* TVLoginView.swift */; };
+		E88928702EFB4EF1005744DB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E889286F2EFB4EF1005744DB /* Localizable.xcstrings */; };
+		E88928712EFB5448005744DB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E889286F2EFB4EF1005744DB /* Localizable.xcstrings */; };
+		E88928722EFB5448005744DB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E889286F2EFB4EF1005744DB /* Localizable.xcstrings */; };
+		E88928732EFB5448005744DB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E889286F2EFB4EF1005744DB /* Localizable.xcstrings */; };
+		E88928742EFB5448005744DB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E889286F2EFB4EF1005744DB /* Localizable.xcstrings */; };
+		E88928752EFB5448005744DB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E889286F2EFB4EF1005744DB /* Localizable.xcstrings */; };
+		E88928772EFB6AD7005744DB /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88928762EFB6AD7005744DB /* TranslationService.swift */; };
+		E88928782EFB6AD7005744DB /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88928762EFB6AD7005744DB /* TranslationService.swift */; };
+		E88928792EFB6AD7005744DB /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88928762EFB6AD7005744DB /* TranslationService.swift */; };
+		E889287A2EFB6AD7005744DB /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88928762EFB6AD7005744DB /* TranslationService.swift */; };
+		E889287B2EFB6AD7005744DB /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88928762EFB6AD7005744DB /* TranslationService.swift */; };
+		E8A3EB502EEB28B9002254D4 /* ModelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9C02EE107040085B4E8 /* ModelDTO.swift */; };
+		E8A3EB512EEB28CD002254D4 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432732EEA4CCA00A5DF42 /* AuthError.swift */; };
+		E8A3EB522EEB28D4002254D4 /* FilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432662EEA447E00A5DF42 /* FilterModel.swift */; };
+		E8A3EB532EEB2A7C002254D4 /* NetworkRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BB2EE105470085B4E8 /* NetworkRepository.swift */; };
+		E8A3EB542EEB2A83002254D4 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BC2EE105470085B4E8 /* URL.swift */; };
+		E8A3EB552EEB2A8D002254D4 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844326E2EEA4B8700A5DF42 /* KeychainHelper.swift */; };
+		E8A3EB562EEB2A96002254D4 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432712EEA4CAD00A5DF42 /* AuthViewModel.swift */; };
+		E8A3EB572EEB2A96002254D4 /* FilterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432682EEA46AF00A5DF42 /* FilterViewModel.swift */; };
+		E8A3EB582EEB2A96002254D4 /* MangaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9C22EE10CD50085B4E8 /* MangaViewModel.swift */; };
+		E8A3EB592EEB2A96002254D4 /* CloudCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844327B2EEA536D00A5DF42 /* CloudCollectionViewModel.swift */; };
+		E8A3EB6D2EEB2C7F002254D4 /* NetworkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = E8A3EB6C2EEB2C7F002254D4 /* NetworkAPI */; };
+		E8A3EB7D2EEB2CB1002254D4 /* MacCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB6E2EEB2CB1002254D4 /* MacCollectionView.swift */; };
+		E8A3EB7E2EEB2CB1002254D4 /* MacMangaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB702EEB2CB1002254D4 /* MacMangaDetailView.swift */; };
+		E8A3EB7F2EEB2CB1002254D4 /* MacMangaListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB722EEB2CB1002254D4 /* MacMangaListView.swift */; };
+		E8A3EB802EEB2CB1002254D4 /* MacMangaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB732EEB2CB1002254D4 /* MacMangaRow.swift */; };
+		E8A3EB812EEB2CB1002254D4 /* MacSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB752EEB2CB1002254D4 /* MacSidebarView.swift */; };
+		E8A3EB822EEB2CB1002254D4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB792EEB2CB1002254D4 /* ContentView.swift */; };
+		E8A3EB832EEB2CB1002254D4 /* MacMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB7A2EEB2CB1002254D4 /* MacMainView.swift */; };
+		E8A3EB842EEB2CB1002254D4 /* MisMangas_macOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB7B2EEB2CB1002254D4 /* MisMangas_macOSApp.swift */; };
+		E8A3EB852EEB2CB1002254D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8A3EB782EEB2CB1002254D4 /* Assets.xcassets */; };
+		E8A3EB8E2EEB4283002254D4 /* MacRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB8C2EEB4283002254D4 /* MacRegisterView.swift */; };
+		E8A3EB8F2EEB4283002254D4 /* MacLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB8B2EEB4283002254D4 /* MacLoginView.swift */; };
+		E8A3EB902EEB6788002254D4 /* ModelContainer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9CF2EE1218A0085B4E8 /* ModelContainer+Extension.swift */; };
+		E8A3EB912EEB6788002254D4 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9D02EE1218A0085B4E8 /* PreviewData.swift */; };
+		E8A3EB922EEB6788002254D4 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9CE2EE1218A0085B4E8 /* Model.swift */; };
+		E8A3EB942EEB6E9C002254D4 /* MacPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EB932EEB6E9C002254D4 /* MacPreferencesView.swift */; };
+		E8A3EC022EEB7B23002254D4 /* MisMangas watchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = E8A3EBF82EEB7B22002254D4 /* MisMangas watchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E8A3EC0A2EEB7B28002254D4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EC072EEB7B28002254D4 /* ContentView.swift */; };
+		E8A3EC0B2EEB7B28002254D4 /* MisMangas_watchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EC082EEB7B28002254D4 /* MisMangas_watchOSApp.swift */; };
+		E8A3EC0C2EEB7B28002254D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8A3EC062EEB7B28002254D4 /* Assets.xcassets */; };
+		E8A3EC132EEB7EF2002254D4 /* ModelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9C02EE107040085B4E8 /* ModelDTO.swift */; };
+		E8A3EC142EEB7EF9002254D4 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432732EEA4CCA00A5DF42 /* AuthError.swift */; };
+		E8A3EC152EEB7F0B002254D4 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BC2EE105470085B4E8 /* URL.swift */; };
+		E8A3EC162EEB7F0B002254D4 /* NetworkRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E848C9BB2EE105470085B4E8 /* NetworkRepository.swift */; };
+		E8A3EC172EEB7F1C002254D4 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844326E2EEA4B8700A5DF42 /* KeychainHelper.swift */; };
+		E8A3EC182EEB7F27002254D4 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84432712EEA4CAD00A5DF42 /* AuthViewModel.swift */; };
+		E8A3EC192EEB7F2F002254D4 /* CloudCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844327B2EEA536D00A5DF42 /* CloudCollectionViewModel.swift */; };
+		E8A3EC1C2EEB8076002254D4 /* WatchRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EC1B2EEB8076002254D4 /* WatchRootView.swift */; };
+		E8A3EC1D2EEB8076002254D4 /* WatchCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EC1A2EEB8076002254D4 /* WatchCollectionView.swift */; };
+		E8A3EC202EEB8166002254D4 /* WatchMangaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EC1F2EEB8166002254D4 /* WatchMangaRow.swift */; };
+		E8A3EC212EEB8166002254D4 /* WatchMangaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A3EC1E2EEB8166002254D4 /* WatchMangaDetailView.swift */; };
+		E8A3EC242EEB823D002254D4 /* NetworkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = E8A3EC232EEB823D002254D4 /* NetworkAPI */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E82AA1A82EFA06B300B135D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E848C9942EE0FFAD0085B4E8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E82AA19A2EFA06B200B135D4;
+			remoteInfo = "MisMangas widgetExtension";
+		};
+		E8A3EC002EEB7B23002254D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E848C9942EE0FFAD0085B4E8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E8A3EBF72EEB7B22002254D4;
+			remoteInfo = "MisMangas watchOS Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E82AA1AF2EFA06B300B135D4 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E82AA1AA2EFA06B300B135D4 /* MisMangas widgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8A3EBC02EEB7308002254D4 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				E8A3EC022EEB7B23002254D4 /* MisMangas watchOS Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		E82AA1912EF9FD1600B135D4 /* MisMangasApp.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = MisMangasApp.icon; sourceTree = "<group>"; };
+		E82AA19B2EFA06B200B135D4 /* MisMangas widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "MisMangas widgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E82AA19C2EFA06B200B135D4 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
+		E82AA19E2EFA06B200B135D4 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
+		E82AA1B42EFA070800B135D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E82AA1B52EFA070800B135D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E82AA1B62EFA070800B135D4 /* MisMangas_widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisMangas_widget.swift; sourceTree = "<group>"; };
+		E82AA1B72EFA070800B135D4 /* MisMangas_widgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisMangas_widgetBundle.swift; sourceTree = "<group>"; };
+		E82AA1C52EFA07C600B135D4 /* LockScreenWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidgetView.swift; sourceTree = "<group>"; };
+		E82AA1C72EFA07CF00B135D4 /* WidgetManga.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetManga.swift; sourceTree = "<group>"; };
+		E82AA1D02EFA0B7D00B135D4 /* LargeWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeWidgetView.swift; sourceTree = "<group>"; };
+		E82AA1D12EFA0B7D00B135D4 /* MediumWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumWidgetView.swift; sourceTree = "<group>"; };
+		E82AA1D22EFA0B7D00B135D4 /* SmallWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallWidgetView.swift; sourceTree = "<group>"; };
+		E82AA1D72EFA13B600B135D4 /* MisMangas widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MisMangas widgetExtension.entitlements"; sourceTree = "<group>"; };
+		E82AA1D82EFA1A8600B135D4 /* WidgetImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetImageCache.swift; sourceTree = "<group>"; };
+		E82AA1DA2EFA1AA700B135D4 /* SharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedData.swift; sourceTree = "<group>"; };
+		E83AB4952EFAEE5300B278BC /* MisMangasShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisMangasShortcuts.swift; sourceTree = "<group>"; };
+		E83AB4962EFAEE5300B278BC /* ReadingProgressIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingProgressIntent.swift; sourceTree = "<group>"; };
+		E83AB4972EFAEE5300B278BC /* ShowCollectionIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowCollectionIntent.swift; sourceTree = "<group>"; };
+		E83AB4982EFAEE5300B278BC /* ShowCurrentReadingIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowCurrentReadingIntent.swift; sourceTree = "<group>"; };
+		E83AB49D2EFB0AF600B278BC /* JikanCharacter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JikanCharacter.swift; sourceTree = "<group>"; };
+		E84432662EEA447E00A5DF42 /* FilterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterModel.swift; sourceTree = "<group>"; };
+		E84432682EEA46AF00A5DF42 /* FilterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewModel.swift; sourceTree = "<group>"; };
+		E844326A2EEA472D00A5DF42 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
+		E844326C2EEA480E00A5DF42 /* MangaGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaGridView.swift; sourceTree = "<group>"; };
+		E844326E2EEA4B8700A5DF42 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		E84432712EEA4CAD00A5DF42 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		E84432732EEA4CCA00A5DF42 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
+		E84432752EEA4FCF00A5DF42 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		E84432762EEA4FCF00A5DF42 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		E84432792EEA514800A5DF42 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		E844327B2EEA536D00A5DF42 /* CloudCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCollectionViewModel.swift; sourceTree = "<group>"; };
 		E848C99C2EE0FFAD0085B4E8 /* MisMangas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MisMangas.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E848C9AA2EE0FFB40085B4E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E848C9AB2EE0FFB40085B4E8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E848C9AC2EE0FFB40085B4E8 /* MisMangasApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisMangasApp.swift; sourceTree = "<group>"; };
+		E848C9B82EE102B80085B4E8 /* Práctica _Mis Mangas_, SDP.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Práctica _Mis Mangas_, SDP.pdf"; sourceTree = "<group>"; };
+		E848C9BB2EE105470085B4E8 /* NetworkRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkRepository.swift; sourceTree = "<group>"; };
+		E848C9BC2EE105470085B4E8 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		E848C9C02EE107040085B4E8 /* ModelDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDTO.swift; sourceTree = "<group>"; };
+		E848C9C22EE10CD50085B4E8 /* MangaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaViewModel.swift; sourceTree = "<group>"; };
+		E848C9C72EE111750085B4E8 /* MangaRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaRow.swift; sourceTree = "<group>"; };
+		E848C9CA2EE11CBA0085B4E8 /* MangaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaDetailView.swift; sourceTree = "<group>"; };
+		E848C9CC2EE1217D0085B4E8 /* AddToCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToCollectionView.swift; sourceTree = "<group>"; };
+		E848C9CE2EE1218A0085B4E8 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		E848C9CF2EE1218A0085B4E8 /* ModelContainer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelContainer+Extension.swift"; sourceTree = "<group>"; };
+		E848C9D02EE1218A0085B4E8 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
+		E848C9D52EE122070085B4E8 /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
+		E848C9D72EE122620085B4E8 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		E86EEF362EED8E0D00B369B3 /* MisMangas visionOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MisMangas visionOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E86EEF392EED8E0D00B369B3 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
+		E86EEF472EED8E1400B369B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E86EEF482EED8E1400B369B3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E86EEF492EED8E1400B369B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E86EEF4A2EED8E1400B369B3 /* MisMangas_visionOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisMangas_visionOSApp.swift; sourceTree = "<group>"; };
+		E86EEF502EED8E4300B369B3 /* MisMangas visionOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MisMangas visionOS.entitlements"; sourceTree = "<group>"; };
+		E86EEF592EED905100B369B3 /* VisionCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionCollectionView.swift; sourceTree = "<group>"; };
+		E86EEF5A2EED905100B369B3 /* VisionRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionRootView.swift; sourceTree = "<group>"; };
+		E86EEF612EED915C00B369B3 /* VisionImmersiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionImmersiveView.swift; sourceTree = "<group>"; };
+		E86EEF622EED915C00B369B3 /* VisionMangaCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionMangaCard.swift; sourceTree = "<group>"; };
+		E86EEF632EED915C00B369B3 /* VisionMangaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionMangaDetailView.swift; sourceTree = "<group>"; };
+		E86EEF672EED945400B369B3 /* VisionLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionLoginView.swift; sourceTree = "<group>"; };
+		E86EEF6D2EEDD75500B369B3 /* MisMangas tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MisMangas tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E86EEF782EEDD77300B369B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E86EEF792EEDD77300B369B3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E86EEF7A2EEDD77300B369B3 /* MisMangas_tvOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisMangas_tvOSApp.swift; sourceTree = "<group>"; };
+		E86EEF832EEDD94600B369B3 /* MisMangas tvOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MisMangas tvOS.entitlements"; sourceTree = "<group>"; };
+		E86EEF8C2EEDDC4600B369B3 /* TVCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCollectionView.swift; sourceTree = "<group>"; };
+		E86EEF8D2EEDDC4600B369B3 /* TVMangaCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMangaCard.swift; sourceTree = "<group>"; };
+		E86EEF8E2EEDDC4600B369B3 /* TVMangaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMangaDetailView.swift; sourceTree = "<group>"; };
+		E86EEF8F2EEDDC4600B369B3 /* TVRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVRootView.swift; sourceTree = "<group>"; };
+		E86EEF942EEDE0C800B369B3 /* TVLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVLoginView.swift; sourceTree = "<group>"; };
+		E86EEF962EEDE6D700B369B3 /* MisMangas-tvOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "MisMangas-tvOS-Info.plist"; sourceTree = SOURCE_ROOT; };
+		E889286F2EFB4EF1005744DB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		E88928762EFB6AD7005744DB /* TranslationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationService.swift; sourceTree = "<group>"; };
+		E8A3EB452EEB237E002254D4 /* MisMangas macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MisMangas macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8A3EB6E2EEB2CB1002254D4 /* MacCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCollectionView.swift; sourceTree = "<group>"; };
+		E8A3EB702EEB2CB1002254D4 /* MacMangaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMangaDetailView.swift; sourceTree = "<group>"; };
+		E8A3EB722EEB2CB1002254D4 /* MacMangaListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMangaListView.swift; sourceTree = "<group>"; };
+		E8A3EB732EEB2CB1002254D4 /* MacMangaRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMangaRow.swift; sourceTree = "<group>"; };
+		E8A3EB752EEB2CB1002254D4 /* MacSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSidebarView.swift; sourceTree = "<group>"; };
+		E8A3EB782EEB2CB1002254D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E8A3EB792EEB2CB1002254D4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E8A3EB7A2EEB2CB1002254D4 /* MacMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMainView.swift; sourceTree = "<group>"; };
+		E8A3EB7B2EEB2CB1002254D4 /* MisMangas_macOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisMangas_macOSApp.swift; sourceTree = "<group>"; };
+		E8A3EB8B2EEB4283002254D4 /* MacLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLoginView.swift; sourceTree = "<group>"; };
+		E8A3EB8C2EEB4283002254D4 /* MacRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacRegisterView.swift; sourceTree = "<group>"; };
+		E8A3EB932EEB6E9C002254D4 /* MacPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacPreferencesView.swift; sourceTree = "<group>"; };
+		E8A3EBF82EEB7B22002254D4 /* MisMangas watchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MisMangas watchOS Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8A3EC062EEB7B28002254D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E8A3EC072EEB7B28002254D4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E8A3EC082EEB7B28002254D4 /* MisMangas_watchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisMangas_watchOSApp.swift; sourceTree = "<group>"; };
+		E8A3EC0E2EEB7B4E002254D4 /* MisMangas watchOS Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MisMangas watchOS Watch App.entitlements"; sourceTree = "<group>"; };
+		E8A3EC122EEB7E64002254D4 /* MisMangas.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MisMangas.entitlements; sourceTree = "<group>"; };
+		E8A3EC1A2EEB8076002254D4 /* WatchCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCollectionView.swift; sourceTree = "<group>"; };
+		E8A3EC1B2EEB8076002254D4 /* WatchRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRootView.swift; sourceTree = "<group>"; };
+		E8A3EC1E2EEB8166002254D4 /* WatchMangaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMangaDetailView.swift; sourceTree = "<group>"; };
+		E8A3EC1F2EEB8166002254D4 /* WatchMangaRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMangaRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		E848C99E2EE0FFAD0085B4E8 /* MisMangas */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MisMangas;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
+		E82AA1982EFA06B200B135D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E82AA19F2EFA06B200B135D4 /* SwiftUI.framework in Frameworks */,
+				E82AA19D2EFA06B200B135D4 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E848C9992EE0FFAD0085B4E8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E848C9B62EE100BC0085B4E8 /* NetworkAPI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E86EEF332EED8E0D00B369B3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E86EEF602EED914D00B369B3 /* NetworkAPI in Frameworks */,
+				E86EEF3B2EED8E0D00B369B3 /* RealityKitContent in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E86EEF6A2EEDD75500B369B3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E86EEF822EEDD92300B369B3 /* NetworkAPI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8A3EB422EEB237E002254D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8A3EB6D2EEB2C7F002254D4 /* NetworkAPI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8A3EBF52EEB7B22002254D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8A3EC242EEB823D002254D4 /* NetworkAPI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E82AA1B22EFA070800B135D4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E82AA1C72EFA07CF00B135D4 /* WidgetManga.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		E82AA1B32EFA070800B135D4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E82AA1D02EFA0B7D00B135D4 /* LargeWidgetView.swift */,
+				E82AA1D12EFA0B7D00B135D4 /* MediumWidgetView.swift */,
+				E82AA1D22EFA0B7D00B135D4 /* SmallWidgetView.swift */,
+				E82AA1C52EFA07C600B135D4 /* LockScreenWidgetView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E82AA1B82EFA070800B135D4 /* MisMangas widget */ = {
+			isa = PBXGroup;
+			children = (
+				E82AA1B22EFA070800B135D4 /* Model */,
+				E82AA1B32EFA070800B135D4 /* Views */,
+				E82AA1B42EFA070800B135D4 /* Assets.xcassets */,
+				E82AA1B52EFA070800B135D4 /* Info.plist */,
+				E82AA1B62EFA070800B135D4 /* MisMangas_widget.swift */,
+				E82AA1C92EFA07F400B135D4 /* System */,
+			);
+			path = "MisMangas widget";
+			sourceTree = "<group>";
+		};
+		E82AA1C92EFA07F400B135D4 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E82AA1B72EFA070800B135D4 /* MisMangas_widgetBundle.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		E83AB4942EFAED2800B278BC /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				E83AB4952EFAEE5300B278BC /* MisMangasShortcuts.swift */,
+				E83AB4962EFAEE5300B278BC /* ReadingProgressIntent.swift */,
+				E83AB4972EFAEE5300B278BC /* ShowCollectionIntent.swift */,
+				E83AB4982EFAEE5300B278BC /* ShowCurrentReadingIntent.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
+		E844326F2EEA4B8700A5DF42 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				E82AA1DA2EFA1AA700B135D4 /* SharedData.swift */,
+				E82AA1D82EFA1A8600B135D4 /* WidgetImageCache.swift */,
+				E844326E2EEA4B8700A5DF42 /* KeychainHelper.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		E848C9932EE0FFAD0085B4E8 = {
 			isa = PBXGroup;
 			children = (
-				E848C99E2EE0FFAD0085B4E8 /* MisMangas */,
+				E82AA1D72EFA13B600B135D4 /* MisMangas widgetExtension.entitlements */,
+				E82AA1912EF9FD1600B135D4 /* MisMangasApp.icon */,
+				E848C9AD2EE0FFB40085B4E8 /* MisMangas */,
+				E8A3EC122EEB7E64002254D4 /* MisMangas.entitlements */,
+				E8A3EB7C2EEB2CB1002254D4 /* MisMangas macOS */,
+				E8A3EC092EEB7B28002254D4 /* MisMangas watchOS Watch App */,
+				E86EEF4B2EED8E1400B369B3 /* MisMangas visionOS */,
+				E86EEF382EED8E0D00B369B3 /* Packages */,
+				E86EEF7B2EEDD77300B369B3 /* MisMangas tvOS */,
+				E82AA1B82EFA070800B135D4 /* MisMangas widget */,
+				E86EEF802EEDD92300B369B3 /* Frameworks */,
 				E848C99D2EE0FFAD0085B4E8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,13 +430,321 @@
 			isa = PBXGroup;
 			children = (
 				E848C99C2EE0FFAD0085B4E8 /* MisMangas.app */,
+				E8A3EB452EEB237E002254D4 /* MisMangas macOS.app */,
+				E8A3EBF82EEB7B22002254D4 /* MisMangas watchOS Watch App.app */,
+				E86EEF362EED8E0D00B369B3 /* MisMangas visionOS.app */,
+				E86EEF6D2EEDD75500B369B3 /* MisMangas tvOS.app */,
+				E82AA19B2EFA06B200B135D4 /* MisMangas widgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E848C9AD2EE0FFB40085B4E8 /* MisMangas */ = {
+			isa = PBXGroup;
+			children = (
+				E83AB4942EFAED2800B278BC /* Intents */,
+				E844326F2EEA4B8700A5DF42 /* Storage */,
+				E848C9B22EE0FFCA0085B4E8 /* Views */,
+				E848C9C82EE111750085B4E8 /* Components */,
+				E848C9B32EE0FFDD0085B4E8 /* ViewModel */,
+				E848C9BA2EE103160085B4E8 /* Network */,
+				E848C9D12EE1218A0085B4E8 /* DataModel */,
+				E848C9BF2EE106130085B4E8 /* Model */,
+				E848C9B12EE0FFC00085B4E8 /* System */,
+				E848C9B72EE1028A0085B4E8 /* Resources */,
+				E848C9AA2EE0FFB40085B4E8 /* Assets.xcassets */,
+			);
+			path = MisMangas;
+			sourceTree = "<group>";
+		};
+		E848C9B12EE0FFC00085B4E8 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E848C9AC2EE0FFB40085B4E8 /* MisMangasApp.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		E848C9B22EE0FFCA0085B4E8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E84432792EEA514800A5DF42 /* ProfileView.swift */,
+				E84432752EEA4FCF00A5DF42 /* LoginView.swift */,
+				E84432762EEA4FCF00A5DF42 /* RegisterView.swift */,
+				E844326C2EEA480E00A5DF42 /* MangaGridView.swift */,
+				E844326A2EEA472D00A5DF42 /* FilterView.swift */,
+				E848C9AB2EE0FFB40085B4E8 /* ContentView.swift */,
+				E848C9D72EE122620085B4E8 /* MainTabView.swift */,
+				E848C9D52EE122070085B4E8 /* CollectionView.swift */,
+				E848C9CC2EE1217D0085B4E8 /* AddToCollectionView.swift */,
+				E848C9CA2EE11CBA0085B4E8 /* MangaDetailView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E848C9B32EE0FFDD0085B4E8 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				E844327B2EEA536D00A5DF42 /* CloudCollectionViewModel.swift */,
+				E84432712EEA4CAD00A5DF42 /* AuthViewModel.swift */,
+				E84432682EEA46AF00A5DF42 /* FilterViewModel.swift */,
+				E848C9C22EE10CD50085B4E8 /* MangaViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		E848C9B72EE1028A0085B4E8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E889286F2EFB4EF1005744DB /* Localizable.xcstrings */,
+				E848C9B82EE102B80085B4E8 /* Práctica _Mis Mangas_, SDP.pdf */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E848C9BA2EE103160085B4E8 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				E88928762EFB6AD7005744DB /* TranslationService.swift */,
+				E848C9BB2EE105470085B4E8 /* NetworkRepository.swift */,
+				E848C9BC2EE105470085B4E8 /* URL.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		E848C9BF2EE106130085B4E8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E83AB49D2EFB0AF600B278BC /* JikanCharacter.swift */,
+				E84432732EEA4CCA00A5DF42 /* AuthError.swift */,
+				E84432662EEA447E00A5DF42 /* FilterModel.swift */,
+				E848C9C02EE107040085B4E8 /* ModelDTO.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		E848C9C82EE111750085B4E8 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E848C9C72EE111750085B4E8 /* MangaRow.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E848C9D12EE1218A0085B4E8 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				E848C9CE2EE1218A0085B4E8 /* Model.swift */,
+				E848C9CF2EE1218A0085B4E8 /* ModelContainer+Extension.swift */,
+				E848C9D02EE1218A0085B4E8 /* PreviewData.swift */,
+			);
+			path = DataModel;
+			sourceTree = "<group>";
+		};
+		E86EEF382EED8E0D00B369B3 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E86EEF392EED8E0D00B369B3 /* RealityKitContent */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		E86EEF4B2EED8E1400B369B3 /* MisMangas visionOS */ = {
+			isa = PBXGroup;
+			children = (
+				E86EEF5B2EED905100B369B3 /* Views */,
+				E86EEF492EED8E1400B369B3 /* Info.plist */,
+				E86EEF482EED8E1400B369B3 /* ContentView.swift */,
+				E86EEF582EED8ED100B369B3 /* System */,
+				E86EEF472EED8E1400B369B3 /* Assets.xcassets */,
+				E86EEF502EED8E4300B369B3 /* MisMangas visionOS.entitlements */,
+			);
+			path = "MisMangas visionOS";
+			sourceTree = "<group>";
+		};
+		E86EEF582EED8ED100B369B3 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E86EEF4A2EED8E1400B369B3 /* MisMangas_visionOSApp.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		E86EEF5B2EED905100B369B3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E86EEF672EED945400B369B3 /* VisionLoginView.swift */,
+				E86EEF612EED915C00B369B3 /* VisionImmersiveView.swift */,
+				E86EEF622EED915C00B369B3 /* VisionMangaCard.swift */,
+				E86EEF632EED915C00B369B3 /* VisionMangaDetailView.swift */,
+				E86EEF592EED905100B369B3 /* VisionCollectionView.swift */,
+				E86EEF5A2EED905100B369B3 /* VisionRootView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E86EEF7B2EEDD77300B369B3 /* MisMangas tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				E86EEF962EEDE6D700B369B3 /* MisMangas-tvOS-Info.plist */,
+				E86EEF8B2EEDDAF500B369B3 /* Views */,
+				E86EEF832EEDD94600B369B3 /* MisMangas tvOS.entitlements */,
+				E86EEF792EEDD77300B369B3 /* ContentView.swift */,
+				E86EEF782EEDD77300B369B3 /* Assets.xcassets */,
+				E86EEF7F2EEDD77600B369B3 /* System */,
+			);
+			path = "MisMangas tvOS";
+			sourceTree = "<group>";
+		};
+		E86EEF7F2EEDD77600B369B3 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E86EEF7A2EEDD77300B369B3 /* MisMangas_tvOSApp.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		E86EEF802EEDD92300B369B3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E82AA19C2EFA06B200B135D4 /* WidgetKit.framework */,
+				E82AA19E2EFA06B200B135D4 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E86EEF8B2EEDDAF500B369B3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E86EEF942EEDE0C800B369B3 /* TVLoginView.swift */,
+				E86EEF8C2EEDDC4600B369B3 /* TVCollectionView.swift */,
+				E86EEF8D2EEDDC4600B369B3 /* TVMangaCard.swift */,
+				E86EEF8E2EEDDC4600B369B3 /* TVMangaDetailView.swift */,
+				E86EEF8F2EEDDC4600B369B3 /* TVRootView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E8A3EB6F2EEB2CB1002254D4 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EB6E2EEB2CB1002254D4 /* MacCollectionView.swift */,
+			);
+			path = Collection;
+			sourceTree = "<group>";
+		};
+		E8A3EB712EEB2CB1002254D4 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EB702EEB2CB1002254D4 /* MacMangaDetailView.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		E8A3EB742EEB2CB1002254D4 /* List */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EB722EEB2CB1002254D4 /* MacMangaListView.swift */,
+				E8A3EB732EEB2CB1002254D4 /* MacMangaRow.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		E8A3EB762EEB2CB1002254D4 /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EB752EEB2CB1002254D4 /* MacSidebarView.swift */,
+			);
+			path = Sidebar;
+			sourceTree = "<group>";
+		};
+		E8A3EB772EEB2CB1002254D4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EB932EEB6E9C002254D4 /* MacPreferencesView.swift */,
+				E8A3EB8D2EEB4283002254D4 /* Auth */,
+				E8A3EB6F2EEB2CB1002254D4 /* Collection */,
+				E8A3EB712EEB2CB1002254D4 /* Detail */,
+				E8A3EB742EEB2CB1002254D4 /* List */,
+				E8A3EB762EEB2CB1002254D4 /* Sidebar */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E8A3EB7C2EEB2CB1002254D4 /* MisMangas macOS */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EB772EEB2CB1002254D4 /* Views */,
+				E8A3EB782EEB2CB1002254D4 /* Assets.xcassets */,
+				E8A3EB792EEB2CB1002254D4 /* ContentView.swift */,
+				E8A3EB7A2EEB2CB1002254D4 /* MacMainView.swift */,
+				E8A3EB862EEB2CB8002254D4 /* System */,
+			);
+			path = "MisMangas macOS";
+			sourceTree = "<group>";
+		};
+		E8A3EB862EEB2CB8002254D4 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EB7B2EEB2CB1002254D4 /* MisMangas_macOSApp.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		E8A3EB8D2EEB4283002254D4 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EB8B2EEB4283002254D4 /* MacLoginView.swift */,
+				E8A3EB8C2EEB4283002254D4 /* MacRegisterView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		E8A3EC092EEB7B28002254D4 /* MisMangas watchOS Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EC1E2EEB8166002254D4 /* WatchMangaDetailView.swift */,
+				E8A3EC1F2EEB8166002254D4 /* WatchMangaRow.swift */,
+				E8A3EC1A2EEB8076002254D4 /* WatchCollectionView.swift */,
+				E8A3EC1B2EEB8076002254D4 /* WatchRootView.swift */,
+				E8A3EC072EEB7B28002254D4 /* ContentView.swift */,
+				E8A3EC0D2EEB7B2E002254D4 /* System */,
+				E8A3EC062EEB7B28002254D4 /* Assets.xcassets */,
+				E8A3EC0E2EEB7B4E002254D4 /* MisMangas watchOS Watch App.entitlements */,
+			);
+			path = "MisMangas watchOS Watch App";
+			sourceTree = "<group>";
+		};
+		E8A3EC0D2EEB7B2E002254D4 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E8A3EC082EEB7B28002254D4 /* MisMangas_watchOSApp.swift */,
+			);
+			path = System;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		E82AA19A2EFA06B200B135D4 /* MisMangas widgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E82AA1AC2EFA06B300B135D4 /* Build configuration list for PBXNativeTarget "MisMangas widgetExtension" */;
+			buildPhases = (
+				E82AA1972EFA06B200B135D4 /* Sources */,
+				E82AA1982EFA06B200B135D4 /* Frameworks */,
+				E82AA1992EFA06B200B135D4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MisMangas widgetExtension";
+			packageProductDependencies = (
+			);
+			productName = "MisMangas widgetExtension";
+			productReference = E82AA19B2EFA06B200B135D4 /* MisMangas widgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		E848C99B2EE0FFAD0085B4E8 /* MisMangas */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E848C9A72EE0FFAF0085B4E8 /* Build configuration list for PBXNativeTarget "MisMangas" */;
@@ -55,19 +752,102 @@
 				E848C9982EE0FFAD0085B4E8 /* Sources */,
 				E848C9992EE0FFAD0085B4E8 /* Frameworks */,
 				E848C99A2EE0FFAD0085B4E8 /* Resources */,
+				E8A3EBC02EEB7308002254D4 /* Embed Watch Content */,
+				E82AA1AF2EFA06B300B135D4 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E8A3EC012EEB7B23002254D4 /* PBXTargetDependency */,
+				E82AA1A92EFA06B300B135D4 /* PBXTargetDependency */,
+			);
+			name = MisMangas;
+			packageProductDependencies = (
+				E848C9B52EE100BC0085B4E8 /* NetworkAPI */,
+			);
+			productName = MisMangas;
+			productReference = E848C99C2EE0FFAD0085B4E8 /* MisMangas.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E86EEF352EED8E0D00B369B3 /* MisMangas visionOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E86EEF462EED8E0E00B369B3 /* Build configuration list for PBXNativeTarget "MisMangas visionOS" */;
+			buildPhases = (
+				E86EEF322EED8E0D00B369B3 /* Sources */,
+				E86EEF332EED8E0D00B369B3 /* Frameworks */,
+				E86EEF342EED8E0D00B369B3 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				E848C99E2EE0FFAD0085B4E8 /* MisMangas */,
-			);
-			name = MisMangas;
+			name = "MisMangas visionOS";
 			packageProductDependencies = (
+				E86EEF3A2EED8E0D00B369B3 /* RealityKitContent */,
+				E86EEF5F2EED914D00B369B3 /* NetworkAPI */,
 			);
-			productName = MisMangas;
-			productReference = E848C99C2EE0FFAD0085B4E8 /* MisMangas.app */;
+			productName = "MisMangas visionOS";
+			productReference = E86EEF362EED8E0D00B369B3 /* MisMangas visionOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E86EEF6C2EEDD75500B369B3 /* MisMangas tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E86EEF752EEDD75600B369B3 /* Build configuration list for PBXNativeTarget "MisMangas tvOS" */;
+			buildPhases = (
+				E86EEF692EEDD75500B369B3 /* Sources */,
+				E86EEF6A2EEDD75500B369B3 /* Frameworks */,
+				E86EEF6B2EEDD75500B369B3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MisMangas tvOS";
+			packageProductDependencies = (
+				E86EEF812EEDD92300B369B3 /* NetworkAPI */,
+			);
+			productName = "MisMangas tvOS";
+			productReference = E86EEF6D2EEDD75500B369B3 /* MisMangas tvOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E8A3EB442EEB237E002254D4 /* MisMangas macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8A3EB4F2EEB237F002254D4 /* Build configuration list for PBXNativeTarget "MisMangas macOS" */;
+			buildPhases = (
+				E8A3EB412EEB237E002254D4 /* Sources */,
+				E8A3EB422EEB237E002254D4 /* Frameworks */,
+				E8A3EB432EEB237E002254D4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MisMangas macOS";
+			packageProductDependencies = (
+				E8A3EB6C2EEB2C7F002254D4 /* NetworkAPI */,
+			);
+			productName = "MisMangas macOS";
+			productReference = E8A3EB452EEB237E002254D4 /* MisMangas macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E8A3EBF72EEB7B22002254D4 /* MisMangas watchOS Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8A3EC032EEB7B23002254D4 /* Build configuration list for PBXNativeTarget "MisMangas watchOS Watch App" */;
+			buildPhases = (
+				E8A3EBF42EEB7B22002254D4 /* Sources */,
+				E8A3EBF52EEB7B22002254D4 /* Frameworks */,
+				E8A3EBF62EEB7B22002254D4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MisMangas watchOS Watch App";
+			packageProductDependencies = (
+				E8A3EC232EEB823D002254D4 /* NetworkAPI */,
+			);
+			productName = "MisMangas watchOS Watch App";
+			productReference = E8A3EBF82EEB7B22002254D4 /* MisMangas watchOS Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -80,7 +860,22 @@
 				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
+					E82AA19A2EFA06B200B135D4 = {
+						CreatedOnToolsVersion = 26.1;
+					};
 					E848C99B2EE0FFAD0085B4E8 = {
+						CreatedOnToolsVersion = 26.1;
+					};
+					E86EEF352EED8E0D00B369B3 = {
+						CreatedOnToolsVersion = 26.1;
+					};
+					E86EEF6C2EEDD75500B369B3 = {
+						CreatedOnToolsVersion = 26.1;
+					};
+					E8A3EB442EEB237E002254D4 = {
+						CreatedOnToolsVersion = 26.1;
+					};
+					E8A3EBF72EEB7B22002254D4 = {
 						CreatedOnToolsVersion = 26.1;
 					};
 				};
@@ -91,40 +886,354 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
+				ja,
 			);
 			mainGroup = E848C9932EE0FFAD0085B4E8;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E848C9B42EE100BC0085B4E8 /* XCLocalSwiftPackageReference "../NetworkAPI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E848C99D2EE0FFAD0085B4E8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				E848C99B2EE0FFAD0085B4E8 /* MisMangas */,
+				E8A3EB442EEB237E002254D4 /* MisMangas macOS */,
+				E8A3EBF72EEB7B22002254D4 /* MisMangas watchOS Watch App */,
+				E86EEF352EED8E0D00B369B3 /* MisMangas visionOS */,
+				E86EEF6C2EEDD75500B369B3 /* MisMangas tvOS */,
+				E82AA19A2EFA06B200B135D4 /* MisMangas widgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		E82AA1992EFA06B200B135D4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E88928752EFB5448005744DB /* Localizable.xcstrings in Resources */,
+				E82AA1B92EFA070800B135D4 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E848C99A2EE0FFAD0085B4E8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E82AA1952EF9FD1600B135D4 /* MisMangasApp.icon in Resources */,
+				E88928702EFB4EF1005744DB /* Localizable.xcstrings in Resources */,
+				E848C9B92EE102B80085B4E8 /* Práctica _Mis Mangas_, SDP.pdf in Resources */,
+				E848C9AE2EE0FFB40085B4E8 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E86EEF342EED8E0D00B369B3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E88928732EFB5448005744DB /* Localizable.xcstrings in Resources */,
+				E86EEF4E2EED8E1400B369B3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E86EEF6B2EEDD75500B369B3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E88928742EFB5448005744DB /* Localizable.xcstrings in Resources */,
+				E86EEF7C2EEDD77300B369B3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8A3EB432EEB237E002254D4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8A3EB852EEB2CB1002254D4 /* Assets.xcassets in Resources */,
+				E82AA1962EF9FD1600B135D4 /* MisMangasApp.icon in Resources */,
+				E88928712EFB5448005744DB /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8A3EBF62EEB7B22002254D4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8A3EC0C2EEB7B28002254D4 /* Assets.xcassets in Resources */,
+				E82AA1942EF9FD1600B135D4 /* MisMangasApp.icon in Resources */,
+				E88928722EFB5448005744DB /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		E82AA1972EFA06B200B135D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E82AA1BB2EFA070800B135D4 /* MisMangas_widget.swift in Sources */,
+				E82AA1BC2EFA070800B135D4 /* MisMangas_widgetBundle.swift in Sources */,
+				E82AA1D32EFA0B7D00B135D4 /* LargeWidgetView.swift in Sources */,
+				E82AA1D42EFA0B7D00B135D4 /* MediumWidgetView.swift in Sources */,
+				E82AA1D52EFA0B7D00B135D4 /* SmallWidgetView.swift in Sources */,
+				E82AA1C82EFA07CF00B135D4 /* WidgetManga.swift in Sources */,
+				E82AA1C62EFA07C600B135D4 /* LockScreenWidgetView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E848C9982EE0FFAD0085B4E8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E84432722EEA4CAD00A5DF42 /* AuthViewModel.swift in Sources */,
+				E84432672EEA447E00A5DF42 /* FilterModel.swift in Sources */,
+				E848C9C12EE107040085B4E8 /* ModelDTO.swift in Sources */,
+				E84432692EEA46AF00A5DF42 /* FilterViewModel.swift in Sources */,
+				E848C9C92EE111750085B4E8 /* MangaRow.swift in Sources */,
+				E84432772EEA4FCF00A5DF42 /* LoginView.swift in Sources */,
+				E84432782EEA4FCF00A5DF42 /* RegisterView.swift in Sources */,
+				E84432702EEA4B8700A5DF42 /* KeychainHelper.swift in Sources */,
+				E82AA1DB2EFA1AA700B135D4 /* SharedData.swift in Sources */,
+				E84432742EEA4CCA00A5DF42 /* AuthError.swift in Sources */,
+				E848C9CB2EE11CBA0085B4E8 /* MangaDetailView.swift in Sources */,
+				E848C9AF2EE0FFB40085B4E8 /* ContentView.swift in Sources */,
+				E844327C2EEA536D00A5DF42 /* CloudCollectionViewModel.swift in Sources */,
+				E848C9D22EE1218A0085B4E8 /* ModelContainer+Extension.swift in Sources */,
+				E844326D2EEA480E00A5DF42 /* MangaGridView.swift in Sources */,
+				E88928782EFB6AD7005744DB /* TranslationService.swift in Sources */,
+				E848C9D62EE122070085B4E8 /* CollectionView.swift in Sources */,
+				E848C9D32EE1218A0085B4E8 /* PreviewData.swift in Sources */,
+				E83AB4992EFAEE5300B278BC /* ShowCollectionIntent.swift in Sources */,
+				E83AB49A2EFAEE5300B278BC /* MisMangasShortcuts.swift in Sources */,
+				E83AB49B2EFAEE5300B278BC /* ShowCurrentReadingIntent.swift in Sources */,
+				E83AB49C2EFAEE5300B278BC /* ReadingProgressIntent.swift in Sources */,
+				E82AA1D92EFA1A8600B135D4 /* WidgetImageCache.swift in Sources */,
+				E82AA1D62EFA0C0500B135D4 /* WidgetManga.swift in Sources */,
+				E848C9D42EE1218A0085B4E8 /* Model.swift in Sources */,
+				E844327A2EEA514800A5DF42 /* ProfileView.swift in Sources */,
+				E844326B2EEA472D00A5DF42 /* FilterView.swift in Sources */,
+				E848C9CD2EE1217D0085B4E8 /* AddToCollectionView.swift in Sources */,
+				E848C9B02EE0FFB40085B4E8 /* MisMangasApp.swift in Sources */,
+				E83AB49E2EFB0AF600B278BC /* JikanCharacter.swift in Sources */,
+				E848C9BD2EE105470085B4E8 /* URL.swift in Sources */,
+				E848C9D82EE122620085B4E8 /* MainTabView.swift in Sources */,
+				E848C9BE2EE105470085B4E8 /* NetworkRepository.swift in Sources */,
+				E848C9C32EE10CD50085B4E8 /* MangaViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E86EEF322EED8E0D00B369B3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E86EEF532EED8E9200B369B3 /* URL.swift in Sources */,
+				E86EEF542EED8E9200B369B3 /* NetworkRepository.swift in Sources */,
+				E86EEF642EED915C00B369B3 /* VisionMangaDetailView.swift in Sources */,
+				E86EEF652EED915C00B369B3 /* VisionImmersiveView.swift in Sources */,
+				E86EEF662EED915C00B369B3 /* VisionMangaCard.swift in Sources */,
+				E86EEF4C2EED8E1400B369B3 /* ContentView.swift in Sources */,
+				E86EEF512EED8E8800B369B3 /* ModelDTO.swift in Sources */,
+				E86EEF562EED8EAF00B369B3 /* CloudCollectionViewModel.swift in Sources */,
+				E86EEF572EED8EAF00B369B3 /* AuthViewModel.swift in Sources */,
+				E83AB4A02EFB0AF600B278BC /* JikanCharacter.swift in Sources */,
+				E86EEF5C2EED905100B369B3 /* VisionCollectionView.swift in Sources */,
+				E86EEF5D2EED905100B369B3 /* VisionRootView.swift in Sources */,
+				E86EEF552EED8E9C00B369B3 /* KeychainHelper.swift in Sources */,
+				E86EEF682EED945400B369B3 /* VisionLoginView.swift in Sources */,
+				E86EEF522EED8E8800B369B3 /* AuthError.swift in Sources */,
+				E889287A2EFB6AD7005744DB /* TranslationService.swift in Sources */,
+				E86EEF4D2EED8E1400B369B3 /* MisMangas_visionOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E86EEF692EEDD75500B369B3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E86EEF952EEDE0C800B369B3 /* TVLoginView.swift in Sources */,
+				E86EEF842EEDDA3400B369B3 /* AuthError.swift in Sources */,
+				E86EEF852EEDDA3400B369B3 /* ModelDTO.swift in Sources */,
+				E88928792EFB6AD7005744DB /* TranslationService.swift in Sources */,
+				E86EEF7D2EEDD77300B369B3 /* ContentView.swift in Sources */,
+				E86EEF862EEDDA3B00B369B3 /* NetworkRepository.swift in Sources */,
+				E86EEF902EEDDC4600B369B3 /* TVMangaDetailView.swift in Sources */,
+				E86EEF912EEDDC4600B369B3 /* TVMangaCard.swift in Sources */,
+				E86EEF922EEDDC4600B369B3 /* TVCollectionView.swift in Sources */,
+				E86EEF932EEDDC4600B369B3 /* TVRootView.swift in Sources */,
+				E86EEF892EEDDA5500B369B3 /* CloudCollectionViewModel.swift in Sources */,
+				E83AB49F2EFB0AF600B278BC /* JikanCharacter.swift in Sources */,
+				E86EEF8A2EEDDA5500B369B3 /* AuthViewModel.swift in Sources */,
+				E86EEF882EEDDA4800B369B3 /* KeychainHelper.swift in Sources */,
+				E86EEF7E2EEDD77300B369B3 /* MisMangas_tvOSApp.swift in Sources */,
+				E86EEF872EEDDA4200B369B3 /* URL.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8A3EB412EEB237E002254D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8A3EB7D2EEB2CB1002254D4 /* MacCollectionView.swift in Sources */,
+				E8A3EB942EEB6E9C002254D4 /* MacPreferencesView.swift in Sources */,
+				E8A3EB7E2EEB2CB1002254D4 /* MacMangaDetailView.swift in Sources */,
+				E8A3EB7F2EEB2CB1002254D4 /* MacMangaListView.swift in Sources */,
+				E8A3EB802EEB2CB1002254D4 /* MacMangaRow.swift in Sources */,
+				E8A3EB812EEB2CB1002254D4 /* MacSidebarView.swift in Sources */,
+				E8A3EB822EEB2CB1002254D4 /* ContentView.swift in Sources */,
+				E88928772EFB6AD7005744DB /* TranslationService.swift in Sources */,
+				E8A3EB832EEB2CB1002254D4 /* MacMainView.swift in Sources */,
+				E8A3EB842EEB2CB1002254D4 /* MisMangas_macOSApp.swift in Sources */,
+				E8A3EB532EEB2A7C002254D4 /* NetworkRepository.swift in Sources */,
+				E8A3EB522EEB28D4002254D4 /* FilterModel.swift in Sources */,
+				E8A3EB502EEB28B9002254D4 /* ModelDTO.swift in Sources */,
+				E8A3EB552EEB2A8D002254D4 /* KeychainHelper.swift in Sources */,
+				E8A3EB542EEB2A83002254D4 /* URL.swift in Sources */,
+				E8A3EB562EEB2A96002254D4 /* AuthViewModel.swift in Sources */,
+				E8A3EB902EEB6788002254D4 /* ModelContainer+Extension.swift in Sources */,
+				E8A3EB912EEB6788002254D4 /* PreviewData.swift in Sources */,
+				E8A3EB922EEB6788002254D4 /* Model.swift in Sources */,
+				E8A3EB572EEB2A96002254D4 /* FilterViewModel.swift in Sources */,
+				E8A3EB582EEB2A96002254D4 /* MangaViewModel.swift in Sources */,
+				E83AB4A12EFB0AF600B278BC /* JikanCharacter.swift in Sources */,
+				E8A3EB592EEB2A96002254D4 /* CloudCollectionViewModel.swift in Sources */,
+				E8A3EB512EEB28CD002254D4 /* AuthError.swift in Sources */,
+				E8A3EB8E2EEB4283002254D4 /* MacRegisterView.swift in Sources */,
+				E8A3EB8F2EEB4283002254D4 /* MacLoginView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8A3EBF42EEB7B22002254D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8A3EC152EEB7F0B002254D4 /* URL.swift in Sources */,
+				E83AB4A22EFB0AF600B278BC /* JikanCharacter.swift in Sources */,
+				E8A3EC162EEB7F0B002254D4 /* NetworkRepository.swift in Sources */,
+				E8A3EC132EEB7EF2002254D4 /* ModelDTO.swift in Sources */,
+				E8A3EC192EEB7F2F002254D4 /* CloudCollectionViewModel.swift in Sources */,
+				E8A3EC0A2EEB7B28002254D4 /* ContentView.swift in Sources */,
+				E8A3EC182EEB7F27002254D4 /* AuthViewModel.swift in Sources */,
+				E8A3EC1C2EEB8076002254D4 /* WatchRootView.swift in Sources */,
+				E8A3EC1D2EEB8076002254D4 /* WatchCollectionView.swift in Sources */,
+				E8A3EC172EEB7F1C002254D4 /* KeychainHelper.swift in Sources */,
+				E8A3EC142EEB7EF9002254D4 /* AuthError.swift in Sources */,
+				E889287B2EFB6AD7005744DB /* TranslationService.swift in Sources */,
+				E8A3EC0B2EEB7B28002254D4 /* MisMangas_watchOSApp.swift in Sources */,
+				E8A3EC202EEB8166002254D4 /* WatchMangaRow.swift in Sources */,
+				E8A3EC212EEB8166002254D4 /* WatchMangaDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		E82AA1A92EFA06B300B135D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E82AA19A2EFA06B200B135D4 /* MisMangas widgetExtension */;
+			targetProxy = E82AA1A82EFA06B300B135D4 /* PBXContainerItemProxy */;
+		};
+		E8A3EC012EEB7B23002254D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E8A3EBF72EEB7B22002254D4 /* MisMangas watchOS Watch App */;
+			targetProxy = E8A3EC002EEB7B23002254D4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		E82AA1AD2EFA06B300B135D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "MisMangas widgetExtension.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MisMangas widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "MisMangas widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.murtidev.MisMangas.MisMangas-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Debug;
+		};
+		E82AA1AE2EFA06B300B135D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "MisMangas widgetExtension.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MisMangas widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "MisMangas widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.murtidev.MisMangas.MisMangas-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Release;
+		};
 		E848C9A52EE0FFAF0085B4E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -249,8 +1358,10 @@
 		E848C9A82EE0FFAF0085B4E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = MisMangasApp;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MisMangas.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RUFCGDXK94;
@@ -268,12 +1379,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.murtidev.MisMangas;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -281,8 +1393,10 @@
 		E848C9A92EE0FFAF0085B4E8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = MisMangasApp;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MisMangas.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RUFCGDXK94;
@@ -300,19 +1414,327 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.murtidev.MisMangas;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E86EEF432EED8E0E00B369B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "MisMangas visionOS/MisMangas visionOS.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.murtidev.MisMangas-visionOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = xros;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Debug;
+		};
+		E86EEF442EED8E0E00B369B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "MisMangas visionOS/MisMangas visionOS.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.murtidev.MisMangas-visionOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = xros;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Release;
+		};
+		E86EEF762EEDD75600B369B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "MisMangas tvOS/MisMangas tvOS.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MisMangas-tvOS-Info.plist";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.murtidev.MisMangas-tvOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = appletvos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Debug;
+		};
+		E86EEF772EEDD75600B369B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "MisMangas tvOS/MisMangas tvOS.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MisMangas-tvOS-Info.plist";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.murtidev.MisMangas-tvOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = appletvos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Release;
+		};
+		E8A3EB4D2EEB237F002254D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = MisMangasApp;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.murtidev.MisMangas-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		E8A3EB4E2EEB237F002254D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = MisMangasApp;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.murtidev.MisMangas-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		E8A3EC042EEB7B23002254D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = MisMangasApp;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "MisMangas watchOS Watch App/MisMangas watchOS Watch App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "MisMangas watchOS";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.murtidev.MisMangas;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.murtidev.MisMangas.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Debug;
+		};
+		E8A3EC052EEB7B23002254D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = MisMangasApp;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "MisMangas watchOS Watch App/MisMangas watchOS Watch App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RUFCGDXK94;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "MisMangas watchOS";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.murtidev.MisMangas;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.murtidev.MisMangas.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.1;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E82AA1AC2EFA06B300B135D4 /* Build configuration list for PBXNativeTarget "MisMangas widgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E82AA1AD2EFA06B300B135D4 /* Debug */,
+				E82AA1AE2EFA06B300B135D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E848C9972EE0FFAD0085B4E8 /* Build configuration list for PBXProject "MisMangas" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -331,7 +1753,81 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		E86EEF462EED8E0E00B369B3 /* Build configuration list for PBXNativeTarget "MisMangas visionOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E86EEF432EED8E0E00B369B3 /* Debug */,
+				E86EEF442EED8E0E00B369B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E86EEF752EEDD75600B369B3 /* Build configuration list for PBXNativeTarget "MisMangas tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E86EEF762EEDD75600B369B3 /* Debug */,
+				E86EEF772EEDD75600B369B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E8A3EB4F2EEB237F002254D4 /* Build configuration list for PBXNativeTarget "MisMangas macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8A3EB4D2EEB237F002254D4 /* Debug */,
+				E8A3EB4E2EEB237F002254D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E8A3EC032EEB7B23002254D4 /* Build configuration list for PBXNativeTarget "MisMangas watchOS Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8A3EC042EEB7B23002254D4 /* Debug */,
+				E8A3EC052EEB7B23002254D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		E848C9B42EE100BC0085B4E8 /* XCLocalSwiftPackageReference "../NetworkAPI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../NetworkAPI;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E848C9B52EE100BC0085B4E8 /* NetworkAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NetworkAPI;
+		};
+		E86EEF3A2EED8E0D00B369B3 /* RealityKitContent */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RealityKitContent;
+		};
+		E86EEF5F2EED914D00B369B3 /* NetworkAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E848C9B42EE100BC0085B4E8 /* XCLocalSwiftPackageReference "../NetworkAPI" */;
+			productName = NetworkAPI;
+		};
+		E86EEF812EEDD92300B369B3 /* NetworkAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E848C9B42EE100BC0085B4E8 /* XCLocalSwiftPackageReference "../NetworkAPI" */;
+			productName = NetworkAPI;
+		};
+		E8A3EB6C2EEB2C7F002254D4 /* NetworkAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E848C9B42EE100BC0085B4E8 /* XCLocalSwiftPackageReference "../NetworkAPI" */;
+			productName = NetworkAPI;
+		};
+		E8A3EC232EEB823D002254D4 /* NetworkAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E848C9B42EE100BC0085B4E8 /* XCLocalSwiftPackageReference "../NetworkAPI" */;
+			productName = NetworkAPI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E848C9942EE0FFAD0085B4E8 /* Project object */;
 }

@@ -1,8 +1,8 @@
 //
 //  ContentView.swift
-//  MisMangas
+//  MisMangas watchOS Watch App
 //
-//  Created by Juan Carlos on 4/12/25.
+//  Created by Juan Carlos on 11/12/25.
 //
 
 import SwiftUI
