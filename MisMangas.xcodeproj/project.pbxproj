@@ -21,6 +21,9 @@
 		E8256FAC2F31778A00CB2BC6 /* UserStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8256FAB2F31778A00CB2BC6 /* UserStatsView.swift */; };
 		E82A30182F4930DE00F8B42D /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A30172F4930DE00F8B42D /* AppConfig.swift */; };
 		E82A30192F4930DE00F8B42D /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A30172F4930DE00F8B42D /* AppConfig.swift */; };
+		E82A301A2F49360F00F8B42D /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A30172F4930DE00F8B42D /* AppConfig.swift */; };
+		E82A301B2F49360F00F8B42D /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A30172F4930DE00F8B42D /* AppConfig.swift */; };
+		E82A301C2F49360F00F8B42D /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A30172F4930DE00F8B42D /* AppConfig.swift */; };
 		E82AA1942EF9FD1600B135D4 /* MisMangasApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = E82AA1912EF9FD1600B135D4 /* MisMangasApp.icon */; };
 		E82AA1952EF9FD1600B135D4 /* MisMangasApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = E82AA1912EF9FD1600B135D4 /* MisMangasApp.icon */; };
 		E82AA1962EF9FD1600B135D4 /* MisMangasApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = E82AA1912EF9FD1600B135D4 /* MisMangasApp.icon */; };
@@ -1445,6 +1448,7 @@
 				E889287A2EFB6AD7005744DB /* TranslationService.swift in Sources */,
 				E84EF4942F300516003BD971 /* AcademyURL.swift in Sources */,
 				E84EF4952F300516003BD971 /* JikanURL.swift in Sources */,
+				E82A301B2F49360F00F8B42D /* AppConfig.swift in Sources */,
 				E86EEF4D2EED8E1400B369B3 /* MisMangas_visionOSApp.swift in Sources */,
 				E86552812F45438800486E32 /* MangaViewModel.swift in Sources */,
 			);
@@ -1467,6 +1471,7 @@
 				E84EF47E2F3004CD003BD971 /* AcademyModels.swift in Sources */,
 				E86EEF902EEDDC4600B369B3 /* TVMangaDetailView.swift in Sources */,
 				E8D6AD782F48E67100ADC0AB /* TVMangaCard.swift in Sources */,
+				E82A301C2F49360F00F8B42D /* AppConfig.swift in Sources */,
 				E86EEF922EEDDC4600B369B3 /* TVCollectionView.swift in Sources */,
 				E86EEF932EEDDC4600B369B3 /* TVRootView.swift in Sources */,
 				E8D6AD752F48E66700ADC0AB /* TVLoginView.swift in Sources */,
@@ -1513,6 +1518,7 @@
 				E8D6AD272F48DFCC00ADC0AB /* PreviewContainer.swift in Sources */,
 				E84EF4B32F30190B003BD971 /* MangaModel.swift in Sources */,
 				E84EF4B42F30190B003BD971 /* UserCollection.swift in Sources */,
+				E82A301A2F49360F00F8B42D /* AppConfig.swift in Sources */,
 				E84EF4B52F30190B003BD971 /* DataContainer.swift in Sources */,
 				E8A3EB8E2EEB4283002254D4 /* MacRegisterView.swift in Sources */,
 				E8A3EB8F2EEB4283002254D4 /* MacLoginView.swift in Sources */,
