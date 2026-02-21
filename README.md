@@ -1,14 +1,22 @@
 # MisMangas
 
-Gestiona tu colección de manga en todas las plataformas Apple.
+<p align="center">
+  <img src="snapshots/App.png" width="128" alt="MisMangas App Icon">
+</p>
 
-![Swift](https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white)
-![Platforms](https://img.shields.io/badge/Platforms-iOS%20%7C%20iPadOS%20%7C%20macOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20visionOS-007AFF)
-![License](https://img.shields.io/badge/License-MIT-green)
+<p align="center">
+  Gestiona tu colección de manga en todas las plataformas Apple.
+</p>
 
-## Screenshots
+<p align="center">
+  <img src="https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white" alt="Swift">
+  <img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20iPadOS%20%7C%20macOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20visionOS-007AFF" alt="Platforms">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</p>
 
-<!-- Añadir capturas de cada plataforma -->
+<p align="center">
+  <img src="snapshots/Targets.png" width="600" alt="All Platforms">
+</p>
 
 ## Características
 
