@@ -18,7 +18,10 @@ struct AddToCollectionView: View {
 
     @State private var selectedVolumes: Set<Int> = []
     @State private var currentReadingVolume: Int = 1
+    @State private var currentChapter: Int = 1
     @State private var hasCompleteCollection = false
+    @State private var readingStatus: ReadingStatus = .planToRead
+    @State private var userScore: Double?
     @State private var showSuccess = false
     @State private var isSaving = false
 
@@ -27,15 +30,10 @@ struct AddToCollectionView: View {
             Form {
                 Section("Manga") {
                     HStack {
-                        AsyncImage(url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } placeholder: {
-                            Color.gray.opacity(0.3)
-                        }
-                        .frame(width: 60, height: 90)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        CachedCoverImage(
+                            url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
+                        )
+                        .accessibilityHidden(true)
 
                         VStack(alignment: .leading) {
                             Text(manga.title)
@@ -47,6 +45,8 @@ struct AddToCollectionView: View {
                             }
                         }
                     }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("\(manga.title), \(manga.volumes ?? 0) " + String(localized: "accessibility_total_volumes"))
                 }
 
                 Section("section_collection") {
@@ -56,6 +56,7 @@ struct AddToCollectionView: View {
                                 selectedVolumes = Set(1...totalVolumes)
                             }
                         }
+                        .accessibilityHint(String(localized: "accessibility_complete_collection_hint"))
                 }
 
                 if let totalVolumes = manga.volumes, !hasCompleteCollection {
@@ -71,6 +72,7 @@ struct AddToCollectionView: View {
                                     }
                                 }
                             ))
+                            .accessibilityHint(selectedVolumes.contains(volume) ? String(localized: "accessibility_volume_owned") : String(localized: "accessibility_volume_not_owned"))
                         }
                     }
                 }
@@ -78,6 +80,39 @@ struct AddToCollectionView: View {
                 if !selectedVolumes.isEmpty {
                     Section("section_reading_progress") {
                         Stepper("vol_current \(currentReadingVolume)", value: $currentReadingVolume, in: 1...(manga.volumes ?? 100))
+                            .accessibilityLabel(String(localized: "accessibility_current_volume"))
+                            .accessibilityValue("\(currentReadingVolume)")
+                            .accessibilityHint(String(localized: "accessibility_stepper_hint"))
+
+                        if manga.chapters != nil {
+                            Stepper("chapter_current \(currentChapter)", value: $currentChapter, in: 1...(manga.chapters ?? 9999))
+                        }
+                    }
+                }
+
+                Section("section_my_status") {
+                    Picker("reading_status_label", selection: $readingStatus) {
+                        ForEach(ReadingStatus.allCases, id: \.self) { status in
+                            Label(status.localizedName, systemImage: status.icon)
+                                .tag(status)
+                        }
+                    }
+
+                    Toggle("add_my_score", isOn: Binding(
+                        get: { userScore != nil },
+                        set: { userScore = $0 ? 7.0 : nil }
+                    ))
+
+                    if userScore != nil {
+                        HStack {
+                            Text(String(format: "%.1f", userScore ?? 7.0))
+                                .font(.headline)
+                                .foregroundStyle(.yellow)
+                            Slider(value: Binding(
+                                get: { userScore ?? 7.0 },
+                                set: { userScore = $0 }
+                            ), in: 1...10, step: 0.5)
+                        }
                     }
                 }
             }
@@ -97,6 +132,8 @@ struct AddToCollectionView: View {
                         }
                     }
                     .disabled(selectedVolumes.isEmpty && !hasCompleteCollection || isSaving)
+                    .accessibilityLabel(String(localized: "accessibility_save_to_collection"))
+                    .accessibilityHint(String(localized: "accessibility_save_collection_hint"))
                 }
             }
             .alert("saved_title", isPresented: $showSuccess) {
@@ -113,15 +150,26 @@ struct AddToCollectionView: View {
         isSaving = true
         let volumes = Array(selectedVolumes).sorted()
 
-        // Siempre guardar en local (SwiftData)
-        let userManga = Model(
-            from: manga,
-            volumesOwned: volumes,
-            readingVolume: currentReadingVolume,
-            hasComplete: hasCompleteCollection
-        )
-        modelContext.insert(userManga)
-        try? modelContext.save()
+        // Guardar en local usando DataContainer (background)
+        let dataContainer = DataContainer(modelContainer: modelContext.container)
+        do {
+            try await dataContainer.addToCollection(
+                manga: manga,
+                volumesOwned: volumes,
+                currentReadingVolume: currentReadingVolume,
+                currentChapter: manga.chapters != nil ? currentChapter : nil,
+                hasCompleteCollection: hasCompleteCollection,
+                userScore: userScore,
+                readingStatus: readingStatus
+            )
+        } catch {
+            print("Error al guardar en local: \(error)")
+            #if os(iOS)
+            HapticFeedback.error.trigger()
+            #endif
+            isSaving = false
+            return
+        }
 
         // Si está logueado, también guardar en cloud
         if authVM.isAuthenticated {
@@ -134,19 +182,22 @@ struct AddToCollectionView: View {
                 )
             } catch {
                 print("Error al guardar en cloud: \(error)")
+                #if os(iOS)
+                HapticFeedback.error.trigger()
+                #endif
+                isSaving = false
+                return
             }
         }
 
+        #if os(iOS)
+        HapticFeedback.success.trigger()
+        #endif
         isSaving = false
         showSuccess = true
     }
 }
 
-#Preview {
-    let authVM = AuthViewModel()
-    let cloudVM = CloudCollectionViewModel(authVM: authVM)
-    return AddToCollectionView(manga: .test)
-        .environment(authVM)
-        .environment(cloudVM)
-        .modelContainer(.preview)
+#Preview(traits: .sampleData) {
+    AddToCollectionView(manga: .test)
 }

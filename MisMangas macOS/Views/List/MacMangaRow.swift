@@ -13,15 +13,11 @@ struct MacMangaRow: View {
     var body: some View {
         HStack(spacing: 12) {
             // Miniatura
-            AsyncImage(url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Color.gray.opacity(0.2)
-            }
-            .frame(width: 40, height: 60)
-            .clipShape(RoundedRectangle(cornerRadius: 4))
+            CachedCoverImage(
+                url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                width: 40,
+                height: 60
+            )
 
             // Info
             VStack(alignment: .leading, spacing: 4) {

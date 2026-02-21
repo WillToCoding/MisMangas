@@ -20,6 +20,7 @@ struct MacMangaDetailView: View {
 
     // Related mangas states
     @State private var relatedMangas: [JikanRelation] = []
+    @State private var relatedMangaDetails: [Int: Manga] = [:]
     @State private var recommendations: [JikanRecommendation] = []
     @State private var isLoadingRelated = false
 
@@ -33,7 +34,7 @@ struct MacMangaDetailView: View {
     @State private var isTranslating = false
     @State private var showOriginal = false
 
-    private let repository = NetworkRepository()
+    private let repository = Network()
     private let translationService = TranslationService.shared
 
     var body: some View {
@@ -42,15 +43,11 @@ struct MacMangaDetailView: View {
                 // Header con imagen y datos principales
                 HStack(alignment: .top, spacing: 24) {
                     // Portada
-                    AsyncImage(url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    } placeholder: {
-                        Color.gray.opacity(0.2)
-                    }
-                    .frame(width: 250, height: 375)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    CachedCoverImage(
+                        url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                        width: 250,
+                        height: 375
+                    )
                     .shadow(radius: 8)
 
                     // Información principal
@@ -217,15 +214,11 @@ struct MacMangaDetailView: View {
                             LazyHStack(spacing: 16) {
                                 ForEach(characters) { characterData in
                                     VStack(spacing: 8) {
-                                        AsyncImage(url: URL(string: characterData.character.images.jpg.imageUrl)) { image in
-                                            image
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                        } placeholder: {
-                                            Color.gray.opacity(0.3)
-                                        }
-                                        .frame(width: 100, height: 130)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        CachedCoverImage(
+                                            url: URL(string: characterData.character.images.jpg.imageUrl),
+                                            width: 100,
+                                            height: 130
+                                        )
 
                                         Text(characterData.character.name)
                                             .font(.caption)
@@ -278,18 +271,20 @@ struct MacMangaDetailView: View {
                                                 }
                                             } label: {
                                                 VStack(spacing: 6) {
-                                                    RoundedRectangle(cornerRadius: 8)
-                                                        .fill(Color.blue.opacity(0.2))
-                                                        .frame(width: 80, height: 110)
-                                                        .overlay {
-                                                            if isLoadingManga {
+                                                    if let mangaDetail = relatedMangaDetails[entry.malId] {
+                                                        CachedCoverImage(
+                                                            url: URL(string: mangaDetail.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                                                            width: 80,
+                                                            height: 110
+                                                        )
+                                                    } else {
+                                                        RoundedRectangle(cornerRadius: 8)
+                                                            .fill(Color.gray.opacity(0.2))
+                                                            .frame(width: 80, height: 110)
+                                                            .overlay {
                                                                 ProgressView()
-                                                            } else {
-                                                                Image(systemName: "book.fill")
-                                                                    .font(.title2)
-                                                                    .foregroundStyle(.blue)
                                                             }
-                                                        }
+                                                    }
 
                                                     Text(entry.name)
                                                         .font(.caption)
@@ -322,15 +317,11 @@ struct MacMangaDetailView: View {
                                             }
                                         } label: {
                                             VStack(spacing: 6) {
-                                                AsyncImage(url: URL(string: rec.entry.images.jpg.imageUrl)) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                } placeholder: {
-                                                    Color.gray.opacity(0.3)
-                                                }
-                                                .frame(width: 80, height: 110)
-                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                CachedCoverImage(
+                                                    url: URL(string: rec.entry.images.jpg.imageUrl),
+                                                    width: 80,
+                                                    height: 110
+                                                )
 
                                                 Text(rec.entry.title)
                                                     .font(.caption)
@@ -424,6 +415,7 @@ struct MacMangaDetailView: View {
         .task(id: manga.id) {
             characters = []
             relatedMangas = []
+            relatedMangaDetails = [:]
             recommendations = []
             translatedSynopsis = nil
             translatedBackground = nil
@@ -442,12 +434,41 @@ struct MacMangaDetailView: View {
 
             relatedMangas = try await relations
             recommendations = try await recs
+
+            // Fetch detalles de mangas relacionados en paralelo
+            await fetchRelatedMangaDetails()
         } catch {
             print("Error cargando mangas relacionados: \(error)")
             relatedMangas = []
             recommendations = []
         }
         isLoadingRelated = false
+    }
+
+    private func fetchRelatedMangaDetails() async {
+        let mangaIds = relatedMangas
+            .flatMap { $0.entry }
+            .filter { $0.type == "manga" }
+            .map { $0.malId }
+
+        await withTaskGroup(of: (Int, Manga?).self) { group in
+            for id in mangaIds {
+                group.addTask {
+                    do {
+                        let manga = try await self.repository.getManga(byId: id)
+                        return (id, manga)
+                    } catch {
+                        return (id, nil)
+                    }
+                }
+            }
+
+            for await (id, manga) in group {
+                if let manga = manga {
+                    relatedMangaDetails[id] = manga
+                }
+            }
+        }
     }
 
     private func loadAndNavigateToManga(id: Int) async {
@@ -639,15 +660,11 @@ struct MacAddToCollectionView: View {
             Text("nav_add_collection")
                 .font(.title.bold())
 
-            AsyncImage(url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            } placeholder: {
-                Color.gray.opacity(0.2)
-            }
-            .frame(width: 150, height: 225)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            CachedCoverImage(
+                url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                width: 150,
+                height: 225
+            )
 
             Text(manga.title)
                 .font(.headline)
@@ -706,15 +723,20 @@ struct MacAddToCollectionView: View {
         isSaving = true
         let volumes = Array(selectedVolumes).sorted()
 
-        // SIEMPRE guardar en local (SwiftData)
-        let userManga = Model(
-            from: manga,
-            volumesOwned: volumes,
-            readingVolume: currentReadingVolume,
-            hasComplete: hasCompleteCollection
-        )
-        modelContext.insert(userManga)
-        try? modelContext.save()
+        // Guardar en local usando DataContainer (background)
+        let dataContainer = DataContainer(modelContainer: modelContext.container)
+        do {
+            try await dataContainer.addToCollection(
+                manga: manga,
+                volumesOwned: volumes,
+                currentReadingVolume: currentReadingVolume,
+                hasCompleteCollection: hasCompleteCollection
+            )
+        } catch {
+            print("Error al guardar en local: \(error)")
+            isSaving = false
+            return
+        }
 
         // Si está logueado, TAMBIÉN guardar en cloud
         if authVM.isAuthenticated {

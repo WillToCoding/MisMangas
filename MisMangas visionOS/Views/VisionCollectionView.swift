@@ -21,7 +21,7 @@ struct VisionCollectionView: View {
             LazyVGrid(columns: columns, spacing: 40) {
                 ForEach(cloudVM.cloudCollection) { item in
                     NavigationLink(value: item.id) {
-                        VisionMangaCard(itemId: item.id, cloudVM: cloudVM)
+                        VisionMangaCard(item: item)
                     }
                     .buttonStyle(.plain)
                     .id("\(item.id)-\(item.readingVolume ?? 0)")

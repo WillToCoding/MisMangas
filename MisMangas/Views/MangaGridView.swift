@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MangaGridView: View {
     let mangas: [Manga]
+    let namespace: Namespace.ID
 
     // Columnas adaptativas: mínimo 150pt de ancho
     // iPad mostrará más columnas automáticamente
@@ -21,7 +22,7 @@ struct MangaGridView: View {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(mangas) { manga in
                     NavigationLink(value: manga) {
-                        MangaGridCell(manga: manga)
+                        MangaGridCell(manga: manga, namespace: namespace)
                     }
                     .buttonStyle(.plain)
                 }
@@ -34,34 +35,18 @@ struct MangaGridView: View {
 // MARK: - Grid Cell
 struct MangaGridCell: View {
     let manga: Manga
+    let namespace: Namespace.ID
+
+    private var coverURL: URL? {
+        URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Portada
-            AsyncImage(url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { phase in
-                switch phase {
-                case .empty:
-                    Color.gray.opacity(0.3)
-                        .overlay {
-                            ProgressView()
-                        }
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure:
-                    Color.gray.opacity(0.3)
-                        .overlay {
-                            Image(systemName: "photo")
-                                .foregroundStyle(.secondary)
-                        }
-                @unknown default:
-                    Color.gray.opacity(0.3)
-                }
-            }
-            .frame(height: 220)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+            // Portada con caché y animación hero
+            MangaCoverView(url: coverURL, namespace: namespace, size: .medium)
+                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                .accessibilityHidden(true)
 
             // Título
             Text(manga.title)
@@ -88,13 +73,32 @@ struct MangaGridCell: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .accessibilityHidden(true)
         }
         .frame(width: 150)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(String(localized: "accessibility_double_tap_details"))
+        .accessibilityAddTraits(.isButton)
+    }
+
+    // MARK: - Accessibility
+
+    private var accessibilityLabel: String {
+        var label = manga.title
+        label += ", " + String(localized: "accessibility_score \(String(format: "%.1f", manga.score))")
+
+        if let volumes = manga.volumes {
+            label += ", \(volumes) " + String(localized: "accessibility_volumes")
+        }
+
+        return label
     }
 }
 
 // MARK: - Preview
 #Preview("Grid con mangas") {
+    @Previewable @Namespace var namespace
     NavigationStack {
         MangaGridView(mangas: [
             .test,
@@ -103,11 +107,12 @@ struct MangaGridCell: View {
             .test,
             .test,
             .test
-        ])
+        ], namespace: namespace)
     }
 }
 
 #Preview("Single Cell") {
-    MangaGridCell(manga: .test)
+    @Previewable @Namespace var namespace
+    MangaGridCell(manga: .test, namespace: namespace)
         .padding()
 }

@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var viewModel = MangaViewModel()
     @State private var showFilters = false
     @State private var viewMode: ViewMode = .list
+    @Namespace private var namespace
 
     enum ViewMode {
         case list, grid
@@ -21,6 +22,7 @@ struct ContentView: View {
             Group {
                 if viewModel.isLoading && viewModel.mangas.isEmpty {
                     ProgressView("loading_mangas")
+                        .accessibilityLabel(String(localized: "accessibility_loading_mangas"))
                 } else if let errorMessage = viewModel.errorMessage {
                     ContentUnavailableView {
                         Label("error_title", systemImage: "exclamationmark.triangle")
@@ -37,6 +39,7 @@ struct ContentView: View {
                             }
                         }
                         .buttonStyle(.borderedProminent)
+                        .accessibilityHint(String(localized: "accessibility_retry_hint"))
                     }
                 } else if viewModel.mangas.isEmpty {
                     ContentUnavailableView {
@@ -51,6 +54,7 @@ struct ContentView: View {
                                 viewModel.filters.clear()
                             }
                             .buttonStyle(.borderedProminent)
+                            .accessibilityHint(String(localized: "accessibility_clear_filters_hint"))
                         }
                     }
                 } else {
@@ -59,7 +63,7 @@ struct ContentView: View {
                     case .list:
                         List(viewModel.mangas) { manga in
                             NavigationLink(value: manga) {
-                                MangaRow(manga: manga)
+                                MangaRow(manga: manga, namespace: namespace)
                             }
                         }
                         .refreshable {
@@ -71,7 +75,7 @@ struct ContentView: View {
                         }
 
                     case .grid:
-                        MangaGridView(mangas: viewModel.mangas)
+                        MangaGridView(mangas: viewModel.mangas, namespace: namespace)
                             .refreshable {
                                 if viewModel.filters.isActive {
                                     await viewModel.applyFilters()
@@ -84,24 +88,34 @@ struct ContentView: View {
             }
             .navigationTitle("nav_explore")
             .navigationDestination(for: Manga.self) { manga in
-                MangaDetailView(manga: manga)
+                MangaDetailView(manga: manga, namespace: namespace)
             }
             .toolbar {
                 // Toggle List/Grid
                 ToolbarItem(placement: .topBarLeading) {
-                    Picker("view_mode", selection: $viewMode) {
-                        Label("view_list", systemImage: "list.bullet")
-                            .tag(ViewMode.list)
-                        Label("view_grid", systemImage: "square.grid.2x2")
-                            .tag(ViewMode.grid)
+                    Button {
+                        #if os(iOS)
+                        HapticFeedback.selection.trigger()
+                        #endif
+                        viewMode = viewMode == .list ? .grid : .list
+                    } label: {
+                        Image(systemName: viewMode == .list ? "list.bullet" : "square.grid.2x2")
+                            .frame(minWidth: 44, minHeight: 44)
                     }
-                    .pickerStyle(.segmented)
+                    .accessibilityLabel(viewMode == .list
+                        ? String(localized: "accessibility_view_list")
+                        : String(localized: "accessibility_view_grid"))
+                    .accessibilityHint(viewMode == .list
+                        ? String(localized: "accessibility_switch_to_grid")
+                        : String(localized: "accessibility_switch_to_list"))
+                    .accessibilitySortPriority(2)
                 }
 
                 // Loading indicator
                 ToolbarItem(placement: .status) {
                     if viewModel.isLoading && !viewModel.mangas.isEmpty {
                         ProgressView()
+                            .accessibilityLabel(String(localized: "accessibility_loading_more"))
                     }
                 }
 
@@ -114,6 +128,9 @@ struct ContentView: View {
                               ? "line.3.horizontal.decrease.circle.fill"
                               : "line.3.horizontal.decrease.circle")
                     }
+                    .accessibilityLabel(viewModel.filters.isActive ? String(localized: "accessibility_filters_active") : String(localized: "accessibility_filters"))
+                    .accessibilityHint(String(localized: "accessibility_filters_hint"))
+                    .accessibilitySortPriority(1)
                 }
             }
             .sheet(isPresented: $showFilters) {
@@ -138,6 +155,6 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .sampleData) {
     ContentView()
 }

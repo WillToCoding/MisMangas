@@ -7,77 +7,125 @@
 
 import SwiftUI
 
+enum VisionNavigationItem: String, CaseIterable, Identifiable {
+    case explore
+    case bestMangas
+    case collection
+
+    var id: String { rawValue }
+
+    var title: LocalizedStringKey {
+        switch self {
+        case .explore: return "nav_explore"
+        case .bestMangas: return "best_mangas_title"
+        case .collection: return "nav_collection"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .explore: return "square.grid.2x2"
+        case .bestMangas: return "star.fill"
+        case .collection: return "books.vertical"
+        }
+    }
+}
+
 struct VisionRootView: View {
     @Environment(AuthViewModel.self) private var authVM
     @Environment(CloudCollectionViewModel.self) private var cloudVM
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
 
+    @State private var selectedSection: VisionNavigationItem? = .explore
+    @State private var exploreVM = MangaViewModel()
+    @State private var bestMangasVM = MangaViewModel()
     @State private var showImmersive = false
     @State private var showLogin = false
 
     var body: some View {
         NavigationSplitView {
-            // Sidebar
-            VStack(alignment: .leading, spacing: 20) {
-                if authVM.isAuthenticated {
-                    Label(authVM.userEmail ?? "Usuario", systemImage: "person.circle.fill")
-                        .font(.headline)
-
-                    Button("action_logout") {
-                        authVM.logout()
+            // Sidebar con navegación
+            List(selection: $selectedSection) {
+                Section {
+                    ForEach(VisionNavigationItem.allCases) { item in
+                        Label(item.title, systemImage: item.icon)
+                            .tag(item)
                     }
-                    .foregroundStyle(.red)
-                } else {
-                    Label("profile_not_connected", systemImage: "person.circle")
-                        .foregroundStyle(.secondary)
-
-                    Button("action_login") {
-                        showLogin = true
-                    }
-                    .buttonStyle(.borderedProminent)
                 }
 
-                Divider()
-
-                Button {
-                    Task {
-                        if showImmersive {
-                            await dismissImmersiveSpace()
-                        } else {
-                            await openImmersiveSpace(id: "ImmersiveMangaSpace")
+                Section {
+                    // Modo inmersivo
+                    Button {
+                        Task {
+                            if showImmersive {
+                                await dismissImmersiveSpace()
+                            } else {
+                                await openImmersiveSpace(id: "ImmersiveMangaSpace")
+                            }
+                            showImmersive.toggle()
                         }
-                        showImmersive.toggle()
+                    } label: {
+                        Label(
+                            showImmersive ? String(localized: "vision_exit_immersive") : String(localized: "vision_immersive_mode"),
+                            systemImage: showImmersive ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right"
+                        )
                     }
-                } label: {
-                    Label(
-                        showImmersive ? String(localized: "vision_exit_immersive") : String(localized: "vision_immersive_mode"),
-                        systemImage: showImmersive ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right"
-                    )
+                    .disabled(!authVM.isAuthenticated || cloudVM.cloudCollection.isEmpty)
                 }
-                .disabled(!authVM.isAuthenticated)
 
-                Spacer()
+                Section {
+                    if authVM.isAuthenticated {
+                        Label(authVM.userEmail ?? "Usuario", systemImage: "person.circle.fill")
+                            .foregroundStyle(.primary)
+
+                        Button(role: .destructive) {
+                            authVM.logout()
+                        } label: {
+                            Label("action_logout", systemImage: "rectangle.portrait.and.arrow.right")
+                        }
+                    } else {
+                        Button {
+                            showLogin = true
+                        } label: {
+                            Label("action_login", systemImage: "person.circle")
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                }
             }
-            .padding()
-            .frame(width: 250)
             .navigationTitle("app_name")
         } detail: {
-            // Vista principal - Envuelto en NavigationStack para navegación
             NavigationStack {
-                if !authVM.isAuthenticated {
-                    VisionLoginPromptView(showLogin: $showLogin)
-                } else if cloudVM.isLoading && cloudVM.cloudCollection.isEmpty {
-                    ProgressView("loading_collection")
-                        .font(.title)
-                } else if cloudVM.cloudCollection.isEmpty {
-                    ContentUnavailableView(
-                        "collection_empty_title",
-                        systemImage: "books.vertical",
-                        description: Text("collection_empty_description")
-                    )
-                } else {
-                    VisionCollectionView(cloudVM: cloudVM)
+                Group {
+                    switch selectedSection {
+                    case .explore:
+                        VisionExploreView()
+                            .environment(exploreVM)
+                    case .bestMangas:
+                        VisionBestMangasView()
+                            .environment(bestMangasVM)
+                    case .collection:
+                        if !authVM.isAuthenticated {
+                            VisionLoginPromptView(showLogin: $showLogin)
+                        } else if cloudVM.isLoading && cloudVM.cloudCollection.isEmpty {
+                            ProgressView("loading_collection")
+                                .font(.title)
+                        } else if cloudVM.cloudCollection.isEmpty {
+                            ContentUnavailableView(
+                                "collection_empty_title",
+                                systemImage: "books.vertical",
+                                description: Text("collection_empty_description")
+                            )
+                        } else {
+                            VisionCollectionView(cloudVM: cloudVM)
+                        }
+                    case .none:
+                        ContentUnavailableView(
+                            "empty_select_section",
+                            systemImage: "sidebar.left"
+                        )
+                    }
                 }
             }
         }

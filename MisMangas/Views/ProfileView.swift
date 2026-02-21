@@ -26,6 +26,7 @@ struct ProfileView: View {
                             Image(systemName: "person.circle.fill")
                                 .font(.largeTitle)
                                 .foregroundStyle(.blue)
+                                .accessibilityHidden(true)
 
                             VStack(alignment: .leading) {
                                 Text("profile_connected")
@@ -41,13 +42,17 @@ struct ProfileView: View {
 
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
+                                .accessibilityHidden(true)
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(String(localized: "accessibility_user_connected") + ", " + (authVM.userEmail ?? ""))
                     } else {
                         // Usuario NO logueado
                         HStack {
                             Image(systemName: "person.circle")
                                 .font(.largeTitle)
                                 .foregroundStyle(.secondary)
+                                .accessibilityHidden(true)
 
                             VStack(alignment: .leading) {
                                 Text("profile_not_connected")
@@ -57,9 +62,13 @@ struct ProfileView: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(String(localized: "accessibility_user_not_connected"))
                     }
                 } header: {
                     Text("profile_account")
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityHeading(.h2)
                 }
 
                 // MARK: - Colección
@@ -67,24 +76,32 @@ struct ProfileView: View {
                     HStack {
                         Image(systemName: "cloud.fill")
                             .foregroundStyle(authVM.isAuthenticated ? .blue : .secondary)
+                            .accessibilityHidden(true)
                         Text("profile_cloud_collection")
                         Spacer()
                         Text(authVM.isAuthenticated ? String(localized: "profile_session_active") : "-")
                             .foregroundStyle(.secondary)
                             .font(.caption)
                     }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(String(localized: "accessibility_cloud_storage") + ": " + (authVM.isAuthenticated ? String(localized: "profile_session_active") : String(localized: "accessibility_inactive")))
 
                     HStack {
                         Image(systemName: "internaldrive.fill")
                             .foregroundStyle(.green)
+                            .accessibilityHidden(true)
                         Text("profile_local_collection")
                         Spacer()
                         Text("profile_session_active")
                             .foregroundStyle(.secondary)
                             .font(.caption)
                     }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(String(localized: "accessibility_local_storage") + ": " + String(localized: "profile_session_active"))
                 } header: {
                     Text("profile_storage")
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityHeading(.h2)
                 } footer: {
                     if authVM.isAuthenticated {
                         Text("profile_storage_cloud")
@@ -99,6 +116,7 @@ struct ProfileView: View {
                         HStack {
                             Image(systemName: "globe")
                                 .foregroundStyle(.blue)
+                                .accessibilityHidden(true)
                             Text("translation_settings_title")
                         }
 
@@ -109,6 +127,8 @@ struct ProfileView: View {
                             .onChange(of: deeplApiKey) { _, newValue in
                                 translationService.apiKey = newValue
                             }
+                            .accessibilityLabel(String(localized: "accessibility_api_key_field"))
+                            .accessibilityHint(String(localized: "accessibility_api_key_hint"))
 
                         if translationService.isConfigured {
                             Label("translation_settings_configured", systemImage: "checkmark.circle.fill")
@@ -118,6 +138,8 @@ struct ProfileView: View {
                     }
                 } header: {
                     Text("translation_settings_header")
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityHeading(.h2)
                 } footer: {
                     Text("translation_settings_footer")
                 }
@@ -130,18 +152,22 @@ struct ProfileView: View {
                         } label: {
                             HStack {
                                 Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .accessibilityHidden(true)
                                 Text("action_logout")
                             }
                         }
+                        .accessibilityHint(String(localized: "accessibility_logout_hint"))
                     } else {
                         Button {
                             showLoginSheet = true
                         } label: {
                             HStack {
                                 Image(systemName: "person.badge.key.fill")
+                                    .accessibilityHidden(true)
                                 Text("action_login")
                             }
                         }
+                        .accessibilityHint(String(localized: "accessibility_login_hint"))
                     }
                 }
             }

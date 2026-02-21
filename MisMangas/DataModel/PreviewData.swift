@@ -15,7 +15,7 @@ struct PreviewData {
     let container: ModelContainer
 
     private init() {
-        let schema = Schema([Model.self])
+        let schema = Schema([MangaModel.self, UserCollection.self])
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
         container = try! ModelContainer(for: schema, configurations: configuration)
 
@@ -26,46 +26,83 @@ struct PreviewData {
         let context = container.mainContext
 
         // Ejemplo 1: Dragon Ball - Colección completa
-        let dragonBall = Model(
+        let dragonBallManga = MangaModel(
             id: 42,
-            volumesOwned: Array(1...42),
-            currentReadingVolume: 30,
-            hasCompleteCollection: true,
             title: "Dragon Ball",
             titleEnglish: "Dragon Ball",
-            mainPicture: "https://cdn.myanimelist.net/images/manga/1/267793l.jpg",
+            titleJapanese: "ドラゴンボール",
+            status: "finished",
             score: 8.41,
-            totalVolumes: 42
+            volumes: 42,
+            chapters: 520,
+            sypnosis: "Bulma, a headstrong 16-year-old girl, is on a quest to find the mythical Dragon Balls.",
+            mainPicture: "https://cdn.myanimelist.net/images/manga/1/267793l.jpg",
+            url: "https://myanimelist.net/manga/42",
+            authorNames: ["Akira Toriyama"],
+            genreNames: ["Action", "Adventure", "Comedy"],
+            themeNames: ["Martial Arts"],
+            demographicNames: ["Shounen"]
         )
+        context.insert(dragonBallManga)
+
+        let dragonBall = UserCollection(
+            manga: dragonBallManga,
+            volumesOwned: Array(1...42),
+            currentReadingVolume: 30,
+            hasCompleteCollection: true
+        )
+        context.insert(dragonBall)
 
         // Ejemplo 2: Berserk - Lectura en progreso
-        let berserk = Model(
+        let berserkManga = MangaModel(
             id: 2,
-            volumesOwned: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            currentReadingVolume: 8,
-            hasCompleteCollection: false,
             title: "Berserk",
             titleEnglish: "Berserk",
-            mainPicture: "https://cdn.myanimelist.net/images/manga/1/157897l.jpg",
+            status: "on_hiatus",
             score: 9.47,
-            totalVolumes: nil
+            volumes: 41,
+            sypnosis: "Guts, a former mercenary now known as the Black Swordsman, is out for revenge.",
+            mainPicture: "https://cdn.myanimelist.net/images/manga/1/157897l.jpg",
+            url: "https://myanimelist.net/manga/2",
+            authorNames: ["Kentaro Miura"],
+            genreNames: ["Action", "Drama", "Fantasy"],
+            themeNames: ["Gore", "Military"],
+            demographicNames: ["Seinen"]
         )
+        context.insert(berserkManga)
+
+        let berserk = UserCollection(
+            manga: berserkManga,
+            volumesOwned: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            currentReadingVolume: 8,
+            hasCompleteCollection: false
+        )
+        context.insert(berserk)
 
         // Ejemplo 3: Monster - Algunos volúmenes
-        let monster = Model(
+        let monsterManga = MangaModel(
             id: 1,
-            volumesOwned: [1, 2, 3],
-            currentReadingVolume: 2,
-            hasCompleteCollection: false,
             title: "Monster",
             titleEnglish: "Monster",
-            mainPicture: "https://cdn.myanimelist.net/images/manga/3/258224l.jpg",
+            status: "finished",
             score: 9.15,
-            totalVolumes: 18
+            volumes: 18,
+            sypnosis: "Dr. Kenzou Tenma is a renowned brain surgeon of Japanese descent working in Europe.",
+            mainPicture: "https://cdn.myanimelist.net/images/manga/3/258224l.jpg",
+            url: "https://myanimelist.net/manga/1",
+            authorNames: ["Naoki Urasawa"],
+            genreNames: ["Drama", "Mystery"],
+            themeNames: ["Psychological"],
+            demographicNames: ["Seinen"]
         )
+        context.insert(monsterManga)
 
-        context.insert(dragonBall)
-        context.insert(berserk)
+        let monster = UserCollection(
+            manga: monsterManga,
+            volumesOwned: [1, 2, 3],
+            currentReadingVolume: 2,
+            hasCompleteCollection: false
+        )
         context.insert(monster)
 
         try? context.save()
@@ -75,9 +112,20 @@ struct PreviewData {
         container.mainContext
     }
 
-    var allMangas: [Model] {
-        let descriptor = FetchDescriptor<Model>(
+    var allCollections: [UserCollection] {
+        let descriptor = FetchDescriptor<UserCollection>(
             sortBy: [SortDescriptor(\.addedDate, order: .reverse)]
+        )
+        return (try? context.fetch(descriptor)) ?? []
+    }
+
+    var sampleCollection: UserCollection {
+        allCollections[0]
+    }
+
+    var allCachedMangas: [MangaModel] {
+        let descriptor = FetchDescriptor<MangaModel>(
+            sortBy: [SortDescriptor(\.title)]
         )
         return (try? context.fetch(descriptor)) ?? []
     }

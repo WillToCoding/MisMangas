@@ -10,24 +10,54 @@ import SwiftData
 
 struct MainTabView: View {
     @Environment(AuthViewModel.self) private var authVM
+    @Environment(CloudCollectionViewModel.self) private var cloudVM
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         TabView {
-            ContentView()
-                .tabItem {
-                    Label("tab_explore", systemImage: "magnifyingglass")
+            // Tab 1: Inicio
+            Tab {
+                if isiPhone {
+                    HomeView()
+                } else {
+                    ContentViewiPad()
                 }
+            } label: {
+                Label("tab_home", systemImage: "house")
+                    .symbolVariant(.fill)
+                    .symbolRenderingMode(.hierarchical)
+            }
 
-            CollectionView()
-                .tabItem {
-                    Label("tab_collection", systemImage: "books.vertical.fill")
+            // Tab 2: Coleccion
+            Tab {
+                if isiPhone {
+                    CollectionView()
+                } else {
+                    CollectionViewiPad()
                 }
+            } label: {
+                Label("tab_collection", systemImage: "books.vertical")
+                    .symbolVariant(.fill)
+                    .symbolRenderingMode(.hierarchical)
+            }
 
-            ProfileView()
-                .tabItem {
-                    Label("tab_profile", systemImage: "person.circle")
-                }
+            // Tab 3: Busqueda
+            Tab(role: .search) {
+                SearchResultsView()
+            }
+
+            // Tab 4: Perfil
+            Tab {
+                ProfileView()
+            } label: {
+                Label("tab_profile", systemImage: "person.circle")
+                    .symbolVariant(.fill)
+                    .symbolRenderingMode(.hierarchical)
+            }
         }
+        .tint(.purple)
+        .tabBarMinimizeBehavior(.onScrollDown)
+        .tabViewStyle(.sidebarAdaptable)
         .alert("session_expired_title", isPresented: .init(
             get: { authVM.showSessionExpiredAlert },
             set: { authVM.showSessionExpiredAlert = $0 }
@@ -37,16 +67,13 @@ struct MainTabView: View {
             Text("session_expired_message")
         }
         .task {
+            // Configurar el ModelContainer para sincronización cloud → local
+            cloudVM.setModelContainer(modelContext.container)
             await authVM.checkAndRenewTokenIfNeeded()
         }
     }
 }
 
-#Preview {
-    let authVM = AuthViewModel()
-    let cloudVM = CloudCollectionViewModel(authVM: authVM)
-    return MainTabView()
-        .environment(authVM)
-        .environment(cloudVM)
-        .modelContainer(.preview)
+#Preview(traits: .sampleData) {
+    MainTabView()
 }

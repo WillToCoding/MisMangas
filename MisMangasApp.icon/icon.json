@@ -1,18 +1,33 @@
 {
   "fill" : {
-    "automatic-gradient" : "extended-srgb:0.00000,0.53333,1.00000,1.00000"
+    "linear-gradient" : [
+      "srgb:0.97587,1.00000,0.16407,1.00000",
+      "extended-srgb:1.00000,0.80000,0.00000,1.00000"
+    ],
+    "orientation" : {
+      "start" : {
+        "x" : 0.5,
+        "y" : 0
+      },
+      "stop" : {
+        "x" : 0.5,
+        "y" : 0.7
+      }
+    }
   },
   "groups" : [
     {
       "layers" : [
         {
+          "fill" : "automatic",
+          "glass" : true,
           "image-name" : "Frontal.png",
           "name" : "Frontal",
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
-              22.546875,
-              257.4375
+              -21.960937499999886,
+              269.8203125
             ]
           }
         }
@@ -33,6 +48,7 @@
           "fill" : "automatic",
           "image-name" : "Fondo.png",
           "name" : "Fondo",
+          "opacity" : 0.75,
           "position" : {
             "scale" : 1.07,
             "translation-in-points" : [

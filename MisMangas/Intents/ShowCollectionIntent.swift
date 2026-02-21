@@ -2,7 +2,7 @@
 //  ShowCollectionIntent.swift
 //  MisMangas
 //
-//  Created by Claude on 23/12/25.
+//  Created by Juan Carlos on 23/12/25.
 //
 
 import AppIntents

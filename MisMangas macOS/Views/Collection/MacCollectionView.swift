@@ -11,7 +11,7 @@ import SwiftData
 struct MacCollectionView: View {
     @Binding var selection: Manga?
 
-    @Query(sort: \Model.addedDate, order: .reverse) private var localCollection: [Model]
+    @Query(sort: \UserCollection.addedDate, order: .reverse) private var localCollection: [UserCollection]
     @Environment(\.modelContext) private var modelContext
     @Environment(AuthViewModel.self) private var authVM
     @Environment(CloudCollectionViewModel.self) private var cloudVM
@@ -20,7 +20,7 @@ struct MacCollectionView: View {
     @State private var mangaToDelete: Int?
     @State private var showEditSheet = false
     @State private var collectionItemToEdit: UserMangaCollection?
-    @State private var localItemToEdit: Model?
+    @State private var localItemToEdit: UserCollection?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -76,7 +76,7 @@ struct MacCollectionView: View {
             MacEditCollectionView(collectionItem: item)
         }
         .sheet(item: $localItemToEdit) { item in
-            MacEditLocalCollectionView(manga: item)
+            MacEditLocalCollectionView(collection: item)
         }
     }
 
@@ -120,12 +120,12 @@ struct MacCollectionView: View {
             emptyStateView
         } else {
             List(selection: $selection) {
-                ForEach(localCollection) { manga in
-                    MacLocalCollectionRow(manga: manga)
-                        .tag(manga)
+                ForEach(localCollection) { collection in
+                    MacLocalCollectionRow(collection: collection)
+                        .tag(collection)
                         .contextMenu {
                             Button {
-                                localItemToEdit = manga
+                                localItemToEdit = collection
                             } label: {
                                 Label("action_edit", systemImage: "pencil")
                             }
@@ -133,7 +133,7 @@ struct MacCollectionView: View {
                             Divider()
 
                             Button("action_delete", role: .destructive) {
-                                modelContext.delete(manga)
+                                modelContext.delete(collection)
                                 try? modelContext.save()
                             }
                         }
@@ -163,28 +163,24 @@ struct MacCollectionView: View {
 // MARK: - Local Collection Row
 
 struct MacLocalCollectionRow: View {
-    let manga: Model
+    let collection: UserCollection
 
     var body: some View {
         HStack(spacing: 12) {
             // Miniatura
-            AsyncImage(url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Color.gray.opacity(0.2)
-            }
-            .frame(width: 40, height: 60)
-            .clipShape(RoundedRectangle(cornerRadius: 4))
+            CachedCoverImage(
+                url: URL(string: collection.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                width: 40,
+                height: 60
+            )
 
             // Info
             VStack(alignment: .leading, spacing: 4) {
-                Text(manga.title)
+                Text(collection.title)
                     .font(.headline)
                     .lineLimit(1)
 
-                if let english = manga.titleEnglish {
+                if let english = collection.titleEnglish {
                     Text(english)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -196,20 +192,20 @@ struct MacLocalCollectionRow: View {
                         .foregroundStyle(.yellow)
                         .font(.caption2)
 
-                    Text(String(format: "%.2f", manga.score))
+                    Text(String(format: "%.2f", collection.score))
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    if manga.hasCompleteCollection {
+                    if collection.hasCompleteCollection {
                         Text("separator_dot")
                             .foregroundStyle(.secondary)
                         Label("collection_complete", systemImage: "checkmark.circle.fill")
                             .font(.caption)
                             .foregroundStyle(.green)
-                    } else if let total = manga.totalVolumes {
+                    } else if let total = collection.totalVolumes {
                         Text("separator_dot")
                             .foregroundStyle(.secondary)
-                        Text("volumes_owned_of \(manga.volumesOwned.count) \(total)")
+                        Text("volumes_owned_of \(collection.volumesOwned.count) \(total)")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -244,15 +240,11 @@ struct MacEditCollectionView: View {
             Text("action_edit")
                 .font(.title.bold())
 
-            AsyncImage(url: URL(string: collectionItem.manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            } placeholder: {
-                Color.gray.opacity(0.2)
-            }
-            .frame(width: 150, height: 225)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            CachedCoverImage(
+                url: URL(string: collectionItem.manga.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                width: 150,
+                height: 225
+            )
 
             Text(collectionItem.manga.title)
                 .font(.headline)
@@ -330,7 +322,7 @@ struct MacEditCollectionView: View {
 
 // MARK: - Edit Local Collection View
 struct MacEditLocalCollectionView: View {
-    @Bindable var manga: Model
+    @Bindable var collection: UserCollection
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -339,11 +331,11 @@ struct MacEditLocalCollectionView: View {
     @State private var currentReadingVolume: Int
     @State private var hasCompleteCollection: Bool
 
-    init(manga: Model) {
-        self.manga = manga
-        _selectedVolumes = State(initialValue: Set(manga.volumesOwned))
-        _currentReadingVolume = State(initialValue: manga.currentReadingVolume ?? 1)
-        _hasCompleteCollection = State(initialValue: manga.hasCompleteCollection)
+    init(collection: UserCollection) {
+        self.collection = collection
+        _selectedVolumes = State(initialValue: Set(collection.volumesOwned))
+        _currentReadingVolume = State(initialValue: collection.currentReadingVolume ?? 1)
+        _hasCompleteCollection = State(initialValue: collection.hasCompleteCollection)
     }
 
     var body: some View {
@@ -351,24 +343,20 @@ struct MacEditLocalCollectionView: View {
             Text("action_edit")
                 .font(.title.bold())
 
-            AsyncImage(url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            } placeholder: {
-                Color.gray.opacity(0.2)
-            }
-            .frame(width: 150, height: 225)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            CachedCoverImage(
+                url: URL(string: collection.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                width: 150,
+                height: 225
+            )
 
-            Text(manga.title)
+            Text(collection.title)
                 .font(.headline)
                 .multilineTextAlignment(.center)
 
             Form {
                 Toggle("add_complete_collection", isOn: $hasCompleteCollection)
                     .onChange(of: hasCompleteCollection) { _, newValue in
-                        if newValue, let totalVolumes = manga.totalVolumes {
+                        if newValue, let totalVolumes = collection.totalVolumes {
                             selectedVolumes = Set(1...totalVolumes)
                         }
                     }
@@ -389,7 +377,7 @@ struct MacEditLocalCollectionView: View {
                     }
                 }
 
-                Stepper("collection_reading_volume \(currentReadingVolume)", value: $currentReadingVolume, in: 1...(manga.totalVolumes ?? 100))
+                Stepper("collection_reading_volume \(currentReadingVolume)", value: $currentReadingVolume, in: 1...(collection.totalVolumes ?? 100))
             }
             .padding()
 
@@ -414,9 +402,9 @@ struct MacEditLocalCollectionView: View {
     }
 
     private func saveChanges() {
-        manga.volumesOwned = Array(selectedVolumes).sorted()
-        manga.currentReadingVolume = currentReadingVolume
-        manga.hasCompleteCollection = hasCompleteCollection
+        collection.volumesOwned = Array(selectedVolumes).sorted()
+        collection.currentReadingVolume = currentReadingVolume
+        collection.hasCompleteCollection = hasCompleteCollection
         try? modelContext.save()
         dismiss()
     }

@@ -17,7 +17,7 @@ extension ModelContainer {
 
     /// Container para producción
     static var production: ModelContainer {
-        let schema = Schema([Model.self])
+        let schema = Schema([MangaModel.self, UserCollection.self])
         let configuration = ModelConfiguration(
             schema: schema,
             isStoredInMemoryOnly: false,

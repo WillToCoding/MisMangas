@@ -8,181 +8,270 @@
 import Foundation
 import NetworkAPI
 
-struct NetworkRepository: NetworkInteractor {
+// MARK: - Protocol
 
+/// Protocolo que define las operaciones de red disponibles en la app.
+///
+/// `NetworkRepository` abstrae la capa de red permitiendo:
+/// - Inyeccion de dependencias para testing con mocks
+/// - Intercambio de implementaciones sin afectar a los ViewModels
+/// - Definicion clara del contrato de la API
+///
+/// ## Implementaciones
+///
+/// - ``Network``: Implementacion de produccion que usa Academy y Jikan APIs
+///
+/// ## Ejemplo de mock para testing
+///
+/// ```swift
+/// struct MockNetworkRepository: NetworkRepository {
+///     func getMangas(page: Int, per: Int) async throws -> PaginatedResponse<Manga> {
+///         return PaginatedResponse(items: [.preview], metadata: .init(total: 1, page: 1, per: 1))
+///     }
+///     // ... implementar otros metodos
+/// }
+/// ```
+protocol NetworkRepository: Sendable, NetworkInteractor {
+    // List
+    func getMangas(page: Int, per: Int) async throws -> PaginatedResponse<Manga>
+    func getBestMangas(page: Int, per: Int) async throws -> PaginatedResponse<Manga>
+
+    // Filter Options
+    func getGenres() async throws -> [String]
+    func getDemographics() async throws -> [String]
+    func getThemes() async throws -> [String]
+
+    // Filter by Category
+    func getMangasByGenre(_ genre: String, page: Int, per: Int) async throws -> PaginatedResponse<Manga>
+    func getMangasByDemographic(_ demographic: String, page: Int, per: Int) async throws -> PaginatedResponse<Manga>
+    func getMangasByTheme(_ theme: String, page: Int, per: Int) async throws -> PaginatedResponse<Manga>
+
+    // Search
+    func searchMangasBeginsWith(_ text: String, page: Int, per: Int) async throws -> PaginatedResponse<Manga>
+    func searchMangasContains(_ text: String, page: Int, per: Int) async throws -> PaginatedResponse<Manga>
+    func searchCustom(_ search: CustomSearch, page: Int, per: Int) async throws -> PaginatedResponse<Manga>
+
+    // Jikan Search (not available on watchOS)
+    #if os(iOS) || os(macOS) || os(tvOS) || os(visionOS)
+    func searchMangasJikan(
+        query: String?,
+        genres: [Int]?,
+        minScore: Double?,
+        maxScore: Double?,
+        startYear: Int?,
+        endYear: Int?,
+        status: String?,
+        orderBy: String?,
+        sort: String?,
+        page: Int,
+        limit: Int
+    ) async throws -> JikanMangaSearchResponse
+    #endif
+}
+
+// MARK: - Production Implementation
+
+/// Fachada que unifica el acceso a las APIs de Academy y Jikan.
+///
+/// `Network` implementa ``NetworkRepository`` combinando dos fuentes de datos:
+///
+/// - **Academy API**: Datos principales de mangas, autenticacion y colecciones de usuario
+/// - **Jikan API**: Datos adicionales como personajes, relaciones y filtros avanzados
+///
+/// Esta arquitectura permite:
+/// - Enriquecer los datos de mangas con informacion de Jikan
+/// - Usar filtros avanzados (anio, score) no disponibles en Academy
+/// - Mantener una unica interfaz para los ViewModels
+///
+/// ## Ejemplo de uso
+///
+/// ```swift
+/// let network = Network()
+///
+/// // Obtener mangas paginados
+/// let response = try await network.getMangas(page: 1, per: 20)
+///
+/// // Buscar por texto
+/// let results = try await network.searchMangasContains("dragon", page: 1, per: 10)
+///
+/// // Obtener personajes (Jikan)
+/// let characters = try await network.getMangaCharacters(mangaId: 42)
+/// ```
+struct Network: NetworkRepository {
+
+    private let academy = AcademyRepository()
+    #if os(iOS) || os(macOS) || os(tvOS) || os(visionOS)
+    private let jikan = JikanRepository()
+    #endif
+
+    // MARK: - Academy: List Endpoints
+
+    /// Obtiene mangas paginados desde Academy API.
+    ///
+    /// - Parameters:
+    ///   - page: Numero de pagina (desde 1).
+    ///   - per: Cantidad de elementos por pagina.
+    /// - Returns: Respuesta paginada con mangas y metadatos.
     func getMangas(page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .listMangas.withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await academy.getMangas(page: page, per: per)
     }
 
+    /// Obtiene los mejores mangas ordenados por puntuacion.
     func getBestMangas(page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .bestMangas.withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await academy.getBestMangas(page: page, per: per)
     }
 
+    /// Obtiene la lista completa de autores (no paginada).
     func getAuthors() async throws -> [Author] {
-        try await getJSON(.get(url: .authors), type: [Author].self)
+        try await academy.getAuthors()
     }
 
+    /// Obtiene las demografias disponibles (ej: "Shounen", "Seinen").
     func getDemographics() async throws -> [String] {
-        try await getJSON(.get(url: .demographics), type: [String].self)
+        try await academy.getDemographics()
     }
 
+    /// Obtiene los generos disponibles (ej: "Action", "Romance").
     func getGenres() async throws -> [String] {
-        try await getJSON(.get(url: .genres), type: [String].self)
+        try await academy.getGenres()
     }
 
+    /// Obtiene los temas disponibles (ej: "School", "Mecha").
     func getThemes() async throws -> [String] {
-        try await getJSON(.get(url: .themes), type: [String].self)
+        try await academy.getThemes()
     }
 
+    // MARK: - Academy: Filter by Category
+
+    /// Obtiene mangas filtrados por un genero especifico.
     func getMangasByGenre(_ genre: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangaByGenre(genre).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await academy.getMangasByGenre(genre, page: page, per: per)
     }
 
+    /// Obtiene mangas filtrados por una demografia especifica.
     func getMangasByDemographic(_ demographic: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangaByDemographic(demographic).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await academy.getMangasByDemographic(demographic, page: page, per: per)
     }
 
+    /// Obtiene mangas filtrados por un tema especifico.
     func getMangasByTheme(_ theme: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangaByTheme(theme).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await academy.getMangasByTheme(theme, page: page, per: per)
     }
 
+    /// Obtiene mangas de un autor especifico por su ID.
     func getMangasByAuthor(_ authorId: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangaByAuthor(authorId).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await academy.getMangasByAuthor(authorId, page: page, per: per)
     }
 
+    // MARK: - Academy: Search
 
+    /// Busca mangas cuyo titulo comienza con el texto dado.
     func searchMangasBeginsWith(_ text: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangasBeginsWith(text).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await academy.searchMangasBeginsWith(text, page: page, per: per)
     }
 
+    /// Busca mangas cuyo titulo contiene el texto dado.
     func searchMangasContains(_ text: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangasContains(text).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await academy.searchMangasContains(text, page: page, per: per)
     }
 
+    /// Busca autores por nombre (primer o ultimo nombre).
     func searchAuthor(_ name: String) async throws -> [Author] {
-        try await getJSON(.get(url: .searchAuthor(name)), type: [Author].self)
+        try await academy.searchAuthor(name)
     }
 
+    /// Obtiene un manga especifico por su ID.
     func getManga(byId id: Int) async throws -> Manga {
-        try await getJSON(.get(url: .manga(byId: id)), type: Manga.self)
+        try await academy.getManga(byId: id)
     }
 
-    /// Búsqueda personalizada con múltiples filtros combinados (POST)
+    /// Realiza una busqueda personalizada con multiples criterios.
+    ///
+    /// Permite combinar titulo, autor, generos, temas y demografias en una sola busqueda.
     func searchCustom(_ search: CustomSearch, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.post(url: .searchManga.withPagination(page: page, per: per), body: search), type: PaginatedResponse<Manga>.self)
+        try await academy.searchCustom(search, page: page, per: per)
     }
 
-    // MARK: - Authentication
+    // MARK: - Academy: Authentication
 
-    /// Registra un nuevo usuario
+    /// Registra un nuevo usuario en el sistema.
+    ///
+    /// - Parameter users: Credenciales del usuario (email y password).
+    /// - Note: Requiere header `App-Token` para autorizar la solicitud.
     func registerUser(_ users: Users) async throws {
-        print("DEBUG - Registrando usuario: \(users.email)")
-        print("DEBUG - Password length: \(users.password.count)")
-
-        var request = URLRequest.post(url: .users, body: users)
-        request.setValue("sLGH38NhEJ0_anlIWwhsz1-LarClEohiAHQqayF0FY", forHTTPHeaderField: "App-Token")
-
-        print("DEBUG - URL: \(request.url?.absoluteString ?? "nil")")
-        print("DEBUG - Method: \(request.httpMethod ?? "nil")")
-        print("DEBUG - Headers: \(request.allHTTPHeaderFields ?? [:])")
-        if let body = request.httpBody, let bodyString = String(data: body, encoding: .utf8) {
-            print("DEBUG - Body: \(bodyString)")
-        }
-
-        try await postJSON(request, status: 201)
+        try await academy.registerUser(users)
     }
 
-    /// Inicia sesión y obtiene un token
+    /// Inicia sesion y obtiene un token JWT.
+    ///
+    /// - Returns: Token JWT valido por 2 dias.
     func login(email: String, password: String) async throws -> String {
-        // Crear credenciales en formato "email:password"
-        let credentials = "\(email):\(password)"
-        guard let credentialData = credentials.data(using: .utf8) else {
-            throw NetworkError.invalidCredentials
-        }
-
-        // Codificar en Base64 para Basic Auth
-        let base64Credentials = credentialData.base64EncodedString()
-
-        var request = URLRequest(url: .usersLogin)
-        request.httpMethod = "POST"
-        request.setValue("Basic \(base64Credentials)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        // Obtener token
-        let response = try await getJSON(request, type: TokenResponse.self)
-        return response.token
+        try await academy.login(email: email, password: password)
     }
 
-    /// Renueva el token de autenticación
+    /// Renueva un token JWT existente.
+    ///
+    /// - Returns: Nuevo token JWT. El token anterior queda invalidado.
     func renewToken(_ currentToken: String) async throws -> String {
-        // POST sin body, solo headers
-        var request = URLRequest(url: .usersRenew)
-        request.httpMethod = "POST"
-        request.setValue("Bearer \(currentToken)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let response = try await getJSON(request, type: TokenResponse.self)
-        return response.token
+        try await academy.renewToken(currentToken)
     }
 
-    // MARK: - Cloud Collection
+    // MARK: - Academy: Cloud Collection
 
-    /// Obtiene la colección del usuario desde la nube
+    /// Obtiene la coleccion completa de mangas del usuario.
+    ///
+    /// - Note: Esta respuesta no esta paginada.
     func getUserCollection(token: String) async throws -> [UserMangaCollection] {
-        var request = URLRequest.get(url: .collectionManga)
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return try await getJSON(request, type: [UserMangaCollection].self)
+        try await academy.getUserCollection(token: token)
     }
 
-    /// Añade un manga a la colección en la nube
+    /// Agrega o actualiza un manga en la coleccion del usuario.
     func addToCollection(_ request: UserMangaCollectionRequest, token: String) async throws {
-        var urlRequest = URLRequest.post(url: .collectionManga, body: request)
-        urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        try await postJSON(urlRequest, status: 201)
+        try await academy.addToCollection(request, token: token)
     }
 
-    /// Elimina un manga de la colección en la nube
+    /// Elimina un manga de la coleccion del usuario.
     func deleteFromCollection(mangaId: Int, token: String) async throws {
-        var request = URLRequest(url: .collectionManga(byId: mangaId))
-        request.httpMethod = "DELETE"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        // DELETE no devuelve contenido, solo ejecutamos la request
-        _ = try await getJSON(request, type: EmptyResponse.self)
+        try await academy.deleteFromCollection(mangaId: mangaId, token: token)
     }
 
-    // MARK: - Jikan API (Characters)
+    // MARK: - Jikan: Characters, Relations, Recommendations
 
     #if os(iOS) || os(macOS) || os(tvOS) || os(visionOS)
-    /// Obtiene los personajes de un manga desde Jikan API
+    /// Obtiene los personajes de un manga desde Jikan API.
+    ///
+    /// - Note: No disponible en watchOS por limitaciones de la plataforma.
     func getMangaCharacters(mangaId: Int) async throws -> [JikanCharacterData] {
-        let response = try await getJSON(
-            .get(url: .mangaCharacters(mangaId: mangaId)),
-            type: JikanCharactersResponse.self
-        )
-        return response.data
+        try await jikan.getMangaCharacters(mangaId: mangaId)
     }
 
-    /// Obtiene mangas relacionados desde Jikan API
+    /// Obtiene las relaciones de un manga (secuelas, precuelas, spin-offs).
     func getMangaRelations(mangaId: Int) async throws -> [JikanRelation] {
-        let response = try await getJSON(
-            .get(url: .mangaRelations(mangaId: mangaId)),
-            type: JikanRelationsResponse.self
-        )
-        return response.data
+        try await jikan.getMangaRelations(mangaId: mangaId)
     }
 
-    /// Obtiene recomendaciones de manga desde Jikan API
+    /// Obtiene recomendaciones de mangas similares.
     func getMangaRecommendations(mangaId: Int) async throws -> [JikanRecommendation] {
-        let response = try await getJSON(
-            .get(url: .mangaRecommendations(mangaId: mangaId)),
-            type: JikanRecommendationsResponse.self
-        )
-        return response.data
+        try await jikan.getMangaRecommendations(mangaId: mangaId)
     }
 
-    /// Búsqueda avanzada de mangas usando Jikan API
+    /// Busca mangas en Jikan API con filtros avanzados.
+    ///
+    /// Jikan permite filtros no disponibles en Academy API como
+    /// rango de anios y puntuacion minima/maxima.
+    ///
+    /// - Parameters:
+    ///   - query: Texto de busqueda opcional.
+    ///   - genres: IDs de generos de Jikan (diferentes a Academy).
+    ///   - minScore: Puntuacion minima (0-10).
+    ///   - maxScore: Puntuacion maxima (0-10).
+    ///   - startYear: Anio de inicio de publicacion.
+    ///   - endYear: Anio de fin de publicacion.
+    ///   - status: Estado de publicacion ("publishing", "complete", "hiatus").
+    ///   - orderBy: Campo de ordenamiento ("score", "title", "start_date").
+    ///   - sort: Direccion del orden ("asc", "desc").
+    ///   - page: Numero de pagina.
+    ///   - limit: Elementos por pagina (max 25).
     func searchMangasJikan(
         query: String? = nil,
         genres: [Int]? = nil,
@@ -196,7 +285,7 @@ struct NetworkRepository: NetworkInteractor {
         page: Int = 1,
         limit: Int = 25
     ) async throws -> JikanMangaSearchResponse {
-        let url = URL.jikanMangaSearch(
+        try await jikan.searchMangas(
             query: query,
             genres: genres,
             minScore: minScore,
@@ -209,22 +298,6 @@ struct NetworkRepository: NetworkInteractor {
             page: page,
             limit: limit
         )
-        return try await getJSON(.get(url: url), type: JikanMangaSearchResponse.self)
     }
     #endif
-}
-
-// MARK: - Empty Response para DELETE
-struct EmptyResponse: Codable {}
-
-// MARK: - Network Errors
-enum NetworkError: LocalizedError {
-    case invalidCredentials
-
-    var errorDescription: String? {
-        switch self {
-        case .invalidCredentials:
-            return "Credenciales inválidas"
-        }
-    }
 }

@@ -138,48 +138,29 @@ struct MacLoginView: View {
     }
 
     private func syncLocalToCloud() async {
-        // Obtener todos los mangas locales
-        let descriptor = FetchDescriptor<Model>(sortBy: [SortDescriptor(\.addedDate)])
-        guard let localMangas = try? modelContext.fetch(descriptor), !localMangas.isEmpty else {
+        // Obtener todas las colecciones locales
+        let descriptor = FetchDescriptor<UserCollection>(sortBy: [SortDescriptor(\.addedDate)])
+        guard let localCollections = try? modelContext.fetch(descriptor), !localCollections.isEmpty else {
             print("No hay mangas locales para sincronizar")
             return
         }
 
-        print("Sincronizando \(localMangas.count) mangas locales a la nube...")
+        print("Sincronizando \(localCollections.count) mangas locales a la nube...")
 
-        for manga in localMangas {
+        for collection in localCollections {
             do {
-                // Crear un Manga temporal desde Model para poder subirlo
-                let mangaToSync = Manga(
-                    id: manga.id,
-                    title: manga.title,
-                    titleEnglish: manga.titleEnglish,
-                    titleJapanese: nil,
-                    status: "",
-                    score: manga.score,
-                    volumes: manga.totalVolumes,
-                    chapters: nil,
-                    startDate: nil,
-                    endDate: nil,
-                    sypnosis: nil,
-                    background: nil,
-                    mainPicture: manga.mainPicture,
-                    url: "",
-                    authors: [],
-                    genres: [],
-                    themes: [],
-                    demographics: []
-                )
+                // Crear un Manga temporal desde UserCollection para poder subirlo
+                let mangaToSync = collection.manga.toManga()
 
                 try await cloudVM.addToCollection(
                     manga: mangaToSync,
-                    volumesOwned: manga.volumesOwned,
-                    readingVolume: manga.currentReadingVolume,
-                    completeCollection: manga.hasCompleteCollection
+                    volumesOwned: collection.volumesOwned,
+                    readingVolume: collection.currentReadingVolume,
+                    completeCollection: collection.hasCompleteCollection
                 )
-                print("✓ Sincronizado: \(manga.title)")
+                print("✓ Sincronizado: \(collection.title)")
             } catch {
-                print("✗ Error sincronizando \(manga.title): \(error)")
+                print("✗ Error sincronizando \(collection.title): \(error)")
             }
         }
 

@@ -59,6 +59,23 @@ struct MacCommands: Commands {
             }
             .keyboardShortcut("r", modifiers: .command)
         }
+
+        CommandGroup(after: .sidebar) {
+            Button("menu_explore") {
+                NotificationCenter.default.post(name: .navigateToSection, object: NavigationItem.explore)
+            }
+            .keyboardShortcut("1", modifiers: .command)
+
+            Button("menu_collection") {
+                NotificationCenter.default.post(name: .navigateToSection, object: NavigationItem.collection)
+            }
+            .keyboardShortcut("2", modifiers: .command)
+
+            Button("menu_best_mangas") {
+                NotificationCenter.default.post(name: .navigateToSection, object: NavigationItem.bestMangas)
+            }
+            .keyboardShortcut("3", modifiers: .command)
+        }
     }
 }
 
@@ -66,4 +83,5 @@ struct MacCommands: Commands {
 extension Notification.Name {
     static let focusSearchField = Notification.Name("focusSearchField")
     static let refreshContent = Notification.Name("refreshContent")
+    static let navigateToSection = Notification.Name("navigateToSection")
 }

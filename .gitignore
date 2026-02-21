@@ -1,0 +1,13 @@
+# App-Token
+AppConfig.swift
+
+# Documentación
+Docs/
+
+# Xcode
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# macOS
+.DS_Store
