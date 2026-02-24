@@ -11,6 +11,7 @@ import SwiftUI
 struct MisMangas_visionOSApp: App {
     @State private var authVM: AuthViewModel
     @State private var cloudVM: CloudCollectionViewModel
+    @State private var translationService = TranslationService()
 
     init() {
         let auth = AuthViewModel()
@@ -24,6 +25,7 @@ struct MisMangas_visionOSApp: App {
             VisionRootView()
                 .environment(authVM)
                 .environment(cloudVM)
+                .environment(translationService)
         }
         .defaultSize(width: 1200, height: 800)
 

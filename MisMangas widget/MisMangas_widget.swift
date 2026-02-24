@@ -65,6 +65,25 @@ struct MangaWidgetProvider: TimelineProvider {
 struct MisMangas_widget: Widget {
     let kind: String = "MisMangas_widget"
 
+    private var supportedFamilies: [WidgetFamily] {
+        #if os(visionOS)
+        return [
+            .systemSmall,
+            .systemMedium,
+            .systemLarge
+        ]
+        #else
+        return [
+            .systemSmall,
+            .systemMedium,
+            .systemLarge,
+            .accessoryCircular,
+            .accessoryRectangular,
+            .accessoryInline
+        ]
+        #endif
+    }
+
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: MangaWidgetProvider()) { entry in
             MisMangasWidgetEntryView(entry: entry)
@@ -72,14 +91,7 @@ struct MisMangas_widget: Widget {
         }
         .configurationDisplayName("app_name")
         .description("widget_description")
-        .supportedFamilies([
-            .systemSmall,
-            .systemMedium,
-            .systemLarge,
-            .accessoryCircular,
-            .accessoryRectangular,
-            .accessoryInline
-        ])
+        .supportedFamilies(supportedFamilies)
     }
 }
 
@@ -88,6 +100,18 @@ struct MisMangasWidgetEntryView: View {
     let entry: MangaWidgetEntry
 
     var body: some View {
+        #if os(visionOS)
+        switch family {
+        case .systemSmall:
+            SmallWidgetView(entry: entry)
+        case .systemMedium:
+            MediumWidgetView(entry: entry)
+        case .systemLarge:
+            LargeWidgetView(entry: entry)
+        default:
+            SmallWidgetView(entry: entry)
+        }
+        #else
         switch family {
         // Home Screen
         case .systemSmall:
@@ -106,6 +130,7 @@ struct MisMangasWidgetEntryView: View {
         default:
             SmallWidgetView(entry: entry)
         }
+        #endif
     }
 }
 

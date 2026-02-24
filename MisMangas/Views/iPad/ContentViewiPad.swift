@@ -17,10 +17,10 @@ struct ContentViewiPad: View {
     var body: some View {
         NavigationStack {
             Group {
-                if viewModel.isLoading && viewModel.mangas.isEmpty {
+                if viewModel.state.isLoading && viewModel.mangas.isEmpty {
                     ProgressView("loading_mangas")
                         .accessibilityLabel(String(localized: "accessibility_loading_mangas"))
-                } else if let errorMessage = viewModel.errorMessage {
+                } else if let errorMessage = viewModel.state.errorMessage {
                     ContentUnavailableView {
                         Label("error_title", systemImage: "exclamationmark.triangle")
                     } description: {
@@ -86,7 +86,7 @@ struct ContentViewiPad: View {
                 }
 
                 ToolbarItem(placement: .status) {
-                    if viewModel.isLoading && !viewModel.mangas.isEmpty {
+                    if viewModel.state.isLoading && !viewModel.mangas.isEmpty {
                         ProgressView()
                     }
                 }

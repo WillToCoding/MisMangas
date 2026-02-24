@@ -17,37 +17,37 @@ Aplicacion multiplataforma para gestionar tu coleccion de mangas con sincronizac
 | iOS / iPadOS | Completo |
 | macOS | Completo |
 | watchOS | Completo |
-| tvOS | En desarrollo |
-| visionOS | En desarrollo |
+| tvOS | Funcional |
+| visionOS | Funcional |
 
 ### Caracteristicas principales
 
 - **Exploracion de mangas**: Navega por el catalogo completo con paginacion infinita
-- **Busqueda avanzada**: Filtra por genero, demografia, tema, puntuacion y anio
+- **Busqueda avanzada**: Filtra por genero, demografia, tema, puntuacion y año
 - **Coleccion en la nube**: Sincroniza tu coleccion entre dispositivos via API REST
 - **Modo offline**: Accede a tu coleccion sin conexion gracias a SwiftData
-- **Widgets**: Visualiza tu progreso de lectura desde la pantalla de inicio
-- **Accesibilidad**: Soporte completo para VoiceOver y Dynamic Type
+- **Widgets**: Home Screen y Lock Screen widgets
+- **Siri Shortcuts**: Acceso rapido mediante App Intents
+- **Multi-idioma**: ES, EN, AR, JA
+- **Accesibilidad**: Soporte para VoiceOver y Dynamic Type
 
 ### Arquitectura
 
-La aplicacion sigue el patron **MVVM** (Model-View-ViewModel) con inyeccion de dependencias:
+La aplicacion sigue **Clean Architecture** con el patron **MVVM**:
 
 ```
-MisMangas/
-├── Model/           # Modelos de datos (Codable)
-├── ViewModel/       # Logica de negocio (@Observable)
-├── Views/           # Vistas SwiftUI
-├── Network/         # Capa de red (Repository pattern)
-├── DataModel/       # SwiftData para persistencia
-└── Storage/         # Keychain y almacenamiento local
+Presentation  →  Views, ViewModels, Components
+Domain        →  Models (Academy, Jikan)
+Data          →  Network, Storage, DataModel
 ```
 
-### API REST
+### APIs
 
-La app consume dos APIs:
-- **Academy API**: API principal con datos de mangas, autenticacion y colecciones
-- **Jikan API**: API secundaria para personajes, relaciones y filtros avanzados
+| API | Uso |
+|-----|-----|
+| Academy | Catalogo, autenticacion, colecciones |
+| Jikan | Personajes, relaciones, filtros avanzados |
+| DeepL | Traduccion de sinopsis |
 
 ## Topics
 
@@ -61,31 +61,25 @@ La app consume dos APIs:
 - ``AuthViewModel``
 - ``FilterViewModel``
 - ``CloudCollectionViewModel``
+- ``HomeViewModel``
 
-### Capa de Red
-
-- ``NetworkRepository``
-- ``Network``
-
-### Modelos de Datos
+### DTOs (Academy API)
 
 - ``Manga``
 - ``Author``
+- ``Genre``
+- ``Theme``
+- ``Demographic``
 - ``UserMangaCollection``
 - ``PaginatedResponse``
+- ``CustomSearch``
+
+### Persistencia (SwiftData)
+
+- ``MangaModel``
+- ``UserCollection``
 
 ### Autenticacion
 
 - ``AuthError``
 - ``KeychainHelper``
-
-### Filtros y Busqueda
-
-- ``MangaFilters``
-- ``SortOption``
-- ``CustomSearch``
-
-### Almacenamiento Local
-
-- ``MangaModel``
-- ``UserCollection``

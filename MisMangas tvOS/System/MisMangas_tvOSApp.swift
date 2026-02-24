@@ -11,6 +11,8 @@ import SwiftUI
 struct MisMangas_tvOSApp: App {
     @State private var authVM: AuthViewModel
     @State private var cloudVM: CloudCollectionViewModel
+    @State private var translationService = TranslationService()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         let auth = AuthViewModel()
@@ -23,6 +25,15 @@ struct MisMangas_tvOSApp: App {
             TVRootView()
                 .environment(authVM)
                 .environment(cloudVM)
+                .environment(translationService)
+                .onChange(of: scenePhase) { _, newPhase in
+                    if newPhase == .active && authVM.isAuthenticated {
+                        // Recargar colección al volver a primer plano
+                        Task {
+                            await cloudVM.loadCollection()
+                        }
+                    }
+                }
         }
     }
 }

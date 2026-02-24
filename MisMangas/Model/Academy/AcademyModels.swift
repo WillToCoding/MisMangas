@@ -8,7 +8,9 @@
 import Foundation
 
 // MARK: - Author
-struct Author: Codable, Identifiable, Hashable {
+
+/// Autor de un manga (modelo de dominio).
+struct Author: Identifiable, Hashable {
     let id: String
     let firstName: String
     let lastName: String
@@ -16,25 +18,36 @@ struct Author: Codable, Identifiable, Hashable {
 }
 
 // MARK: - Theme
-struct Theme: Codable, Identifiable, Hashable {
+
+/// Tema temático de un manga (modelo de dominio).
+struct Theme: Identifiable, Hashable {
     let id: String
     let theme: String
 }
 
 // MARK: - Demographic
-struct Demographic: Codable, Identifiable, Hashable {
+
+/// Demografía objetivo de un manga (modelo de dominio).
+struct Demographic: Identifiable, Hashable {
     let id: String
     let demographic: String
 }
 
 // MARK: - Genre
-struct Genre: Codable, Identifiable, Hashable {
+
+/// Género de un manga (modelo de dominio).
+struct Genre: Identifiable, Hashable {
     let id: String
     let genre: String
 }
 
 // MARK: - Manga
-struct Manga: Codable, Identifiable, Hashable {
+
+/// Modelo de dominio de un manga.
+///
+/// Usado en la capa de presentación y lógica de negocio.
+/// Los datos vienen convertidos desde `MangaDTO`.
+struct Manga: Identifiable, Hashable {
     let id: Int
     let title: String
     let titleEnglish: String?
@@ -56,30 +69,40 @@ struct Manga: Codable, Identifiable, Hashable {
 }
 
 // MARK: - Paginated Response
-struct PaginatedResponse<T: Codable>: Codable {
+
+/// Respuesta paginada genérica.
+struct PaginatedResponse<T> {
     let items: [T]
     let metadata: Metadata
 }
 
 // MARK: - Metadata
-struct Metadata: Codable {
+
+/// Metadatos de paginación.
+struct Metadata {
     let total: Int
     let page: Int
     let per: Int
 }
 
-// MARK: - Users (for registration and login)
+// MARK: - Users (Request)
+
+/// DTO para registro y login de usuarios.
 struct Users: Codable {
     var email: String
     var password: String
 }
 
 // MARK: - Token Response
+
+/// Respuesta de autenticación con JWT.
 struct TokenResponse: Codable {
     let token: String
 }
 
 // MARK: - User Manga Collection Request
+
+/// Request para añadir/actualizar un manga en la colección del usuario.
 struct UserMangaCollectionRequest: Codable {
     var manga: Int
     var completeCollection: Bool
@@ -87,8 +110,10 @@ struct UserMangaCollectionRequest: Codable {
     var readingVolume: Int?
 }
 
-// MARK: - User Manga Collection Response
-struct UserMangaCollection: Codable, Identifiable, Hashable {
+// MARK: - User Manga Collection
+
+/// Manga en la colección del usuario (modelo de dominio).
+struct UserMangaCollection: Identifiable, Hashable {
     let id: String
     let manga: Manga
     let completeCollection: Bool
@@ -96,7 +121,9 @@ struct UserMangaCollection: Codable, Identifiable, Hashable {
     let readingVolume: Int?
 }
 
-// MARK: - Custom Search
+// MARK: - Custom Search (Request)
+
+/// Parámetros de búsqueda avanzada.
 struct CustomSearch: Codable {
     var searchTitle: String?
     var searchAuthorFirstName: String?
@@ -107,7 +134,24 @@ struct CustomSearch: Codable {
     var searchContains: Bool
 }
 
-// MARK: - Test Data Extensions
+// MARK: - Manga Computed Properties
+
+extension Manga {
+    /// URL limpia de la portada.
+    var coverURL: URL? {
+        URL(string: mainPicture.replacingOccurrences(of: "\"", with: ""))
+    }
+}
+
+extension UserMangaCollection {
+    /// URL limpia de la portada del manga.
+    var coverURL: URL? {
+        manga.coverURL
+    }
+}
+
+// MARK: - Test Data
+
 extension Author {
     static let test = Author(
         id: "998C1B16-E3DB-47D1-8157-8389B5345D03",
@@ -150,29 +194,20 @@ extension Manga {
         chapters: 520,
         startDate: "1984-11-20T00:00:00Z",
         endDate: "1995-05-23T00:00:00Z",
-        sypnosis: "Bulma, a headstrong 16-year-old girl, is on a quest to find the mythical Dragon Balls—seven scattered magic orbs that grant the finder a single wish. She has but one desire in mind: a perfect boyfriend.",
-        background: "Dragon Ball has become one of the most successful manga series of all time, with over 230 million copies sold worldwide with 157 million in Japan alone.",
+        sypnosis: "Bulma, a headstrong 16-year-old girl, is on a quest to find the mythical Dragon Balls—seven scattered magic orbs that grant the finder a single wish.",
+        background: "Dragon Ball has become one of the most successful manga series of all time.",
         mainPicture: "https://cdn.myanimelist.net/images/manga/1/267793l.jpg",
         url: "https://myanimelist.net/manga/42/Dragon_Ball",
         authors: [.test],
         genres: [
             Genre(id: "72C8E862-334F-4F00-B8EC-E1E4125BB7CD", genre: "Action"),
-            Genre(id: "BE70E289-D414-46A9-8F15-928EAFBC5A32", genre: "Adventure"),
-            Genre(id: "F974BCB6-B002-44A6-A224-90D1E50595A2", genre: "Comedy"),
-            Genre(id: "2DEDC015-82DA-4EF4-B983-F0F58C8F689E", genre: "Sci-Fi")
+            Genre(id: "BE70E289-D414-46A9-8F15-928EAFBC5A32", genre: "Adventure")
         ],
-        themes: [
-            Theme(id: "ADC7CBC8-36B9-4E52-924A-4272B7B2CB2C", theme: "Martial Arts"),
-            Theme(id: "472FB2AE-13C0-4EEE-9A45-A7B75AC5DC29", theme: "Super Power")
-        ],
+        themes: [.test],
         demographics: [.test]
     )
 }
 
 extension Metadata {
-    static let test = Metadata(
-        total: 64833,
-        page: 1,
-        per: 10
-    )
+    static let test = Metadata(total: 64833, page: 1, per: 10)
 }

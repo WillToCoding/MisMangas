@@ -14,7 +14,7 @@ struct MacMangaRow: View {
         HStack(spacing: 12) {
             // Miniatura
             CachedCoverImage(
-                url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                url: manga.coverURL,
                 width: 40,
                 height: 60
             )
@@ -37,7 +37,7 @@ struct MacMangaRow: View {
                         .foregroundStyle(.yellow)
                         .font(.caption2)
 
-                    Text(String(format: "%.2f", manga.score))
+                    Text(manga.score.formatted(.number.precision(.fractionLength(2))))
                         .font(.caption)
                         .foregroundStyle(.secondary)
 

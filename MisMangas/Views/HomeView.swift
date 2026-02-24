@@ -10,35 +10,19 @@ import SwiftData
 
 struct HomeView: View {
     @State private var viewModel = HomeViewModel()
-    @State private var filterVM = MangaViewModel()
-    @State private var showFilters = false
     @Namespace private var namespace
-
-    private let demographicConfig: [(key: String, title: LocalizedStringKey, icon: String, color: Color)] = [
-        ("Shounen", "section_shounen", "flame.fill", .orange),
-        ("Seinen", "section_seinen", "person.fill", .purple),
-        ("Shoujo", "section_shoujo", "heart.fill", .pink),
-        ("Josei", "section_josei", "sparkles", .indigo),
-        ("Kids", "section_kids", "star.fill", .yellow)
-    ]
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 24) {
-                    if filterVM.filters.isActive {
-                        // Resultados filtrados
-                        filteredContent
-                    } else {
-                        // Contenido normal por demografía
-                        if !viewModel.bestMangas.isEmpty {
-                            heroCarousel
-                        }
+                    if !viewModel.bestMangas.isEmpty {
+                        heroCarousel
+                    }
 
-                        ForEach(demographicConfig, id: \.key) { config in
-                            if let mangas = viewModel.mangasByDemographic[config.key], !mangas.isEmpty {
-                                section(title: config.title, icon: config.icon, color: config.color, mangas: mangas)
-                            }
+                    ForEach(DemographicsConfig.list, id: \.key) { config in
+                        if let mangas = viewModel.mangasByDemographic[config.key], !mangas.isEmpty {
+                            section(title: config.title, icon: config.icon, color: config.color, mangas: mangas)
                         }
                     }
 
@@ -49,88 +33,12 @@ struct HomeView: View {
             .navigationDestination(for: Manga.self) { manga in
                 MangaDetailView(manga: manga, namespace: namespace)
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showFilters = true
-                    } label: {
-                        Image(systemName: "line.3.horizontal.decrease")
-                        .foregroundStyle(filterVM.filters.isActive ? .blue : .primary)
-                    }
-                }
-            }
-            .sheet(isPresented: $showFilters) {
-                FilterView(filters: $filterVM.filters)
-            }
             .refreshable {
-                if filterVM.filters.isActive {
-                    await filterVM.applyFilters()
-                } else {
-                    await viewModel.loadAll()
-                }
-            }
-            .onChange(of: filterVM.filters) { _, newFilters in
-                Task {
-                    if newFilters.isActive {
-                        await filterVM.applyFilters()
-                    }
-                }
+                await viewModel.loadAll()
             }
         }
         .task {
             await viewModel.loadAll()
-        }
-    }
-
-    // MARK: - Filtered Content
-
-    @ViewBuilder
-    private var filteredContent: some View {
-        HStack {
-            Label("section_filtered_results", systemImage: "line.3.horizontal.decrease")
-                .font(.title3.bold())
-
-            Text("(\(filterVM.mangas.count))")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            Spacer()
-
-            Button("action_clear_filters") {
-                filterVM.filters.clear()
-            }
-            .font(.caption)
-            .buttonStyle(.bordered)
-        }
-        .padding(.horizontal)
-
-        if filterVM.isLoading {
-            ProgressView()
-                .frame(maxWidth: .infinity, minHeight: 200)
-        } else if filterVM.mangas.isEmpty {
-            ContentUnavailableView("filter_no_results", systemImage: "magnifyingglass")
-                .frame(minHeight: 200)
-        } else {
-            // Si filtró por UNA sola demografía, mostrar solo esa sección
-            if filterVM.filters.demographics.count == 1,
-               let selectedDemo = filterVM.filters.demographics.first,
-               let config = demographicConfig.first(where: { $0.key == selectedDemo }) {
-                section(title: config.title, icon: config.icon, color: config.color, mangas: filterVM.mangas)
-            } else {
-                // Agrupar por demografía
-                ForEach(demographicConfig, id: \.key) { config in
-                    let mangas = filterVM.mangas.filter { $0.demographics.contains { $0.demographic == config.key } }
-                    if !mangas.isEmpty {
-                        section(title: config.title, icon: config.icon, color: config.color, mangas: mangas)
-                    }
-                }
-
-                // Sin demografía
-                let other = filterVM.mangas.filter { $0.demographics.isEmpty }
-                if !other.isEmpty {
-                    section(title: "section_other", icon: "square.grid.2x2", color: .gray, mangas: other)
-                }
-            }
         }
     }
 
@@ -186,9 +94,7 @@ struct HeroCard: View {
 
     @State private var coverVM = MangaCoverVM()
 
-    private var coverURL: URL? {
-        URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
-    }
+    private var coverURL: URL? { manga.coverURL }
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -226,7 +132,7 @@ struct HeroCard: View {
 
                 HStack(spacing: 4) {
                     Image(systemName: "star.fill").foregroundStyle(.yellow)
-                    Text(String(format: "%.1f", manga.score)).fontWeight(.semibold)
+                    Text(manga.score.formatted(.number.precision(.fractionLength(1)))).fontWeight(.semibold)
                 }
                 .font(.subheadline)
                 .foregroundStyle(.white)

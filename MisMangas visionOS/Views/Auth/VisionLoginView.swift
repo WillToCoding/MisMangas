@@ -17,73 +17,77 @@ struct VisionLoginView: View {
     @State private var errorMessage = ""
 
     var body: some View {
-        VStack(spacing: 40) {
-            // Header
-            VStack(spacing: 16) {
-                Image(systemName: "vision.pro")
-                    .font(.system(size: 80))
-                    .foregroundStyle(.blue)
+        NavigationStack {
+            Form {
+                // Header
+                Section {
+                    VStack(spacing: 16) {
+                        Image(systemName: "vision.pro")
+                            .font(.system(size: 60))
+                            .foregroundStyle(.blue)
 
-                Text("nav_login")
-                    .font(.system(size: 48, weight: .bold))
-            }
-
-            // Form
-            VStack(spacing: 24) {
-                // Email
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("login_email")
-                        .font(.headline)
-                    TextField("email@example.com", text: $email)
-                        .textFieldStyle(.roundedBorder)
-                        .textContentType(.emailAddress)
-                        .autocapitalization(.none)
-                        .frame(width: 400)
+                        Text("nav_login")
+                            .font(.largeTitle.bold())
+                    }
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
                 }
 
-                // Password
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("login_password")
-                        .font(.headline)
+                // Campos de login
+                Section {
+                    TextField("login_email", text: $email)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+
                     SecureField("login_password", text: $password)
-                        .textFieldStyle(.roundedBorder)
                         .textContentType(.password)
-                        .frame(width: 400)
+                } header: {
+                    Text("profile_account")
                 }
 
                 // Login Button
-                Button {
-                    Task {
-                        await login()
+                Section {
+                    Button {
+                        Task {
+                            await login()
+                        }
+                    } label: {
+                        HStack {
+                            Spacer()
+                            if authVM.isLoading {
+                                ProgressView()
+                            } else {
+                                Text("action_login")
+                                    .font(.headline)
+                            }
+                            Spacer()
+                        }
                     }
-                } label: {
-                    if authVM.isLoading {
-                        ProgressView()
-                            .controlSize(.regular)
-                    } else {
-                        Text("action_login")
-                            .font(.title2.bold())
-                            .frame(width: 400)
+                    .disabled(email.isEmpty || password.isEmpty || authVM.isLoading)
+                }
+
+                // Error message
+                if showError {
+                    Section {
+                        Text(errorMessage)
+                            .foregroundStyle(.red)
                     }
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .disabled(email.isEmpty || password.isEmpty || authVM.isLoading)
             }
-            .padding(40)
-            .glassBackgroundEffect()
-
-            // Error message
-            if showError {
-                Text(errorMessage)
-                    .foregroundStyle(.red)
-                    .font(.headline)
-                    .padding()
-                    .background(.red.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            .navigationTitle("nav_login")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
         }
-        .padding(60)
     }
 
     private func login() async {

@@ -11,12 +11,21 @@ import SwiftData
 struct CollectionView: View {
     @Query(sort: \UserCollection.addedDate, order: .reverse) private var localCollection: [UserCollection]
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(AuthViewModel.self) private var authVM
     @Environment(CloudCollectionViewModel.self) private var cloudVM
 
     @Namespace private var namespace
     @State private var showDeleteAlert = false
     @State private var mangaToDelete: Int?
+    @State private var showConflictsSheet = false
+    @State private var collectionItemToEdit: UserMangaCollection?
+    @State private var localItemToEdit: UserCollection?
+
+    private var isIPad: Bool {
+        horizontalSizeClass == .regular
+    }
 
     private let demographicConfig: [(key: String, title: LocalizedStringKey, icon: String, color: Color)] = [
         ("Shounen", "section_shounen", "flame.fill", .orange),
@@ -54,12 +63,46 @@ struct CollectionView: View {
                 Button("action_delete", role: .destructive) {
                     if let mangaId = mangaToDelete {
                         Task {
-                            try? await cloudVM.removeFromCollection(mangaId: mangaId)
+                            if authVM.isAuthenticated {
+                                try? await cloudVM.removeFromCollection(mangaId: mangaId)
+                            } else {
+                                let dataContainer = DataContainer(modelContainer: modelContext.container)
+                                try? await dataContainer.removeFromCollection(mangaId: mangaId)
+                            }
                         }
                     }
                 }
             } message: {
                 Text("collection_delete_message")
+            }
+            .sheet(isPresented: $showConflictsSheet) {
+                SyncConflictView()
+            }
+            .sheet(item: $collectionItemToEdit) { item in
+                if isIPad {
+                    iPadEditCollectionView(item: item)
+                } else {
+                    EditReadingVolumeView(item: item)
+                }
+            }
+            .sheet(item: $localItemToEdit) { item in
+                if isIPad {
+                    iPadEditLocalCollectionView(collection: item)
+                } else {
+                    EditLocalCollectionView(collection: item)
+                }
+            }
+            .onChange(of: cloudVM.hasConflicts) { _, hasConflicts in
+                if hasConflicts {
+                    showConflictsSheet = true
+                }
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .active && authVM.isAuthenticated {
+                    Task {
+                        await cloudVM.loadCollection()
+                    }
+                }
             }
         }
     }
@@ -68,9 +111,9 @@ struct CollectionView: View {
 
     @ViewBuilder
     private var cloudCollectionView: some View {
-        if cloudVM.isLoading {
+        if cloudVM.state.isLoading {
             ProgressView("loading_collection")
-        } else if let error = cloudVM.errorMessage {
+        } else if let error = cloudVM.state.errorMessage {
             ContentUnavailableView(
                 "error_loading",
                 systemImage: "exclamationmark.triangle",
@@ -86,16 +129,16 @@ struct CollectionView: View {
 
                     // Secciones por demografía
                     ForEach(demographicConfig, id: \.key) { config in
-                        let mangas = cloudMangasByDemographic(config.key)
-                        if !mangas.isEmpty {
-                            section(title: config.title, icon: config.icon, color: config.color, mangas: mangas)
+                        let items = cloudItemsByDemographic(config.key)
+                        if !items.isEmpty {
+                            cloudSection(title: config.title, icon: config.icon, color: config.color, items: items)
                         }
                     }
 
                     // Sin demografía
-                    let other = cloudMangasWithoutDemographic()
+                    let other = cloudItemsWithoutDemographic()
                     if !other.isEmpty {
-                        section(title: "section_other", icon: "square.grid.2x2", color: .gray, mangas: other)
+                        cloudSection(title: "section_other", icon: "square.grid.2x2", color: .gray, items: other)
                     }
 
                     Spacer(minLength: 50)
@@ -119,16 +162,16 @@ struct CollectionView: View {
 
                     // Secciones por demografía
                     ForEach(demographicConfig, id: \.key) { config in
-                        let mangas = localMangasByDemographic(config.key)
-                        if !mangas.isEmpty {
-                            section(title: config.title, icon: config.icon, color: config.color, mangas: mangas)
+                        let items = localItemsByDemographic(config.key)
+                        if !items.isEmpty {
+                            localSection(title: config.title, icon: config.icon, color: config.color, items: items)
                         }
                     }
 
                     // Sin demografía
-                    let other = localMangasWithoutDemographic()
+                    let other = localItemsWithoutDemographic()
                     if !other.isEmpty {
-                        section(title: "section_other", icon: "square.grid.2x2", color: .gray, mangas: other)
+                        localSection(title: "section_other", icon: "square.grid.2x2", color: .gray, items: other)
                     }
 
                     Spacer(minLength: 50)
@@ -159,16 +202,16 @@ struct CollectionView: View {
         .padding(.horizontal)
     }
 
-    // MARK: - Section
+    // MARK: - Cloud Section
 
-    private func section(title: LocalizedStringKey, icon: String, color: Color, mangas: [Manga]) -> some View {
+    private func cloudSection(title: LocalizedStringKey, icon: String, color: Color, items: [UserMangaCollection]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Label(title, systemImage: icon)
                     .font(.title3.bold())
                     .foregroundStyle(color)
 
-                Text("(\(mangas.count))")
+                Text("(\(items.count))")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -176,11 +219,72 @@ struct CollectionView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 16) {
-                    ForEach(mangas) { manga in
-                        NavigationLink(value: manga) {
-                            MangaCard(manga: manga, namespace: namespace)
+                    ForEach(items) { item in
+                        NavigationLink(value: item.manga) {
+                            MangaCard(manga: item.manga, namespace: namespace)
                         }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            Button {
+                                collectionItemToEdit = item
+                            } label: {
+                                Label("action_edit", systemImage: "pencil")
+                            }
+
+                            Divider()
+
+                            Button(role: .destructive) {
+                                mangaToDelete = item.manga.id
+                                showDeleteAlert = true
+                            } label: {
+                                Label("action_delete", systemImage: "trash")
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+
+    // MARK: - Local Section
+
+    private func localSection(title: LocalizedStringKey, icon: String, color: Color, items: [UserCollection]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label(title, systemImage: icon)
+                    .font(.title3.bold())
+                    .foregroundStyle(color)
+
+                Text("(\(items.count))")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 16) {
+                    ForEach(items) { item in
+                        NavigationLink(value: item.manga.toManga()) {
+                            MangaCard(manga: item.manga.toManga(), namespace: namespace)
+                        }
+                        .buttonStyle(.plain)
+                        .contextMenu {
+                            Button {
+                                localItemToEdit = item
+                            } label: {
+                                Label("action_edit", systemImage: "pencil")
+                            }
+
+                            Divider()
+
+                            Button(role: .destructive) {
+                                mangaToDelete = item.manga.id
+                                showDeleteAlert = true
+                            } label: {
+                                Label("action_delete", systemImage: "trash")
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -190,30 +294,26 @@ struct CollectionView: View {
 
     // MARK: - Grouping (Cloud)
 
-    private func cloudMangasByDemographic(_ demographic: String) -> [Manga] {
+    private func cloudItemsByDemographic(_ demographic: String) -> [UserMangaCollection] {
         cloudVM.cloudCollection
             .filter { $0.manga.demographics.contains { $0.demographic == demographic } }
-            .map { $0.manga }
     }
 
-    private func cloudMangasWithoutDemographic() -> [Manga] {
+    private func cloudItemsWithoutDemographic() -> [UserMangaCollection] {
         cloudVM.cloudCollection
             .filter { $0.manga.demographics.isEmpty }
-            .map { $0.manga }
     }
 
     // MARK: - Grouping (Local)
 
-    private func localMangasByDemographic(_ demographic: String) -> [Manga] {
+    private func localItemsByDemographic(_ demographic: String) -> [UserCollection] {
         localCollection
             .filter { $0.manga.demographicNames.contains(demographic) }
-            .map { $0.manga.toManga() }
     }
 
-    private func localMangasWithoutDemographic() -> [Manga] {
+    private func localItemsWithoutDemographic() -> [UserCollection] {
         localCollection
             .filter { $0.manga.demographicNames.isEmpty }
-            .map { $0.manga.toManga() }
     }
 
     // MARK: - Empty State

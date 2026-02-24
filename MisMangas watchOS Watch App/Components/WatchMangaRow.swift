@@ -20,7 +20,7 @@ struct WatchMangaRow: View {
         if let currentItem {
         HStack(spacing: 8) {
             // Imagen del manga
-            AsyncImage(url: URL(string: currentItem.manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { phase in
+            AsyncImage(url: currentItem.manga.coverURL) { phase in
                 switch phase {
                 case .empty:
                     Rectangle()
@@ -58,7 +58,7 @@ struct WatchMangaRow: View {
                         .foregroundStyle(.yellow)
                         .font(.caption2)
 
-                    Text(String(format: "%.1f", currentItem.manga.score))
+                    Text(currentItem.manga.score.formatted(.number.precision(.fractionLength(1))))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

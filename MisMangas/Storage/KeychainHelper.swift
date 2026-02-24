@@ -13,6 +13,7 @@ final class KeychainHelper {
     // Keys para identificar los items en Keychain
     private let tokenKey = "com.mismangas.authToken"
     private let emailKey = "com.mismangas.userEmail"
+    private let deeplApiKey = "com.mismangas.deeplApiKey"
 
     // Keychain Access Group para compartir entre iOS y watchOS
     // Formato: $(AppIdentifierPrefix)BUNDLE_ID
@@ -65,6 +66,23 @@ final class KeychainHelper {
     /// Elimina el email del Keychain
     func deleteEmail() {
         delete(key: emailKey)
+    }
+
+    // MARK: - DeepL API Key Management
+
+    /// Guarda la API key de DeepL en Keychain (sincroniza con iCloud Keychain)
+    func saveDeepLApiKey(_ apiKey: String) {
+        save(key: deeplApiKey, value: apiKey)
+    }
+
+    /// Obtiene la API key de DeepL del Keychain
+    func getDeepLApiKey() -> String? {
+        return get(key: deeplApiKey)
+    }
+
+    /// Elimina la API key de DeepL del Keychain
+    func deleteDeepLApiKey() {
+        delete(key: deeplApiKey)
     }
 
     // MARK: - Private Methods

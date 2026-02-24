@@ -34,7 +34,7 @@ struct FilterAdvancedSection: View {
                 Text("filter_min_score")
                 Spacer()
                 if let score = filters.minScore {
-                    Text(String(format: "%.1f", score))
+                    Text(score.formatted(.number.precision(.fractionLength(1))))
                         .foregroundStyle(.secondary)
                 } else {
                     Text("filter_any")
@@ -51,7 +51,7 @@ struct FilterAdvancedSection: View {
                 step: 0.5
             )
             .accessibilityLabel(String(localized: "accessibility_min_score"))
-            .accessibilityValue(filters.minScore.map { String(format: "%.1f", $0) } ?? String(localized: "filter_any"))
+            .accessibilityValue(filters.minScore.map { $0.formatted(.number.precision(.fractionLength(1))) } ?? String(localized: "filter_any"))
 
             HStack {
                 Image(systemName: "star")

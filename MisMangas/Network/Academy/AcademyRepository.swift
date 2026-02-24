@@ -15,15 +15,18 @@ struct AcademyRepository: NetworkInteractor {
     // MARK: - List Endpoints
 
     func getMangas(page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .listMangas.withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.get(url: .listMangas.withPagination(page: page, per: per)), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     func getBestMangas(page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .bestMangas.withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.get(url: .bestMangas.withPagination(page: page, per: per)), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     func getAuthors() async throws -> [Author] {
-        try await getJSON(.get(url: .authors), type: [Author].self)
+        try await getJSON(.get(url: .authors), type: [AuthorDTO].self)
+            .map(\.toAuthor)
     }
 
     func getDemographics() async throws -> [String] {
@@ -41,42 +44,51 @@ struct AcademyRepository: NetworkInteractor {
     // MARK: - Filter by Category
 
     func getMangasByGenre(_ genre: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangaByGenre(genre).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.get(url: .mangaByGenre(genre).withPagination(page: page, per: per)), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     func getMangasByDemographic(_ demographic: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangaByDemographic(demographic).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.get(url: .mangaByDemographic(demographic).withPagination(page: page, per: per)), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     func getMangasByTheme(_ theme: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangaByTheme(theme).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.get(url: .mangaByTheme(theme).withPagination(page: page, per: per)), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     func getMangasByAuthor(_ authorId: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangaByAuthor(authorId).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.get(url: .mangaByAuthor(authorId).withPagination(page: page, per: per)), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     // MARK: - Search
 
     func searchMangasBeginsWith(_ text: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangasBeginsWith(text).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.get(url: .mangasBeginsWith(text).withPagination(page: page, per: per)), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     func searchMangasContains(_ text: String, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.get(url: .mangasContains(text).withPagination(page: page, per: per)), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.get(url: .mangasContains(text).withPagination(page: page, per: per)), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     func searchAuthor(_ name: String) async throws -> [Author] {
-        try await getJSON(.get(url: .searchAuthor(name)), type: [Author].self)
+        try await getJSON(.get(url: .searchAuthor(name)), type: [AuthorDTO].self)
+            .map(\.toAuthor)
     }
 
     func getManga(byId id: Int) async throws -> Manga {
-        try await getJSON(.get(url: .manga(byId: id)), type: Manga.self)
+        try await getJSON(.get(url: .manga(byId: id)), type: MangaDTO.self)
+            .toManga
     }
 
     /// Búsqueda personalizada con múltiples filtros combinados (POST)
     func searchCustom(_ search: CustomSearch, page: Int = 1, per: Int = 10) async throws -> PaginatedResponse<Manga> {
-        try await getJSON(.post(url: .searchManga.withPagination(page: page, per: per), body: search), type: PaginatedResponse<Manga>.self)
+        try await getJSON(.post(url: .searchManga.withPagination(page: page, per: per), body: search), type: PaginatedResponseDTO<MangaDTO>.self)
+            .toPaginatedResponse
     }
 
     // MARK: - Authentication
@@ -90,7 +102,9 @@ struct AcademyRepository: NetworkInteractor {
 
     /// Inicia sesión y obtiene un token
     func login(email: String, password: String) async throws -> String {
-        let credentials = "\(email):\(password)"
+        let cleanEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
+        let credentials = "\(cleanEmail):\(cleanPassword)"
         guard let credentialData = credentials.data(using: .utf8) else {
             throw NetworkError.invalidCredentials
         }
@@ -123,7 +137,8 @@ struct AcademyRepository: NetworkInteractor {
     func getUserCollection(token: String) async throws -> [UserMangaCollection] {
         var request = URLRequest.get(url: .collectionManga)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return try await getJSON(request, type: [UserMangaCollection].self)
+        return try await getJSON(request, type: [UserMangaCollectionDTO].self)
+            .map(\.toUserMangaCollection)
     }
 
     /// Añade un manga a la colección en la nube
@@ -138,14 +153,10 @@ struct AcademyRepository: NetworkInteractor {
         var request = URLRequest(url: .collectionManga(byId: mangaId))
         request.httpMethod = "DELETE"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        _ = try await getJSON(request, type: EmptyResponse.self)
+        try await postJSON(request, status: 200)
     }
 }
-
-// MARK: - Empty Response para DELETE
-struct EmptyResponse: Codable {}
 
 // MARK: - Network Errors
 enum NetworkError: LocalizedError {

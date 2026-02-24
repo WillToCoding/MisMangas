@@ -125,8 +125,8 @@ struct MacLoginView: View {
         do {
             try await authVM.login(email: email, password: password)
 
-            // Sincronizar colección local a la nube
-            await syncLocalToCloud()
+            // Cargar colección desde la nube
+            await cloudVM.loadCollection()
 
             dismiss()
         } catch {
@@ -135,36 +135,6 @@ struct MacLoginView: View {
         }
 
         isLoading = false
-    }
-
-    private func syncLocalToCloud() async {
-        // Obtener todas las colecciones locales
-        let descriptor = FetchDescriptor<UserCollection>(sortBy: [SortDescriptor(\.addedDate)])
-        guard let localCollections = try? modelContext.fetch(descriptor), !localCollections.isEmpty else {
-            print("No hay mangas locales para sincronizar")
-            return
-        }
-
-        print("Sincronizando \(localCollections.count) mangas locales a la nube...")
-
-        for collection in localCollections {
-            do {
-                // Crear un Manga temporal desde UserCollection para poder subirlo
-                let mangaToSync = collection.manga.toManga()
-
-                try await cloudVM.addToCollection(
-                    manga: mangaToSync,
-                    volumesOwned: collection.volumesOwned,
-                    readingVolume: collection.currentReadingVolume,
-                    completeCollection: collection.hasCompleteCollection
-                )
-                print("✓ Sincronizado: \(collection.title)")
-            } catch {
-                print("✗ Error sincronizando \(collection.title): \(error)")
-            }
-        }
-
-        print("Sincronización completada")
     }
 }
 

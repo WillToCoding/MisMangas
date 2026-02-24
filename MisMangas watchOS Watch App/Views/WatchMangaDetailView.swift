@@ -40,7 +40,7 @@ struct WatchMangaDetailView: View {
                 HStack {
                     Image(systemName: "star.fill")
                         .foregroundStyle(.yellow)
-                    Text(String(format: "%.2f", updatedItem.manga.score))
+                    Text(updatedItem.manga.score.formatted(.number.precision(.fractionLength(2))))
                 }
                 .font(.caption)
 

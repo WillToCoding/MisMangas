@@ -47,29 +47,40 @@ final class CloudCollectionViewModel {
     /// Coleccion de mangas del usuario sincronizada con la nube.
     var cloudCollection: [UserMangaCollection] = []
 
-    /// Indica si hay una operacion de sincronizacion en curso.
-    var isLoading = false
+    /// Estado actual de la vista.
+    var state: ViewState = .idle
 
-    /// Mensaje de error de la ultima operacion fallida.
-    var errorMessage: String?
-
-    private let repository = Network()
-    private let authVM: AuthViewModel
     #if os(iOS)
-    private var modelContainer: ModelContainer?
+    /// ViewModel de sincronización local/cloud
+    private(set) var syncVM: SyncViewModel
+
+    /// Conflictos detectados (delegado a SyncViewModel)
+    var syncConflicts: [SyncConflict] { syncVM.conflicts }
+
+    /// Indica si hay conflictos pendientes de resolver
+    var hasConflicts: Bool { syncVM.hasConflicts }
     #endif
+
+    private let repository: NetworkRepository
+    private let authVM: AuthViewModel
 
     /// Crea una nueva instancia del ViewModel.
     ///
-    /// - Parameter authVM: ViewModel de autenticacion para obtener el token.
-    init(authVM: AuthViewModel) {
+    /// - Parameters:
+    ///   - authVM: ViewModel de autenticacion para obtener el token.
+    ///   - repository: Repositorio de red. Por defecto usa `Network`.
+    init(authVM: AuthViewModel, repository: NetworkRepository = Network()) {
         self.authVM = authVM
+        self.repository = repository
+        #if os(iOS)
+        self.syncVM = SyncViewModel(repository: repository, authVM: authVM)
+        #endif
     }
 
     #if os(iOS)
     /// Configura el ModelContainer para sincronización local
     func setModelContainer(_ container: ModelContainer) {
-        self.modelContainer = container
+        syncVM.setModelContainer(container)
     }
     #endif
 
@@ -83,12 +94,11 @@ final class CloudCollectionViewModel {
     /// Si detecta un error 401 (no autorizado), cierra la sesion automaticamente.
     func loadCollection() async {
         guard let token = authVM.authToken else {
-            errorMessage = "No estás autenticado"
+            state = .error("No estás autenticado")
             return
         }
 
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         do {
             cloudCollection = try await repository.getUserCollection(token: token)
@@ -96,7 +106,7 @@ final class CloudCollectionViewModel {
 
             // Sincronizar a local (SwiftData) - solo iOS
             #if os(iOS)
-            await syncToLocal()
+            await syncVM.syncToLocal(cloudCollection)
 
             // Actualizar datos del widget
             await SharedData.shared.updateWidgetFromCollection(
@@ -104,33 +114,30 @@ final class CloudCollectionViewModel {
                 userEmail: authVM.userEmail
             )
             #endif
+
+            state = cloudCollection.isEmpty ? .empty : .loaded
         } catch {
             if isUnauthorizedError(error) {
                 authVM.handleSessionExpired()
             } else {
-                errorMessage = "Error al cargar colección: \(error.localizedDescription)"
+                state = .error("Error al cargar colección: \(error.localizedDescription)")
                 print("Error cargando colección cloud: \(error)")
             }
         }
-
-        isLoading = false
     }
 
-    #if os(iOS)
-    /// Sincroniza la colección cloud a SwiftData local
-    private func syncToLocal() async {
-        guard let container = modelContainer else {
-            print("ModelContainer no configurado, saltando sincronización local")
-            return
-        }
+    // MARK: - Sync Local to Cloud
 
-        let dataContainer = DataContainer(modelContainer: container)
-        do {
-            try await dataContainer.syncAllFromCloud(cloudCollection)
-            print("Colección sincronizada a local: \(cloudCollection.count) mangas")
-        } catch {
-            print("Error sincronizando a local: \(error)")
-        }
+    #if os(iOS)
+    /// Sincroniza la colección local de SwiftData a la nube.
+    ///
+    /// Útil después del primer login para migrar mangas guardados localmente
+    /// antes de que el usuario tuviera cuenta.
+    ///
+    /// - Parameter localItems: Items de la colección local a sincronizar.
+    func syncLocalCollectionToCloud(_ localItems: [UserCollection]) async {
+        await syncVM.syncLocalToCloud(localItems)
+        await loadCollection()
     }
     #endif
 
@@ -182,7 +189,7 @@ final class CloudCollectionViewModel {
                 authVM.handleSessionExpired()
                 throw AuthError.tokenExpired
             } else {
-                errorMessage = "Error al añadir manga: \(error.localizedDescription)"
+                state = .error("Error al añadir manga: \(error.localizedDescription)")
                 throw error
             }
         }
@@ -223,7 +230,7 @@ final class CloudCollectionViewModel {
                 authVM.handleSessionExpired()
                 throw AuthError.tokenExpired
             } else {
-                errorMessage = "Error al eliminar manga: \(error.localizedDescription)"
+                state = .error("Error al eliminar manga: \(error.localizedDescription)")
                 throw error
             }
         }
@@ -252,8 +259,30 @@ final class CloudCollectionViewModel {
     /// Llamar este metodo al hacer logout para limpiar los datos del usuario anterior.
     func clearCollection() {
         cloudCollection.removeAll()
-        errorMessage = nil
+        #if os(iOS)
+        syncVM.clearConflicts()
+        #endif
+        state = .idle
     }
+
+    // MARK: - Conflict Resolution
+
+    #if os(iOS)
+    /// Resuelve un conflicto manteniendo la version local (sube a cloud)
+    func resolveConflictKeepLocal(_ conflict: SyncConflict) async {
+        await syncVM.resolveConflictKeepLocal(conflict)
+        await loadCollection()
+    }
+
+    /// Resuelve un conflicto usando la version del cloud (sobrescribe local)
+    func resolveConflictUseCloud(_ conflict: SyncConflict) async {
+        guard let cloudItem = cloudCollection.first(where: { $0.manga.id == conflict.mangaId }) else {
+            print("Item cloud no encontrado para conflicto")
+            return
+        }
+        await syncVM.resolveConflictUseCloud(conflict, cloudItem: cloudItem)
+    }
+    #endif
 
     // MARK: - Private Helpers
 

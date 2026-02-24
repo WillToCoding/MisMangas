@@ -11,9 +11,7 @@ struct MangaRow: View {
     let manga: Manga
     let namespace: Namespace.ID
 
-    private var coverURL: URL? {
-        URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
-    }
+    private var coverURL: URL? { manga.coverURL }
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -75,7 +73,7 @@ struct MangaRow: View {
             label += ", \(englishTitle)"
         }
 
-        label += ", " + String(localized: "accessibility_score \(String(format: "%.1f", manga.score))")
+        label += ", " + String(localized: "accessibility_score \(manga.score.formatted(.number.precision(.fractionLength(1))))")
 
         if let volumes = manga.volumes {
             label += ", \(volumes) " + String(localized: "accessibility_volumes")

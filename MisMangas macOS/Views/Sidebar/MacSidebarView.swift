@@ -13,23 +13,26 @@ struct MacSidebarView: View {
 
     var body: some View {
         List(selection: $selection) {
-            Section("nav_explore") {
-                Label("nav_explore", systemImage: "books.vertical")
-                    .tag(NavigationItem.explore)
+            Section {
+                Label("nav_home", systemImage: "house.fill")
+                    .tag(NavigationItem.home)
 
-                Label("best_mangas_title", systemImage: "star.fill")
-                    .tag(NavigationItem.bestMangas)
-            }
-
-            Section("mac_categories") {
                 HStack {
                     Label("nav_collection", systemImage: "folder.fill")
                     Spacer()
-                    Text(authVM.isAuthenticated ? "collection_cloud" : "collection_local")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    if authVM.isAuthenticated {
+                        Image(systemName: "cloud.fill")
+                            .font(.caption)
+                            .foregroundStyle(.blue)
+                    }
                 }
                 .tag(NavigationItem.collection)
+
+                Label("nav_profile", systemImage: "person.fill")
+                    .tag(NavigationItem.profile)
+
+                Label("nav_search", systemImage: "magnifyingglass")
+                    .tag(NavigationItem.search)
             }
         }
         .listStyle(.sidebar)
@@ -38,6 +41,7 @@ struct MacSidebarView: View {
 }
 
 #Preview {
-    MacSidebarView(selection: .constant(.explore))
+    @Previewable @State var selection: NavigationItem? = .home
+    MacSidebarView(selection: $selection)
         .environment(AuthViewModel())
 }

@@ -13,9 +13,7 @@ struct DetailHeaderView: View {
     let namespace: Namespace.ID
     var userCollection: UserCollection?
 
-    private var coverURL: URL? {
-        URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
-    }
+    private var coverURL: URL? { manga.coverURL }
 
     var body: some View {
         VStack(spacing: 20) {
@@ -71,12 +69,12 @@ struct DetailStatsView: View {
         HStack(spacing: 12) {
             // Score
             StatCard(
-                value: String(format: "%.2f", manga.score),
+                value: manga.score.formatted(.number.precision(.fractionLength(2))),
                 label: "detail_score",
                 icon: "star.fill",
                 color: .orange
             )
-            .accessibilityLabel(String(localized: "accessibility_score \(String(format: "%.1f", manga.score))"))
+            .accessibilityLabel(String(localized: "accessibility_score \(manga.score.formatted(.number.precision(.fractionLength(1))))"))
 
             // Volumes (siempre visible)
             StatCard(

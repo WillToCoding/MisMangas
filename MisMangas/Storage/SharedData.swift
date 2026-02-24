@@ -85,7 +85,7 @@ final class SharedData {
             return WidgetManga(
                 id: item.manga.id,
                 title: item.manga.title,
-                mainPicture: item.manga.mainPicture.replacingOccurrences(of: "\"", with: ""),
+                mainPicture: item.manga.coverURL?.absoluteString ?? "",
                 localImagePath: cachedPaths[item.manga.id],
                 currentVolume: readingVolume,
                 totalVolumes: item.manga.volumes,

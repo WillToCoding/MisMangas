@@ -13,29 +13,16 @@ struct MacMangaDetailView: View {
 
     @Environment(CloudCollectionViewModel.self) private var cloudVM
     @Environment(AuthViewModel.self) private var authVM
+    @Environment(TranslationService.self) private var translationService
 
+    @State private var viewModel: MangaDetailViewModel
     @State private var showAddToCollection = false
-    @State private var characters: [JikanCharacterData] = []
-    @State private var isLoadingCharacters = false
+    @State private var showEditCollection = false
 
-    // Related mangas states
-    @State private var relatedMangas: [JikanRelation] = []
-    @State private var relatedMangaDetails: [Int: Manga] = [:]
-    @State private var recommendations: [JikanRecommendation] = []
-    @State private var isLoadingRelated = false
-
-    // Navigation state for related mangas
-    @State private var selectedRelatedManga: Manga?
-    @State private var isLoadingManga = false
-
-    // Translation states
-    @State private var translatedSynopsis: String?
-    @State private var translatedBackground: String?
-    @State private var isTranslating = false
-    @State private var showOriginal = false
-
-    private let repository = Network()
-    private let translationService = TranslationService.shared
+    init(manga: Manga) {
+        self.manga = manga
+        _viewModel = State(initialValue: MangaDetailViewModel(manga: manga))
+    }
 
     var body: some View {
         ScrollView {
@@ -44,7 +31,7 @@ struct MacMangaDetailView: View {
                 HStack(alignment: .top, spacing: 24) {
                     // Portada
                     CachedCoverImage(
-                        url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                        url: manga.coverURL,
                         width: 250,
                         height: 375
                     )
@@ -75,11 +62,13 @@ struct MacMangaDetailView: View {
                                 Text("detail_score")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
-                                HStack {
+                                HStack(spacing: 4) {
                                     Image(systemName: "star.fill")
                                         .foregroundStyle(.yellow)
-                                    Text(String(format: "%.2f", manga.score))
+                                    Text(manga.score.formatted(.number.precision(.fractionLength(2))))
                                         .font(.title2.bold())
+                                        .lineLimit(1)
+                                        .fixedSize()
                                 }
                             }
 
@@ -116,16 +105,23 @@ struct MacMangaDetailView: View {
                         Divider()
 
                         // Botón de acción
-                        Button {
-                            showAddToCollection = true
-                        } label: {
-                            Label(
-                                authVM.isAuthenticated && cloudVM.isInCollection(manga.id) ? String(localized: "detail_in_collection") : String(localized: "detail_add_to_collection"),
-                                systemImage: "plus.circle.fill"
-                            )
+                        if authVM.isAuthenticated && cloudVM.isInCollection(manga.id) {
+                            Button {
+                                showEditCollection = true
+                            } label: {
+                                Label("detail_edit_collection", systemImage: "pencil.circle.fill")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .controlSize(.large)
+                        } else {
+                            Button {
+                                showAddToCollection = true
+                            } label: {
+                                Label("detail_add_to_collection", systemImage: "plus.circle.fill")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .controlSize(.large)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
                     }
                 }
 
@@ -198,21 +194,21 @@ struct MacMangaDetailView: View {
                     Text("detail_characters")
                         .font(.title2.bold())
 
-                    if isLoadingCharacters {
+                    if viewModel.isLoadingCharacters {
                         HStack {
                             Spacer()
                             ProgressView()
                             Spacer()
                         }
                         .padding(.vertical)
-                    } else if characters.isEmpty {
+                    } else if viewModel.characters.isEmpty {
                         Text("detail_characters_empty")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else {
                         ScrollView(.horizontal) {
                             LazyHStack(spacing: 16) {
-                                ForEach(characters) { characterData in
+                                ForEach(viewModel.characters) { characterData in
                                     VStack(spacing: 8) {
                                         CachedCoverImage(
                                             url: URL(string: characterData.character.images.jpg.imageUrl),
@@ -243,20 +239,20 @@ struct MacMangaDetailView: View {
                     Text("detail_related_mangas")
                         .font(.title2.bold())
 
-                    if isLoadingRelated {
+                    if viewModel.isLoadingRelated {
                         HStack {
                             Spacer()
                             ProgressView()
                             Spacer()
                         }
                         .padding(.vertical)
-                    } else if relatedMangas.isEmpty && recommendations.isEmpty {
+                    } else if viewModel.relatedMangas.isEmpty && viewModel.recommendations.isEmpty {
                         Text("detail_related_empty")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else {
                         // Relaciones directas
-                        ForEach(relatedMangas) { relation in
+                        ForEach(viewModel.relatedMangas) { relation in
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(localizedRelationType(relation.relation))
                                     .font(.caption)
@@ -267,13 +263,13 @@ struct MacMangaDetailView: View {
                                         ForEach(relation.entry.filter { $0.type == "manga" }) { entry in
                                             Button {
                                                 Task {
-                                                    await loadAndNavigateToManga(id: entry.malId)
+                                                    await viewModel.loadAndNavigateToManga(id: entry.malId)
                                                 }
                                             } label: {
                                                 VStack(spacing: 6) {
-                                                    if let mangaDetail = relatedMangaDetails[entry.malId] {
+                                                    if let mangaDetail = viewModel.relatedMangaDetails[entry.malId] {
                                                         CachedCoverImage(
-                                                            url: URL(string: mangaDetail.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                                                            url: mangaDetail.coverURL,
                                                             width: 80,
                                                             height: 110
                                                         )
@@ -302,7 +298,7 @@ struct MacMangaDetailView: View {
                         }
 
                         // Recomendaciones
-                        if !recommendations.isEmpty {
+                        if !viewModel.recommendations.isEmpty {
                             Text("detail_recommendations")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
@@ -310,10 +306,10 @@ struct MacMangaDetailView: View {
 
                             ScrollView(.horizontal) {
                                 HStack(spacing: 16) {
-                                    ForEach(recommendations.prefix(10)) { rec in
+                                    ForEach(viewModel.recommendations.prefix(10)) { rec in
                                         Button {
                                             Task {
-                                                await loadAndNavigateToManga(id: rec.entry.malId)
+                                                await viewModel.loadAndNavigateToManga(id: rec.entry.malId)
                                             }
                                         } label: {
                                             VStack(spacing: 6) {
@@ -356,16 +352,16 @@ struct MacMangaDetailView: View {
 
                             Spacer()
 
-                            if translationService.isConfigured && translationService.needsTranslation {
-                                if isTranslating {
+                            if viewModel.canTranslate {
+                                if viewModel.isTranslating {
                                     ProgressView()
                                         .scaleEffect(0.7)
-                                } else if translatedSynopsis != nil {
+                                } else if viewModel.translatedSynopsis != nil {
                                     Button {
-                                        showOriginal.toggle()
+                                        viewModel.toggleTranslation()
                                     } label: {
                                         Label(
-                                            showOriginal ? "translation_show_translated" : "translation_show_original",
+                                            viewModel.showOriginal ? "translation_show_translated" : "translation_show_original",
                                             systemImage: "globe"
                                         )
                                     }
@@ -375,7 +371,7 @@ struct MacMangaDetailView: View {
                             }
                         }
 
-                        Text(showOriginal ? synopsis : (translatedSynopsis ?? synopsis))
+                        Text(viewModel.showOriginal ? synopsis : (viewModel.translatedSynopsis ?? synopsis))
                             .lineSpacing(6)
                     }
                 }
@@ -386,7 +382,7 @@ struct MacMangaDetailView: View {
                         Text("detail_background")
                             .font(.title2.bold())
 
-                        Text(showOriginal ? background : (translatedBackground ?? background))
+                        Text(viewModel.showOriginal ? background : (viewModel.translatedBackground ?? background))
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .lineSpacing(6)
@@ -399,13 +395,18 @@ struct MacMangaDetailView: View {
         .sheet(isPresented: $showAddToCollection) {
             MacAddToCollectionView(manga: manga)
         }
-        .sheet(item: $selectedRelatedManga) { relatedManga in
+        .sheet(isPresented: $showEditCollection) {
+            if let collectionItem = cloudVM.getMangaCollection(manga.id) {
+                MacEditCollectionView(collectionItem: collectionItem)
+            }
+        }
+        .sheet(item: $viewModel.selectedRelatedManga) { relatedManga in
             NavigationStack {
                 MacMangaDetailView(manga: relatedManga)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button("action_close") {
-                                selectedRelatedManga = nil
+                                viewModel.selectedRelatedManga = nil
                             }
                         }
                     }
@@ -413,122 +414,11 @@ struct MacMangaDetailView: View {
             .frame(minWidth: 800, minHeight: 600)
         }
         .task(id: manga.id) {
-            characters = []
-            relatedMangas = []
-            relatedMangaDetails = [:]
-            recommendations = []
-            translatedSynopsis = nil
-            translatedBackground = nil
-            showOriginal = false
-            await loadCharacters()
-            await loadRelatedMangas()
-            await translateContent()
+            viewModel.configure(translationService: translationService)
+            await viewModel.loadAllData()
         }
     }
 
-    private func loadRelatedMangas() async {
-        isLoadingRelated = true
-        do {
-            async let relations = repository.getMangaRelations(mangaId: manga.id)
-            async let recs = repository.getMangaRecommendations(mangaId: manga.id)
-
-            relatedMangas = try await relations
-            recommendations = try await recs
-
-            // Fetch detalles de mangas relacionados en paralelo
-            await fetchRelatedMangaDetails()
-        } catch {
-            print("Error cargando mangas relacionados: \(error)")
-            relatedMangas = []
-            recommendations = []
-        }
-        isLoadingRelated = false
-    }
-
-    private func fetchRelatedMangaDetails() async {
-        let mangaIds = relatedMangas
-            .flatMap { $0.entry }
-            .filter { $0.type == "manga" }
-            .map { $0.malId }
-
-        await withTaskGroup(of: (Int, Manga?).self) { group in
-            for id in mangaIds {
-                group.addTask {
-                    do {
-                        let manga = try await self.repository.getManga(byId: id)
-                        return (id, manga)
-                    } catch {
-                        return (id, nil)
-                    }
-                }
-            }
-
-            for await (id, manga) in group {
-                if let manga = manga {
-                    relatedMangaDetails[id] = manga
-                }
-            }
-        }
-    }
-
-    private func loadAndNavigateToManga(id: Int) async {
-        isLoadingManga = true
-        do {
-            let manga = try await repository.getManga(byId: id)
-            selectedRelatedManga = manga
-        } catch {
-            print("Error cargando manga relacionado: \(error)")
-        }
-        isLoadingManga = false
-    }
-
-    private func localizedRelationType(_ type: String) -> String {
-        switch type.lowercased() {
-        case "sequel": return String(localized: "relation_sequel")
-        case "prequel": return String(localized: "relation_prequel")
-        case "side story": return String(localized: "relation_side_story")
-        case "spin-off": return String(localized: "relation_spin_off")
-        case "alternative version": return String(localized: "relation_alternative")
-        case "alternative setting": return String(localized: "relation_alternative_setting")
-        case "adaptation": return String(localized: "relation_adaptation")
-        case "summary": return String(localized: "relation_summary")
-        case "full story": return String(localized: "relation_full_story")
-        case "parent story": return String(localized: "relation_parent_story")
-        case "other": return String(localized: "relation_other")
-        default: return type
-        }
-    }
-
-    private func translateContent() async {
-        guard translationService.isConfigured && translationService.needsTranslation else { return }
-
-        isTranslating = true
-        let targetLanguage = translationService.currentLanguageCode
-
-        do {
-            if let synopsis = manga.sypnosis {
-                translatedSynopsis = try await translationService.translate(synopsis, to: targetLanguage)
-            }
-            if let background = manga.background {
-                translatedBackground = try await translationService.translate(background, to: targetLanguage)
-            }
-        } catch {
-            print("Error traduciendo contenido: \(error)")
-        }
-
-        isTranslating = false
-    }
-
-    private func loadCharacters() async {
-        isLoadingCharacters = true
-        do {
-            characters = try await repository.getMangaCharacters(mangaId: manga.id)
-        } catch {
-            print("Error cargando personajes: \(error)")
-            characters = []
-        }
-        isLoadingCharacters = false
-    }
 }
 
 // MARK: - Wrapping HStack for tags
@@ -650,59 +540,126 @@ struct MacAddToCollectionView: View {
     @Environment(AuthViewModel.self) private var authVM
     @Environment(CloudCollectionViewModel.self) private var cloudVM
 
-    @State private var selectedVolumes: Set<Int> = []
-    @State private var currentReadingVolume: Int = 1
-    @State private var hasCompleteCollection = false
+    @State private var volumesOwnedCount: Double = 1
+    @State private var currentReadingVolume: Double = 1
     @State private var isSaving = false
 
+    private var totalVolumes: Int {
+        manga.volumes ?? 50
+    }
+
     var body: some View {
-        VStack(spacing: 20) {
-            Text("nav_add_collection")
-                .font(.title.bold())
+        VStack(spacing: 24) {
+            // Header
+            HStack(spacing: 16) {
+                CachedCoverImage(
+                    url: manga.coverURL,
+                    width: 80,
+                    height: 120
+                )
 
-            CachedCoverImage(
-                url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: "")),
-                width: 150,
-                height: 225
-            )
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(manga.title)
+                        .font(.title2.bold())
+                        .lineLimit(2)
 
-            Text(manga.title)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-
-            Form {
-                Toggle("add_complete_collection", isOn: $hasCompleteCollection)
-                    .onChange(of: hasCompleteCollection) { _, newValue in
-                        if newValue, let totalVolumes = manga.volumes {
-                            selectedVolumes = Set(1...totalVolumes)
+                    if let total = manga.volumes {
+                        Text("\(total) volumes")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        HStack(spacing: 4) {
+                            Image(systemName: "clock")
+                            Text("status_publishing")
                         }
+                        .font(.subheadline)
+                        .foregroundStyle(.orange)
                     }
 
-                if !hasCompleteCollection {
-                    HStack {
-                        Text("detail_volumes")
-                        TextField("1,2,3", text: Binding(
-                            get: {
-                                selectedVolumes.sorted().map(String.init).joined(separator: ",")
-                            },
-                            set: { text in
-                                let volumes = text.split(separator: ",").compactMap { Int($0.trimmingCharacters(in: .whitespaces)) }
-                                selectedVolumes = Set(volumes)
-                            }
-                        ))
-                        .textFieldStyle(.roundedBorder)
+                    if manga.score > 0 {
+                        HStack(spacing: 4) {
+                            Image(systemName: "star.fill")
+                                .foregroundStyle(.yellow)
+                            Text(manga.score.formatted(.number.precision(.fractionLength(1))))
+                        }
+                        .font(.subheadline)
                     }
                 }
+
+                Spacer()
             }
-            .padding()
+            .padding(.horizontal)
+
+            Divider()
+
+            // Info
+            if manga.volumes == nil {
+                HStack {
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(.orange)
+                    Text("edit_ongoing_manga")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal)
+            }
+
+            // Sliders
+            VStack(spacing: 32) {
+                // Volumenes en propiedad
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Label("edit_volumes_owned", systemImage: "books.vertical.fill")
+                            .font(.headline)
+                        Spacer()
+
+                        HStack(spacing: 4) {
+                            TextField("", value: $volumesOwnedCount, format: .number)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 60)
+                                .multilineTextAlignment(.center)
+
+                            if let total = manga.volumes {
+                                Text("/ \(total)")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .font(.title3.bold().monospacedDigit())
+                    }
+
+                    Slider(value: $volumesOwnedCount, in: 0...Double(totalVolumes), step: 1)
+                        .tint(.blue)
+                }
+
+                // Volumen de lectura actual
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Label("edit_reading_volume", systemImage: "bookmark.fill")
+                            .font(.headline)
+                        Spacer()
+
+                        TextField("", value: $currentReadingVolume, format: .number)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 60)
+                            .multilineTextAlignment(.center)
+                            .font(.title3.bold().monospacedDigit())
+                    }
+
+                    Slider(value: $currentReadingVolume, in: 1...max(1, Double(totalVolumes), volumesOwnedCount), step: 1)
+                        .tint(.orange)
+                }
+            }
+            .padding(.horizontal, 24)
 
             Spacer()
 
-            HStack {
+            // Botones
+            HStack(spacing: 16) {
                 Button("action_cancel") {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
+                .buttonStyle(.bordered)
 
                 Button("action_add") {
                     Task {
@@ -711,17 +668,21 @@ struct MacAddToCollectionView: View {
                 }
                 .keyboardShortcut(.defaultAction)
                 .buttonStyle(.borderedProminent)
-                .disabled(selectedVolumes.isEmpty && !hasCompleteCollection || isSaving)
+                .disabled(isSaving)
             }
             .padding()
         }
-        .padding()
-        .frame(width: 500, height: 600)
+        .padding(.vertical)
+        .frame(width: 450, height: 420)
     }
 
     private func saveToCollection() async {
         isSaving = true
-        let volumes = Array(selectedVolumes).sorted()
+
+        let ownedCount = Int(volumesOwnedCount)
+        let volumes = ownedCount > 0 ? Array(1...ownedCount) : []
+        let readingVol = Int(currentReadingVolume)
+        let isComplete = ownedCount == totalVolumes
 
         // Guardar en local usando DataContainer (background)
         let dataContainer = DataContainer(modelContainer: modelContext.container)
@@ -729,8 +690,8 @@ struct MacAddToCollectionView: View {
             try await dataContainer.addToCollection(
                 manga: manga,
                 volumesOwned: volumes,
-                currentReadingVolume: currentReadingVolume,
-                hasCompleteCollection: hasCompleteCollection
+                currentReadingVolume: readingVol,
+                hasCompleteCollection: isComplete
             )
         } catch {
             print("Error al guardar en local: \(error)")
@@ -744,8 +705,8 @@ struct MacAddToCollectionView: View {
                 try await cloudVM.addToCollection(
                     manga: manga,
                     volumesOwned: volumes,
-                    readingVolume: currentReadingVolume,
-                    completeCollection: hasCompleteCollection
+                    readingVolume: readingVol,
+                    completeCollection: isComplete
                 )
             } catch {
                 print("Error al guardar en cloud: \(error)")

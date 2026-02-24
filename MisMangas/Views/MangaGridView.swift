@@ -37,9 +37,7 @@ struct MangaGridCell: View {
     let manga: Manga
     let namespace: Namespace.ID
 
-    private var coverURL: URL? {
-        URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
-    }
+    private var coverURL: URL? { manga.coverURL }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -60,7 +58,7 @@ struct MangaGridCell: View {
                 Image(systemName: "star.fill")
                     .font(.caption)
                     .foregroundStyle(.orange)
-                Text(String(format: "%.1f", manga.score))
+                Text(manga.score.formatted(.number.precision(.fractionLength(1))))
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
@@ -86,7 +84,7 @@ struct MangaGridCell: View {
 
     private var accessibilityLabel: String {
         var label = manga.title
-        label += ", " + String(localized: "accessibility_score \(String(format: "%.1f", manga.score))")
+        label += ", " + String(localized: "accessibility_score \(manga.score.formatted(.number.precision(.fractionLength(1))))")
 
         if let volumes = manga.volumes {
             label += ", \(volumes) " + String(localized: "accessibility_volumes")

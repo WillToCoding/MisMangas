@@ -46,11 +46,8 @@ final class MangaViewModel {
     /// Metadatos de paginacion de la ultima consulta.
     var metadata: Metadata?
 
-    /// Indica si hay una operacion de red en curso.
-    var isLoading = false
-
-    /// Mensaje de error de la ultima operacion fallida.
-    var errorMessage: String?
+    /// Estado actual de la vista.
+    var state: ViewState = .idle
 
     /// Sistema de filtros activos para las consultas.
     var filters = MangaFilters()
@@ -82,18 +79,16 @@ final class MangaViewModel {
     /// await viewModel.fetchMangas(page: 2, per: 20)
     /// ```
     func fetchMangas(page: Int = 1, per: Int = 10) async {
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         do {
             let response = try await repository.getMangas(page: page, per: per)
             mangas = response.items
             metadata = response.metadata
+            state = mangas.isEmpty ? .empty : .loaded
         } catch {
-            errorMessage = "Error al cargar mangas: \(error.localizedDescription)"
+            state = .error("Error al cargar mangas: \(error.localizedDescription)")
         }
-
-        isLoading = false
     }
 
     /// Obtiene los mejores mangas ordenados por puntuacion.
@@ -105,18 +100,16 @@ final class MangaViewModel {
     ///   - page: Numero de pagina a obtener. Por defecto `1`.
     ///   - per: Cantidad de mangas por pagina. Por defecto `10`.
     func fetchBestMangas(page: Int = 1, per: Int = 10) async {
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         do {
             let response = try await repository.getBestMangas(page: page, per: per)
             mangas = response.items
             metadata = response.metadata
+            state = mangas.isEmpty ? .empty : .loaded
         } catch {
-            errorMessage = "Error al cargar mejores mangas: \(error.localizedDescription)"
+            state = .error("Error al cargar mejores mangas: \(error.localizedDescription)")
         }
-
-        isLoading = false
     }
 
     /// Busca mangas por texto en el titulo.
@@ -140,8 +133,7 @@ final class MangaViewModel {
     /// await viewModel.searchMangas(text: "one", contains: false)
     /// ```
     func searchMangas(text: String, contains: Bool = true, page: Int = 1, per: Int = 10) async {
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         do {
             let response = if contains {
@@ -151,11 +143,10 @@ final class MangaViewModel {
             }
             mangas = response.items
             metadata = response.metadata
+            state = mangas.isEmpty ? .empty : .loaded
         } catch {
-            errorMessage = "Error al buscar mangas: \(error.localizedDescription)"
+            state = .error("Error al buscar mangas: \(error.localizedDescription)")
         }
-
-        isLoading = false
     }
 
     /// Obtiene mangas filtrados por genero.
@@ -165,18 +156,16 @@ final class MangaViewModel {
     ///   - page: Numero de pagina a obtener. Por defecto `1`.
     ///   - per: Cantidad de mangas por pagina. Por defecto `10`.
     func fetchMangasByGenre(_ genre: String, page: Int = 1, per: Int = 10) async {
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         do {
             let response = try await repository.getMangasByGenre(genre, page: page, per: per)
             mangas = response.items
             metadata = response.metadata
+            state = mangas.isEmpty ? .empty : .loaded
         } catch {
-            errorMessage = "Error al cargar mangas por género: \(error.localizedDescription)"
+            state = .error("Error al cargar mangas por género: \(error.localizedDescription)")
         }
-
-        isLoading = false
     }
 
     /// Obtiene mangas filtrados por demografia.
@@ -186,18 +175,16 @@ final class MangaViewModel {
     ///   - page: Numero de pagina a obtener. Por defecto `1`.
     ///   - per: Cantidad de mangas por pagina. Por defecto `10`.
     func fetchMangasByDemographic(_ demographic: String, page: Int = 1, per: Int = 10) async {
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         do {
             let response = try await repository.getMangasByDemographic(demographic, page: page, per: per)
             mangas = response.items
             metadata = response.metadata
+            state = mangas.isEmpty ? .empty : .loaded
         } catch {
-            errorMessage = "Error al cargar mangas por demografía: \(error.localizedDescription)"
+            state = .error("Error al cargar mangas por demografía: \(error.localizedDescription)")
         }
-
-        isLoading = false
     }
 
     /// Carga mas mangas para paginacion infinita.
@@ -211,20 +198,18 @@ final class MangaViewModel {
     ///
     /// - Note: Si ya hay una carga en curso (`isLoading == true`), la llamada se ignora.
     func loadMoreMangas(page: Int, per: Int = 10) async {
-        guard !isLoading else { return }
+        guard !state.isLoading else { return }
 
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         do {
             let response = try await repository.getMangas(page: page, per: per)
             mangas.append(contentsOf: response.items)
             metadata = response.metadata
+            state = .loaded
         } catch {
-            errorMessage = "Error al cargar más mangas: \(error.localizedDescription)"
+            state = .error("Error al cargar más mangas: \(error.localizedDescription)")
         }
-
-        isLoading = false
     }
 
     // MARK: - Filter Methods
@@ -251,28 +236,27 @@ final class MangaViewModel {
     /// await viewModel.applyFilters()
     /// ```
     func applyFilters(page: Int = 1, per: Int = 10) async {
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         do {
             // Si hay filtros avanzados (año, score), usar Jikan API
             if filters.hasAdvancedFilters {
                 try await applyJikanFilters(page: page, limit: per)
             }
-            // Si SOLO hay una demografía (sin géneros ni temas), usar endpoint específico
-            else if filters.demographics.count == 1 && filters.genres.isEmpty && filters.themes.isEmpty {
+            // Si SOLO hay una demografía (sin géneros, temas ni texto), usar endpoint específico
+            else if filters.demographics.count == 1 && filters.genres.isEmpty && filters.themes.isEmpty && filters.searchText.isEmpty {
                 let response = try await repository.getMangasByDemographic(filters.demographics.first!, page: page, per: per)
                 mangas = response.items
                 metadata = response.metadata
             }
-            // Si SOLO hay un género (sin demografías ni temas), usar endpoint específico
-            else if filters.genres.count == 1 && filters.demographics.isEmpty && filters.themes.isEmpty {
+            // Si SOLO hay un género (sin demografías, temas ni texto), usar endpoint específico
+            else if filters.genres.count == 1 && filters.demographics.isEmpty && filters.themes.isEmpty && filters.searchText.isEmpty {
                 let response = try await repository.getMangasByGenre(filters.genres.first!, page: page, per: per)
                 mangas = response.items
                 metadata = response.metadata
             }
-            // Si SOLO hay un tema (sin demografías ni géneros), usar endpoint específico
-            else if filters.themes.count == 1 && filters.demographics.isEmpty && filters.genres.isEmpty {
+            // Si SOLO hay un tema (sin demografías, géneros ni texto), usar endpoint específico
+            else if filters.themes.count == 1 && filters.demographics.isEmpty && filters.genres.isEmpty && filters.searchText.isEmpty {
                 let response = try await repository.getMangasByTheme(filters.themes.first!, page: page, per: per)
                 mangas = response.items
                 metadata = response.metadata
@@ -308,11 +292,10 @@ final class MangaViewModel {
 
             // Aplicar ordenamiento local
             sortMangas(by: filters.sortBy)
+            state = mangas.isEmpty ? .empty : .loaded
         } catch {
-            errorMessage = "Error al aplicar filtros: \(error.localizedDescription)"
+            state = .error("Error al aplicar filtros: \(error.localizedDescription)")
         }
-
-        isLoading = false
     }
 
     /// Aplica filtros avanzados usando Jikan API.

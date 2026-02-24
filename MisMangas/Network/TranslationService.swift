@@ -12,14 +12,26 @@ import SwiftData
 @MainActor
 @Observable
 final class TranslationService {
-    static let shared = TranslationService()
-
     private let baseURL = "https://api-free.deepl.com/v2/translate"
+    private let keychain: KeychainServiceProtocol
 
-    // API Key almacenada en UserDefaults (el usuario la configura)
+    /// Crea una nueva instancia del servicio de traducción.
+    ///
+    /// - Parameter keychain: Servicio de Keychain. Por defecto usa `KeychainHelper`.
+    init(keychain: KeychainServiceProtocol = KeychainHelper()) {
+        self.keychain = keychain
+    }
+
+    // API Key almacenada en Keychain (encriptada y sincronizada via iCloud Keychain)
     var apiKey: String {
-        get { UserDefaults.standard.string(forKey: "deepl_api_key") ?? "" }
-        set { UserDefaults.standard.set(newValue, forKey: "deepl_api_key") }
+        get { keychain.getDeepLApiKey() ?? "" }
+        set {
+            if newValue.isEmpty {
+                keychain.deleteDeepLApiKey()
+            } else {
+                keychain.saveDeepLApiKey(newValue)
+            }
+        }
     }
 
     var isConfigured: Bool {

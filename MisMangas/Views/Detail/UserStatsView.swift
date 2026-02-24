@@ -14,9 +14,7 @@ struct UserStatsView: View {
     let collection: UserCollection
 
     @Environment(\.modelContext) private var modelContext
-    @State private var showScoreEditor = false
     @State private var showVolumeEditor = false
-    @State private var showChapterEditor = false
     @State private var showStatusEditor = false
 
     var body: some View {
@@ -29,18 +27,8 @@ struct UserStatsView: View {
                 Spacer()
             }
 
-            // Fila 1: Mi Score + Mi Estado
+            // Fila: Estado + Volúmenes
             HStack(spacing: 12) {
-                // Score del usuario (editable)
-                EditableStatCard(
-                    value: collection.userScore.map { String(format: "%.1f", $0) } ?? "-",
-                    label: "detail_my_score",
-                    icon: "star.circle.fill",
-                    color: .yellow
-                ) {
-                    showScoreEditor = true
-                }
-
                 // Status del usuario (editable)
                 EditableStatCard(
                     value: collection.readingStatus.localizedName,
@@ -50,10 +38,7 @@ struct UserStatsView: View {
                 ) {
                     showStatusEditor = true
                 }
-            }
 
-            // Fila 2: Mis Volúmenes + Mi Capítulo
-            HStack(spacing: 12) {
                 // Volúmenes (editable)
                 EditableStatCard(
                     value: volumeText,
@@ -63,21 +48,7 @@ struct UserStatsView: View {
                 ) {
                     showVolumeEditor = true
                 }
-
-                // Capítulos (editable)
-                EditableStatCard(
-                    value: chapterText,
-                    label: "detail_my_chapter",
-                    icon: "book.pages.fill",
-                    color: .purple
-                ) {
-                    showChapterEditor = true
-                }
             }
-        }
-        .sheet(isPresented: $showScoreEditor) {
-            ScoreEditorSheet(collection: collection)
-                .presentationDetents([.height(280)])
         }
         .sheet(isPresented: $showStatusEditor) {
             StatusEditorSheet(collection: collection)
@@ -86,10 +57,6 @@ struct UserStatsView: View {
         .sheet(isPresented: $showVolumeEditor) {
             VolumeEditorSheet(manga: manga, collection: collection)
                 .presentationDetents([.medium])
-        }
-        .sheet(isPresented: $showChapterEditor) {
-            ChapterEditorSheet(manga: manga, collection: collection)
-                .presentationDetents([.height(280)])
         }
     }
 
@@ -101,15 +68,6 @@ struct UserStatsView: View {
             return "\(owned)/\(total)"
         } else {
             return "\(owned)"
-        }
-    }
-
-    private var chapterText: String {
-        let current = collection.currentChapter ?? 0
-        if let total = manga.chapters {
-            return "\(current)/\(total)"
-        } else {
-            return "\(current)"
         }
     }
 }
@@ -155,70 +113,13 @@ private struct EditableStatCard: View {
     }
 }
 
-// MARK: - Score Editor Sheet
-private struct ScoreEditorSheet: View {
-    let collection: UserCollection
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @State private var score: Double
-
-    init(collection: UserCollection) {
-        self.collection = collection
-        _score = State(initialValue: collection.userScore ?? 7.0)
-    }
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 24) {
-                Text(String(format: "%.1f", score))
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundStyle(.yellow)
-
-                HStack {
-                    Image(systemName: "star")
-                    Slider(value: $score, in: 1...10, step: 0.5)
-                    Image(systemName: "star.fill")
-                }
-                .padding(.horizontal)
-
-                if collection.userScore == nil {
-                    Text("edit_score_hint")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-            }
-            .padding()
-            .navigationTitle("edit_my_score")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("action_cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("action_save") {
-                        saveScore()
-                    }
-                }
-            }
-        }
-    }
-
-    private func saveScore() {
-        Task {
-            let dataContainer = DataContainer(modelContainer: modelContext.container)
-            try? await dataContainer.updateUserStats(mangaId: collection.id, userScore: score)
-            dismiss()
-        }
-    }
-}
-
 // MARK: - Status Editor Sheet
 private struct StatusEditorSheet: View {
     let collection: UserCollection
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(AuthViewModel.self) private var authVM
+    @Environment(CloudCollectionViewModel.self) private var cloudVM
     @State private var selectedStatus: ReadingStatus
 
     init(collection: UserCollection) {
@@ -269,8 +170,22 @@ private struct StatusEditorSheet: View {
 
     private func saveStatus() {
         Task {
+            // Guardar en local
             let dataContainer = DataContainer(modelContainer: modelContext.container)
             try? await dataContainer.updateUserStats(mangaId: collection.id, readingStatus: selectedStatus)
+
+            // Sincronizar con cloud si está autenticado
+            if authVM.isAuthenticated {
+                try? await cloudVM.addToCollection(
+                    manga: collection.manga.toManga(),
+                    volumesOwned: collection.volumesOwned,
+                    readingVolume: collection.currentReadingVolume,
+                    completeCollection: collection.hasCompleteCollection
+                )
+                // Marcar como sincronizado para evitar conflictos falsos
+                try? await dataContainer.markAsSynced(mangaId: collection.id)
+            }
+
             dismiss()
         }
     }
@@ -282,12 +197,20 @@ private struct VolumeEditorSheet: View {
     let collection: UserCollection
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(AuthViewModel.self) private var authVM
+    @Environment(CloudCollectionViewModel.self) private var cloudVM
     @State private var selectedVolumes: Set<Int>
     @State private var currentVolume: Int
+    @State private var showCloudConflict = false
+    @State private var cloudReadingVolume: Int?
+
+    /// Valor inicial al abrir el editor (para detectar conflictos)
+    private let initialReadingVolume: Int?
 
     init(manga: Manga, collection: UserCollection) {
         self.manga = manga
         self.collection = collection
+        self.initialReadingVolume = collection.currentReadingVolume
         _selectedVolumes = State(initialValue: Set(collection.volumesOwned))
         _currentVolume = State(initialValue: collection.currentReadingVolume ?? 1)
     }
@@ -360,19 +283,82 @@ private struct VolumeEditorSheet: View {
                     }
                 }
             }
+            .alert("sync_conflict_title", isPresented: $showCloudConflict) {
+                Button("sync_keep_local") {
+                    // Guardar valor local (currentVolume) ignorando cloud
+                    Task { await performSave() }
+                }
+                Button("sync_use_cloud") {
+                    // Usar valor de cloud y cerrar
+                    if let cloudReading = cloudReadingVolume {
+                        currentVolume = cloudReading
+                    }
+                    Task { await performSave() }
+                }
+                Button("action_cancel", role: .cancel) { }
+            } message: {
+                if let cloudReading = cloudReadingVolume {
+                    Text("sync_conflict_volume_message \(initialReadingVolume ?? 0) \(currentVolume) \(cloudReading)")
+                }
+            }
         }
     }
 
     private func saveVolumes() {
         Task {
-            let dataContainer = DataContainer(modelContainer: modelContext.container)
-            try? await dataContainer.updateUserStats(
-                mangaId: collection.id,
-                currentVolume: currentVolume,
-                volumesOwned: Array(selectedVolumes).sorted()
-            )
-            dismiss()
+            // Verificar si cloud tiene un valor diferente al que empezamos a editar
+            if authVM.isAuthenticated {
+                if let cloudItem = cloudVM.getMangaCollection(manga.id) {
+                    let cloudReading = cloudItem.readingVolume
+                    // Si cloud cambió desde que abrimos el editor, hay conflicto
+                    if cloudReading != initialReadingVolume {
+                        cloudReadingVolume = cloudReading
+                        showCloudConflict = true
+                        return
+                    }
+                }
+            }
+
+            await performSave()
         }
+    }
+
+    private func performSave() async {
+        let dataContainer = DataContainer(modelContainer: modelContext.container)
+
+        var newStatus: ReadingStatus? = nil
+        let hasAllVolumes = selectedVolumes.count == totalVolumes
+        let isAtLastVolume = currentVolume == totalVolumes
+
+        if hasAllVolumes && isAtLastVolume {
+            newStatus = .completed
+        } else if collection.readingStatus == .completed && !isAtLastVolume {
+            newStatus = .reading
+        } else if collection.readingStatus == .planToRead && currentVolume > 1 {
+            newStatus = .reading
+        }
+
+        // Guardar en local
+        try? await dataContainer.updateUserStats(
+            mangaId: collection.id,
+            readingStatus: newStatus,
+            currentVolume: currentVolume,
+            volumesOwned: Array(selectedVolumes).sorted()
+        )
+
+        // Sincronizar con cloud si está autenticado
+        if authVM.isAuthenticated {
+            try? await cloudVM.addToCollection(
+                manga: manga,
+                volumesOwned: Array(selectedVolumes).sorted(),
+                readingVolume: currentVolume,
+                completeCollection: hasAllVolumes
+            )
+            // Marcar como sincronizado para evitar conflictos falsos
+            try? await dataContainer.markAsSynced(mangaId: collection.id)
+        }
+
+        dismiss()
     }
 }
 
@@ -391,119 +377,6 @@ private struct VolumeChip: View {
                 .foregroundStyle(isSelected ? .white : .primary)
         }
         .buttonStyle(.plain)
-    }
-}
-
-// MARK: - Chapter Editor Sheet
-private struct ChapterEditorSheet: View {
-    let manga: Manga
-    let collection: UserCollection
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @State private var currentChapter: Int
-
-    init(manga: Manga, collection: UserCollection) {
-        self.manga = manga
-        self.collection = collection
-        _currentChapter = State(initialValue: collection.currentChapter ?? 1)
-    }
-
-    private var totalChapters: Int {
-        manga.chapters ?? 9999
-    }
-
-    private var useSlider: Bool {
-        totalChapters > 20
-    }
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 24) {
-                Text("\(currentChapter)")
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundStyle(.purple)
-
-                if let total = manga.chapters {
-                    Text("edit_of_total \(total)")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
-                    ProgressView(value: Double(currentChapter), total: Double(total))
-                        .tint(.purple)
-                        .padding(.horizontal)
-                }
-
-                // Slider para muchos capítulos, Stepper para pocos
-                if useSlider {
-                    VStack(spacing: 8) {
-                        Slider(
-                            value: Binding(
-                                get: { Double(currentChapter) },
-                                set: { currentChapter = Int($0) }
-                            ),
-                            in: 0...Double(totalChapters),
-                            step: 1
-                        )
-                        .tint(.purple)
-
-                        // Botones de ajuste fino
-                        HStack {
-                            Button {
-                                if currentChapter > 0 { currentChapter -= 1 }
-                            } label: {
-                                Image(systemName: "minus.circle.fill")
-                                    .font(.title2)
-                            }
-                            .disabled(currentChapter <= 0)
-
-                            Spacer()
-
-                            Text("chapter_current \(currentChapter)")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-
-                            Spacer()
-
-                            Button {
-                                if currentChapter < totalChapters { currentChapter += 1 }
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.title2)
-                            }
-                            .disabled(currentChapter >= totalChapters)
-                        }
-                        .foregroundStyle(.purple)
-                    }
-                    .padding(.horizontal)
-                } else {
-                    Stepper("chapter_current \(currentChapter)", value: $currentChapter, in: 0...totalChapters)
-                        .padding(.horizontal)
-                }
-
-                Spacer()
-            }
-            .padding()
-            .navigationTitle("edit_chapter")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("action_cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("action_save") {
-                        saveChapter()
-                    }
-                }
-            }
-        }
-    }
-
-    private func saveChapter() {
-        Task {
-            let dataContainer = DataContainer(modelContainer: modelContext.container)
-            try? await dataContainer.updateUserStats(mangaId: collection.id, currentChapter: currentChapter)
-            dismiss()
-        }
     }
 }
 

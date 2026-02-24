@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import NetworkAPI
 
 /// Vista simple de cover con caché, sin animaciones hero
 /// Usar en sheets, modals y vistas secundarias donde no se necesita hero animation
@@ -21,16 +20,25 @@ struct CachedCoverImage: View {
     var body: some View {
         Group {
             if let image = coverVM.image {
+                #if os(iOS)
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
                     .frame(width: width, height: height)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                #elseif os(macOS)
+                Image(nsImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: width, height: height)
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                #endif
             } else {
                 placeholder
             }
         }
-        .onAppear {
+        .task(id: url) {
+            coverVM.image = nil
             coverVM.getImage(url: url)
         }
     }

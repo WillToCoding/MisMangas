@@ -17,11 +17,7 @@ struct MainTabView: View {
         TabView {
             // Tab 1: Inicio
             Tab {
-                if isiPhone {
-                    HomeView()
-                } else {
-                    ContentViewiPad()
-                }
+                HomeView()
             } label: {
                 Label("tab_home", systemImage: "house")
                     .symbolVariant(.fill)
@@ -30,29 +26,27 @@ struct MainTabView: View {
 
             // Tab 2: Coleccion
             Tab {
-                if isiPhone {
-                    CollectionView()
-                } else {
-                    CollectionViewiPad()
-                }
+                CollectionView()
             } label: {
                 Label("tab_collection", systemImage: "books.vertical")
                     .symbolVariant(.fill)
                     .symbolRenderingMode(.hierarchical)
             }
 
-            // Tab 3: Busqueda
-            Tab(role: .search) {
-                SearchResultsView()
-            }
-
-            // Tab 4: Perfil
+            // Tab 3: Perfil
             Tab {
                 ProfileView()
             } label: {
                 Label("tab_profile", systemImage: "person.circle")
                     .symbolVariant(.fill)
                     .symbolRenderingMode(.hierarchical)
+            }
+
+            // Tab 4: Busqueda (al final)
+            Tab {
+                SearchResultsView()
+            } label: {
+                Label("nav_search", systemImage: "magnifyingglass")
             }
         }
         .tint(.purple)

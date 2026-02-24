@@ -40,10 +40,10 @@ struct MacMangaListView: View {
             Divider()
 
             // Lista
-            if mangaVM.isLoading {
+            if mangaVM.state.isLoading {
                 ProgressView("loading_mangas")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let error = mangaVM.errorMessage {
+            } else if let error = mangaVM.state.errorMessage {
                 ContentUnavailableView(
                     "error_title",
                     systemImage: "exclamationmark.triangle",
@@ -120,7 +120,7 @@ struct MacFiltersSheet: View {
             Divider()
 
             // Content
-            if filterVM.isLoading {
+            if filterVM.state.isLoading {
                 ProgressView("loading_mangas")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
@@ -169,7 +169,7 @@ struct MacFiltersSheet: View {
                                     Text("filter_min_score")
                                     Spacer()
                                     if let score = tempFilters.minScore {
-                                        Text(String(format: "%.1f", score))
+                                        Text(score.formatted(.number.precision(.fractionLength(1))))
                                             .foregroundStyle(.secondary)
                                     } else {
                                         Text("filter_any")

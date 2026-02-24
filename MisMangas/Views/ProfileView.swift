@@ -6,55 +6,63 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct ProfileView: View {
     @Environment(AuthViewModel.self) private var authVM
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = true
     @State private var showLoginSheet = false
     @State private var showLogoutAlert = false
-    @State private var deeplApiKey: String = ""
-
-    private let translationService = TranslationService.shared
+    @State private var showSettings = false
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var profileImage: UIImage?
 
     var body: some View {
         NavigationStack {
             List {
-                // MARK: - Sección de Usuario
+                // MARK: - Header del Perfil
                 Section {
-                    if authVM.isAuthenticated {
-                        // Usuario logueado
-                        HStack {
-                            Image(systemName: "person.circle.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(.blue)
-                                .accessibilityHidden(true)
+                    HStack(spacing: 16) {
+                        // Avatar
+                        if let image = profileImage {
+                            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 72, height: 72)
+                                    .clipShape(Circle())
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.blue, lineWidth: 2)
+                                    )
+                                    .accessibilityHidden(true)
+                            }
+                        } else {
+                            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 72, height: 72)
+                                    .foregroundStyle(.secondary)
+                                    .accessibilityHidden(true)
+                            }
+                            .disabled(!authVM.isAuthenticated)
+                        }
 
-                            VStack(alignment: .leading) {
-                                Text("profile_connected")
+                        // Info del usuario
+                        VStack(alignment: .leading, spacing: 4) {
+                            if authVM.isAuthenticated {
+                                Text(authVM.userEmail ?? "Usuario")
                                     .font(.headline)
-                                if let email = authVM.userEmail {
-                                    Text(email)
+                                HStack(spacing: 4) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.green)
+                                        .font(.caption)
+                                    Text("profile_connected")
                                         .font(.subheadline)
                                         .foregroundStyle(.secondary)
                                 }
-                            }
-
-                            Spacer()
-
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
-                                .accessibilityHidden(true)
-                        }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityLabel(String(localized: "accessibility_user_connected") + ", " + (authVM.userEmail ?? ""))
-                    } else {
-                        // Usuario NO logueado
-                        HStack {
-                            Image(systemName: "person.circle")
-                                .font(.largeTitle)
-                                .foregroundStyle(.secondary)
-                                .accessibilityHidden(true)
-
-                            VStack(alignment: .leading) {
+                            } else {
                                 Text("profile_not_connected")
                                     .font(.headline)
                                 Text("profile_login_prompt")
@@ -62,13 +70,71 @@ struct ProfileView: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityLabel(String(localized: "accessibility_user_not_connected"))
+
+                        Spacer()
+                    }
+                    .padding(.vertical, 8)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(authVM.isAuthenticated
+                        ? String(localized: "accessibility_user_connected") + ", " + (authVM.userEmail ?? "")
+                        : String(localized: "accessibility_user_not_connected"))
+                    .onChange(of: selectedPhotoItem) { _, newItem in
+                        Task {
+                            if let data = try? await newItem?.loadTransferable(type: Data.self),
+                               let image = UIImage(data: data) {
+                                await authVM.saveProfileImage(image)
+                                profileImage = image
+                            }
+                        }
+                    }
+                    .onAppear {
+                        profileImage = authVM.userProfileImage
+                    }
+                }
+
+                // MARK: - Cuenta
+                Section {
+                    if authVM.isAuthenticated {
+                        Button(role: .destructive) {
+                            showLogoutAlert = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .foregroundStyle(.red)
+                                    .accessibilityHidden(true)
+                                Text("action_logout")
+                                    .foregroundStyle(.red)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .accessibilityHint(String(localized: "accessibility_logout_hint"))
+                    } else {
+                        Button {
+                            showLoginSheet = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "person.badge.key.fill")
+                                    .foregroundStyle(.blue)
+                                    .accessibilityHidden(true)
+                                Text("action_login")
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .accessibilityHint(String(localized: "accessibility_login_hint"))
                     }
                 } header: {
                     Text("profile_account")
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityHeading(.h2)
+                } footer: {
+                    Text(authVM.isAuthenticated ? "profile_storage_cloud" : "profile_storage_local")
                 }
 
                 // MARK: - Colección
@@ -102,78 +168,24 @@ struct ProfileView: View {
                     Text("profile_storage")
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityHeading(.h2)
-                } footer: {
-                    if authVM.isAuthenticated {
-                        Text("profile_storage_cloud")
-                    } else {
-                        Text("profile_storage_local")
-                    }
-                }
-
-                // MARK: - Traducción
-                Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Image(systemName: "globe")
-                                .foregroundStyle(.blue)
-                                .accessibilityHidden(true)
-                            Text("translation_settings_title")
-                        }
-
-                        SecureField("translation_settings_api_key_placeholder", text: $deeplApiKey)
-                            .textFieldStyle(.roundedBorder)
-                            .autocorrectionDisabled()
-                            .textInputAutocapitalization(.never)
-                            .onChange(of: deeplApiKey) { _, newValue in
-                                translationService.apiKey = newValue
-                            }
-                            .accessibilityLabel(String(localized: "accessibility_api_key_field"))
-                            .accessibilityHint(String(localized: "accessibility_api_key_hint"))
-
-                        if translationService.isConfigured {
-                            Label("translation_settings_configured", systemImage: "checkmark.circle.fill")
-                                .font(.caption)
-                                .foregroundStyle(.green)
-                        }
-                    }
-                } header: {
-                    Text("translation_settings_header")
-                        .accessibilityAddTraits(.isHeader)
-                        .accessibilityHeading(.h2)
-                } footer: {
-                    Text("translation_settings_footer")
-                }
-
-                // MARK: - Acciones
-                Section {
-                    if authVM.isAuthenticated {
-                        Button(role: .destructive) {
-                            showLogoutAlert = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "rectangle.portrait.and.arrow.right")
-                                    .accessibilityHidden(true)
-                                Text("action_logout")
-                            }
-                        }
-                        .accessibilityHint(String(localized: "accessibility_logout_hint"))
-                    } else {
-                        Button {
-                            showLoginSheet = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "person.badge.key.fill")
-                                    .accessibilityHidden(true)
-                                Text("action_login")
-                            }
-                        }
-                        .accessibilityHint(String(localized: "accessibility_login_hint"))
-                    }
                 }
             }
             .navigationTitle("nav_profile")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+                    .accessibilityLabel(String(localized: "settings_title"))
+                }
+            }
             .sheet(isPresented: $showLoginSheet) {
                 LoginView()
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
             }
             .alert("profile_logout_title", isPresented: $showLogoutAlert) {
                 Button("action_cancel", role: .cancel) { }
@@ -183,11 +195,9 @@ struct ProfileView: View {
             } message: {
                 Text("profile_logout_message")
             }
-            .onAppear {
-                deeplApiKey = translationService.apiKey
-            }
         }
     }
+
 }
 
 // MARK: - Preview

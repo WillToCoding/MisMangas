@@ -84,9 +84,9 @@ struct CollectionViewiPad: View {
     // MARK: - Cloud Sidebar
     @ViewBuilder
     private var cloudSidebar: some View {
-        if cloudVM.isLoading {
+        if cloudVM.state.isLoading {
             ProgressView("loading_collection")
-        } else if let error = cloudVM.errorMessage {
+        } else if let error = cloudVM.state.errorMessage {
             ContentUnavailableView(
                 "error_loading",
                 systemImage: "exclamationmark.triangle",
@@ -140,10 +140,13 @@ struct CollectionViewiPad: View {
 
     // MARK: - Actions
     private func deleteLocalMangas(at offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(localCollection[index])
+        Task {
+            let dataContainer = DataContainer(modelContainer: modelContext.container)
+            for index in offsets {
+                let mangaId = localCollection[index].manga.id
+                try? await dataContainer.removeFromCollection(mangaId: mangaId)
+            }
         }
-        try? modelContext.save()
     }
 }
 

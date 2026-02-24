@@ -15,9 +15,9 @@ struct FilterView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if filterVM.isLoading {
+                if filterVM.state.isLoading {
                     ProgressView("loading_options")
-                } else if let errorMessage = filterVM.errorMessage {
+                } else if let errorMessage = filterVM.state.errorMessage {
                     errorView(message: errorMessage)
                 } else {
                     filterContent
@@ -178,7 +178,7 @@ struct FilterView: View {
                 Picker("", selection: $filters.minScore) {
                     Text("filter_any").tag(nil as Double?)
                     ForEach([6.0, 7.0, 7.5, 8.0, 8.5, 9.0], id: \.self) { score in
-                        Text("≥ \(String(format: "%.1f", score))").tag(score as Double?)
+                        Text("≥ \(score.formatted(.number.precision(.fractionLength(1))))").tag(score as Double?)
                     }
                 }
                 .pickerStyle(.menu)

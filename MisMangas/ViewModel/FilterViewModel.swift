@@ -37,11 +37,8 @@ final class FilterViewModel {
     /// Lista de temas disponibles (ej: "School", "Mecha").
     var availableThemes: [String] = []
 
-    /// Indica si hay una operacion de carga en curso.
-    var isLoading = false
-
-    /// Mensaje de error de la ultima operacion fallida.
-    var errorMessage: String?
+    /// Estado actual de la vista.
+    var state: ViewState = .idle
 
     private let repository: NetworkRepository
 
@@ -59,8 +56,7 @@ final class FilterViewModel {
     ///
     /// Las opciones se cargan una sola vez y se cachean en memoria.
     func loadFilterOptions() async {
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         // Ejecutar las 3 peticiones en paralelo con async let
         async let genres = repository.getGenres()
@@ -72,10 +68,9 @@ final class FilterViewModel {
             availableGenres = try await genres
             availableDemographics = try await demographics
             availableThemes = try await themes
+            state = .loaded
         } catch {
-            errorMessage = "Error al cargar opciones de filtros: \(error.localizedDescription)"
+            state = .error("Error al cargar opciones de filtros: \(error.localizedDescription)")
         }
-
-        isLoading = false
     }
 }

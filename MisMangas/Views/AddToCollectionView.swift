@@ -18,10 +18,8 @@ struct AddToCollectionView: View {
 
     @State private var selectedVolumes: Set<Int> = []
     @State private var currentReadingVolume: Int = 1
-    @State private var currentChapter: Int = 1
     @State private var hasCompleteCollection = false
     @State private var readingStatus: ReadingStatus = .planToRead
-    @State private var userScore: Double?
     @State private var showSuccess = false
     @State private var isSaving = false
 
@@ -30,9 +28,7 @@ struct AddToCollectionView: View {
             Form {
                 Section("Manga") {
                     HStack {
-                        CachedCoverImage(
-                            url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
-                        )
+                        CachedCoverImage(url: manga.coverURL)
                         .accessibilityHidden(true)
 
                         VStack(alignment: .leading) {
@@ -83,10 +79,6 @@ struct AddToCollectionView: View {
                             .accessibilityLabel(String(localized: "accessibility_current_volume"))
                             .accessibilityValue("\(currentReadingVolume)")
                             .accessibilityHint(String(localized: "accessibility_stepper_hint"))
-
-                        if manga.chapters != nil {
-                            Stepper("chapter_current \(currentChapter)", value: $currentChapter, in: 1...(manga.chapters ?? 9999))
-                        }
                     }
                 }
 
@@ -95,23 +87,6 @@ struct AddToCollectionView: View {
                         ForEach(ReadingStatus.allCases, id: \.self) { status in
                             Label(status.localizedName, systemImage: status.icon)
                                 .tag(status)
-                        }
-                    }
-
-                    Toggle("add_my_score", isOn: Binding(
-                        get: { userScore != nil },
-                        set: { userScore = $0 ? 7.0 : nil }
-                    ))
-
-                    if userScore != nil {
-                        HStack {
-                            Text(String(format: "%.1f", userScore ?? 7.0))
-                                .font(.headline)
-                                .foregroundStyle(.yellow)
-                            Slider(value: Binding(
-                                get: { userScore ?? 7.0 },
-                                set: { userScore = $0 }
-                            ), in: 1...10, step: 0.5)
                         }
                     }
                 }
@@ -157,9 +132,7 @@ struct AddToCollectionView: View {
                 manga: manga,
                 volumesOwned: volumes,
                 currentReadingVolume: currentReadingVolume,
-                currentChapter: manga.chapters != nil ? currentChapter : nil,
                 hasCompleteCollection: hasCompleteCollection,
-                userScore: userScore,
                 readingStatus: readingStatus
             )
         } catch {

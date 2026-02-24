@@ -131,7 +131,7 @@ private struct RelatedMangaCard: View {
             VStack(spacing: 4) {
                 if let manga = manga {
                     CachedCoverImage(
-                        url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: "")),
+                        url: manga.coverURL,
                         width: 60,
                         height: 80
                     )
@@ -196,24 +196,6 @@ private struct RecommendationCard: View {
         .buttonStyle(.plain)
         .accessibilityLabel("\(recommendation.entry.title), \(recommendation.votes) " + String(localized: "accessibility_votes"))
         .accessibilityHint(String(localized: "accessibility_double_tap_details"))
-    }
-}
-
-// MARK: - Helper
-private func localizedRelationType(_ type: String) -> String {
-    switch type.lowercased() {
-    case "sequel": return String(localized: "relation_sequel")
-    case "prequel": return String(localized: "relation_prequel")
-    case "side story": return String(localized: "relation_side_story")
-    case "spin-off": return String(localized: "relation_spin_off")
-    case "alternative version": return String(localized: "relation_alternative")
-    case "alternative setting": return String(localized: "relation_alternative_setting")
-    case "adaptation": return String(localized: "relation_adaptation")
-    case "summary": return String(localized: "relation_summary")
-    case "full story": return String(localized: "relation_full_story")
-    case "parent story": return String(localized: "relation_parent_story")
-    case "other": return String(localized: "relation_other")
-    default: return type
     }
 }
 

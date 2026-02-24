@@ -17,7 +17,7 @@ struct TVMangaCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Portada
-            AsyncImage(url: shouldLoad ? URL(string: item.manga.mainPicture.replacingOccurrences(of: "\"", with: "")) : nil) { phase in
+            AsyncImage(url: shouldLoad ? item.manga.coverURL : nil) { phase in
                 switch phase {
                 case .empty:
                     Rectangle()
@@ -60,7 +60,7 @@ struct TVMangaCard: View {
                     Image(systemName: "star.fill")
                         .foregroundStyle(.yellow)
                         .font(.system(size: 20))
-                    Text(String(format: "%.2f", item.manga.score))
+                    Text(item.manga.score.formatted(.number.precision(.fractionLength(2))))
                         .font(.system(size: 24, weight: .semibold))
                 }
 

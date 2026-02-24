@@ -51,6 +51,26 @@ protocol NetworkRepository: Sendable, NetworkInteractor {
     func searchMangasContains(_ text: String, page: Int, per: Int) async throws -> PaginatedResponse<Manga>
     func searchCustom(_ search: CustomSearch, page: Int, per: Int) async throws -> PaginatedResponse<Manga>
 
+    // Detail
+    func getManga(byId id: Int) async throws -> Manga
+
+    // Authentication
+    func registerUser(_ users: Users) async throws
+    func login(email: String, password: String) async throws -> String
+    func renewToken(_ currentToken: String) async throws -> String
+
+    // Cloud Collection
+    func getUserCollection(token: String) async throws -> [UserMangaCollection]
+    func addToCollection(_ request: UserMangaCollectionRequest, token: String) async throws
+    func deleteFromCollection(mangaId: Int, token: String) async throws
+
+    // Jikan: Characters, Relations, Recommendations (not available on watchOS)
+    #if os(iOS) || os(macOS) || os(tvOS) || os(visionOS)
+    func getMangaCharacters(mangaId: Int) async throws -> [JikanCharacterData]
+    func getMangaRelations(mangaId: Int) async throws -> [JikanRelation]
+    func getMangaRecommendations(mangaId: Int) async throws -> [JikanRecommendation]
+    #endif
+
     // Jikan Search (not available on watchOS)
     #if os(iOS) || os(macOS) || os(tvOS) || os(visionOS)
     func searchMangasJikan(

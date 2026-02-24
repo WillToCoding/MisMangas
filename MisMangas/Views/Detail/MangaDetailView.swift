@@ -13,28 +13,21 @@ struct MangaDetailView: View {
     let namespace: Namespace.ID
 
     // MARK: - State
+    @State private var viewModel: MangaDetailViewModel
     @State private var showAddToCollection = false
-    @State private var characters: [JikanCharacterData] = []
-    @State private var isLoadingCharacters = false
-    @State private var relatedMangas: [JikanRelation] = []
-    @State private var relatedMangaDetails: [Int: Manga] = [:] // Cache de detalles por ID
-    @State private var recommendations: [JikanRecommendation] = []
-    @State private var isLoadingRelated = false
-    @State private var selectedRelatedManga: Manga?
-    @State private var isLoadingManga = false
-    @State private var translatedSynopsis: String?
-    @State private var translatedBackground: String?
-    @State private var isTranslating = false
-    @State private var showOriginal = false
 
     // MARK: - Environment
     @Environment(AuthViewModel.self) private var authVM
     @Environment(CloudCollectionViewModel.self) private var cloudVM
+    @Environment(TranslationService.self) private var translationService
     @Query private var localCollection: [UserCollection]
 
-    // MARK: - Services
-    private let repository = Network()
-    private let translationService = TranslationService.shared
+    // MARK: - Initialization
+    init(manga: Manga, namespace: Namespace.ID) {
+        self.manga = manga
+        self.namespace = namespace
+        _viewModel = State(initialValue: MangaDetailViewModel(manga: manga))
+    }
 
     // MARK: - Computed Properties
     private var isInLocalCollection: Bool {
@@ -99,17 +92,17 @@ struct MangaDetailView: View {
 
                     // Personajes
                     DetailCharactersView(
-                        characters: characters,
-                        isLoading: isLoadingCharacters
+                        characters: viewModel.characters,
+                        isLoading: viewModel.isLoadingCharacters
                     )
 
                     // Relacionados
                     DetailRelatedView(
-                        relatedMangas: relatedMangas,
-                        relatedMangaDetails: relatedMangaDetails,
-                        recommendations: recommendations,
-                        isLoading: isLoadingRelated,
-                        onMangaTap: loadAndNavigateToManga
+                        relatedMangas: viewModel.relatedMangas,
+                        relatedMangaDetails: viewModel.relatedMangaDetails,
+                        recommendations: viewModel.recommendations,
+                        isLoading: viewModel.isLoadingRelated,
+                        onMangaTap: viewModel.loadAndNavigateToManga
                     )
 
                     // Sinopsis
@@ -117,12 +110,12 @@ struct MangaDetailView: View {
                         DetailSynopsisView(
                             synopsis: manga.sypnosis,
                             background: manga.background,
-                            translatedSynopsis: translatedSynopsis,
-                            translatedBackground: translatedBackground,
-                            isTranslating: isTranslating,
-                            showOriginal: showOriginal,
-                            canTranslate: translationService.isConfigured && translationService.needsTranslation,
-                            onToggleTranslation: { showOriginal.toggle() }
+                            translatedSynopsis: viewModel.translatedSynopsis,
+                            translatedBackground: viewModel.translatedBackground,
+                            isTranslating: viewModel.isTranslating,
+                            showOriginal: viewModel.showOriginal,
+                            canTranslate: viewModel.canTranslate,
+                            onToggleTranslation: viewModel.toggleTranslation
                         )
                     }
 
@@ -153,120 +146,13 @@ struct MangaDetailView: View {
         .sheet(isPresented: $showAddToCollection) {
             AddToCollectionView(manga: manga)
         }
-        .navigationDestination(item: $selectedRelatedManga) { manga in
+        .navigationDestination(item: $viewModel.selectedRelatedManga) { manga in
             MangaDetailView(manga: manga, namespace: namespace)
         }
         .task(id: manga.id) {
-            await loadAllData()
+            viewModel.configure(translationService: translationService)
+            await viewModel.loadAllData()
         }
-    }
-
-    // MARK: - Data Loading
-    private func loadAllData() async {
-        // Reset state
-        characters = []
-        relatedMangas = []
-        relatedMangaDetails = [:]
-        recommendations = []
-        translatedSynopsis = nil
-        translatedBackground = nil
-        showOriginal = false
-
-        // Load in parallel
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { await loadCharacters() }
-            group.addTask { await loadRelatedMangas() }
-            group.addTask { await translateContent() }
-        }
-    }
-
-    private func loadCharacters() async {
-        isLoadingCharacters = true
-        do {
-            characters = try await repository.getMangaCharacters(mangaId: manga.id)
-        } catch {
-            print("Error cargando personajes: \(error)")
-            characters = []
-        }
-        isLoadingCharacters = false
-    }
-
-    private func loadRelatedMangas() async {
-        isLoadingRelated = true
-        do {
-            async let relations = repository.getMangaRelations(mangaId: manga.id)
-            async let recs = repository.getMangaRecommendations(mangaId: manga.id)
-            relatedMangas = try await relations
-            recommendations = try await recs
-
-            // Fetch detalles de mangas relacionados en paralelo para obtener imágenes
-            await fetchRelatedMangaDetails()
-        } catch {
-            print("Error cargando mangas relacionados: \(error)")
-            relatedMangas = []
-            recommendations = []
-        }
-        isLoadingRelated = false
-    }
-
-    private func fetchRelatedMangaDetails() async {
-        // Recopilar todos los IDs de mangas relacionados
-        let mangaIds = relatedMangas
-            .flatMap { $0.entry }
-            .filter { $0.type == "manga" }
-            .map { $0.malId }
-
-        // Fetch en paralelo con límite para no saturar la API
-        await withTaskGroup(of: (Int, Manga?).self) { group in
-            for id in mangaIds {
-                group.addTask {
-                    do {
-                        let manga = try await self.repository.getManga(byId: id)
-                        return (id, manga)
-                    } catch {
-                        print("Error fetching manga \(id): \(error)")
-                        return (id, nil)
-                    }
-                }
-            }
-
-            for await (id, manga) in group {
-                if let manga = manga {
-                    relatedMangaDetails[id] = manga
-                }
-            }
-        }
-    }
-
-    private func loadAndNavigateToManga(id: Int) async {
-        isLoadingManga = true
-        do {
-            let manga = try await repository.getManga(byId: id)
-            selectedRelatedManga = manga
-        } catch {
-            print("Error cargando manga relacionado: \(error)")
-        }
-        isLoadingManga = false
-    }
-
-    private func translateContent() async {
-        guard translationService.isConfigured && translationService.needsTranslation else { return }
-
-        isTranslating = true
-        let targetLanguage = translationService.currentLanguageCode
-
-        do {
-            if let synopsis = manga.sypnosis {
-                translatedSynopsis = try await translationService.translate(synopsis, to: targetLanguage)
-            }
-            if let background = manga.background {
-                translatedBackground = try await translationService.translate(background, to: targetLanguage)
-            }
-        } catch {
-            print("Error traduciendo contenido: \(error)")
-        }
-
-        isTranslating = false
     }
 }
 

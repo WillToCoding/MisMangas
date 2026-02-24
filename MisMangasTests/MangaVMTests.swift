@@ -29,7 +29,7 @@ struct MangaVMTests {
     func checkMangasCargaVM() async {
         await vm.fetchMangas()
         #expect(vm.mangas.count == 1)
-        #expect(vm.errorMessage == nil)
+        #expect(vm.state == .loaded)
     }
 
     @Test("Comprueba el ordenamiento por score")

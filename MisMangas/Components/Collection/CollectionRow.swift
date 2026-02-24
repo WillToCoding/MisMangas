@@ -7,40 +7,6 @@
 
 import SwiftUI
 
-/// Protocolo que unifica UserCollection (local) y UserMangaCollection (cloud)
-protocol CollectionItem: Identifiable {
-    var collectionTitle: String { get }
-    var collectionCoverURL: URL? { get }
-    var collectionScore: Double { get }
-    var collectionUserScore: Double? { get }
-    var collectionVolumesOwned: [Int] { get }
-    var collectionTotalVolumes: Int? { get }
-    var collectionReadingVolume: Int? { get }
-    var collectionCurrentChapter: Int? { get }
-    var collectionTotalChapters: Int? { get }
-    var collectionIsComplete: Bool { get }
-    var collectionReadingStatus: ReadingStatus { get }
-    var isCloudSynced: Bool { get }
-}
-
-// MARK: - UserMangaCollection Conformance (Cloud/API)
-extension UserMangaCollection: CollectionItem {
-    var collectionTitle: String { manga.title }
-    var collectionCoverURL: URL? {
-        URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
-    }
-    var collectionScore: Double { manga.score }
-    var collectionUserScore: Double? { nil } // Cloud no tiene score personal aún
-    var collectionVolumesOwned: [Int] { volumesOwned }
-    var collectionTotalVolumes: Int? { manga.volumes }
-    var collectionReadingVolume: Int? { readingVolume }
-    var collectionCurrentChapter: Int? { nil } // Cloud no tiene capítulo aún
-    var collectionTotalChapters: Int? { manga.chapters }
-    var collectionIsComplete: Bool { completeCollection }
-    var collectionReadingStatus: ReadingStatus { completeCollection ? .completed : .reading }
-    var isCloudSynced: Bool { true }
-}
-
 // MARK: - Generic Collection Row
 struct CollectionRow<Item: CollectionItem>: View {
     let item: Item
@@ -84,7 +50,7 @@ struct CollectionRow<Item: CollectionItem>: View {
             Image(systemName: "star.fill")
                 .foregroundStyle(.yellow)
                 .font(.caption)
-            Text(String(format: "%.2f", item.collectionScore))
+            Text(item.collectionScore.formatted(.number.precision(.fractionLength(2))))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -127,7 +93,7 @@ struct CollectionRow<Item: CollectionItem>: View {
     // MARK: - Accessibility
     private var accessibilityLabel: String {
         var label = item.collectionTitle
-        label += ", " + String(localized: "accessibility_score \(String(format: "%.1f", item.collectionScore))")
+        label += ", " + String(localized: "accessibility_score \(item.collectionScore.formatted(.number.precision(.fractionLength(1))))")
 
         if item.collectionIsComplete {
             label += ", " + String(localized: "accessibility_collection_complete")

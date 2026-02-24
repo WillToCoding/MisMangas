@@ -47,7 +47,7 @@ struct WatchCollectionView: View {
             }
 
             // Overlay para mostrar el loading
-            if cloudVM.isLoading {
+            if cloudVM.state.isLoading {
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
 

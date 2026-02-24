@@ -14,9 +14,7 @@ struct MangaCard: View {
     var showBadge: Bool = false
     var badgeText: String = "New"
 
-    private var coverURL: URL? {
-        URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
-    }
+    private var coverURL: URL? { manga.coverURL }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -44,7 +42,7 @@ struct MangaCard: View {
                             Image(systemName: "star.fill")
                                 .font(.system(size: 10))
                                 .foregroundStyle(.yellow)
-                            Text(String(format: "%.1f", manga.score))
+                            Text(manga.score.formatted(.number.precision(.fractionLength(1))))
                                 .font(.caption2.bold())
                                 .foregroundStyle(.white)
                         }

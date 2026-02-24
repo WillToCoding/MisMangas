@@ -8,6 +8,7 @@
 import Foundation
 #if os(iOS)
 import WidgetKit
+import UIKit
 #endif
 
 /// ViewModel para la gestion de autenticacion de usuarios.
@@ -53,22 +54,71 @@ final class AuthViewModel {
     /// Email del usuario autenticado.
     var userEmail: String?
 
-    /// Indica si hay una operacion de autenticacion en curso.
-    var isLoading = false
-
-    /// Mensaje de error de la ultima operacion fallida.
-    var errorMessage: String?
+    /// Estado de las operaciones de autenticación.
+    var state: ViewState = .idle
 
     /// Indica si se debe mostrar alerta de sesion expirada.
     var showSessionExpiredAlert = false
 
-    private let keychain = KeychainHelper()
-    private let repository = Network()
+    // MARK: - Computed Properties (Compatibilidad)
+
+    /// Indica si hay una operacion de autenticacion en curso.
+    var isLoading: Bool {
+        get { state.isLoading }
+        set { state = newValue ? .loading : .idle }
+    }
+
+    /// Mensaje de error de la ultima operacion fallida.
+    var errorMessage: String? {
+        get { state.errorMessage }
+        set {
+            if let message = newValue {
+                state = .error(message)
+            } else if state.errorMessage != nil {
+                state = .idle
+            }
+        }
+    }
+
+    #if os(iOS)
+    /// Imagen de perfil del usuario.
+    var userProfileImage: UIImage?
+    #endif
+
+    private let keychain: KeychainServiceProtocol
+    private let repository: NetworkRepository
+    #if os(iOS)
+    private let profileImageStorage: ProfileImageStorage
+    #endif
 
     /// Crea una nueva instancia e intenta restaurar la sesion guardada.
-    init() {
+    ///
+    /// - Parameters:
+    ///   - keychain: Servicio de Keychain. Por defecto usa `KeychainHelper`.
+    ///   - repository: Repositorio de red. Por defecto usa `Network`.
+    ///   - profileImageStorage: Almacenamiento de imagen de perfil (solo iOS).
+    #if os(iOS)
+    init(
+        keychain: KeychainServiceProtocol = KeychainHelper(),
+        repository: NetworkRepository = Network(),
+        profileImageStorage: ProfileImageStorage = ProfileImageStorage()
+    ) {
+        self.keychain = keychain
+        self.repository = repository
+        self.profileImageStorage = profileImageStorage
+        loadSavedSession()
+        loadProfileImage()
+    }
+    #else
+    init(
+        keychain: KeychainServiceProtocol = KeychainHelper(),
+        repository: NetworkRepository = Network()
+    ) {
+        self.keychain = keychain
+        self.repository = repository
         loadSavedSession()
     }
+    #endif
 
     // MARK: - Session Management
 
@@ -234,7 +284,8 @@ final class AuthViewModel {
     /// Cierra la sesion del usuario.
     ///
     /// Elimina todos los datos del Keychain (token, email, fecha) y
-    /// resetea el estado del ViewModel. Tambien limpia los datos del widget.
+    /// resetea el estado del ViewModel. Tambien limpia los datos del widget
+    /// y la imagen de perfil.
     func logout() {
         keychain.clearAll()
         authToken = nil
@@ -243,9 +294,10 @@ final class AuthViewModel {
         errorMessage = nil
         showSessionExpiredAlert = false
 
-        // Limpiar datos del widget
+        // Limpiar datos del widget y foto de perfil
         #if os(iOS)
         SharedData.shared.clearWidgetData()
+        deleteProfileImage()
         #endif
 
         print("Sesión cerrada")
@@ -260,6 +312,31 @@ final class AuthViewModel {
         logout()
         showSessionExpiredAlert = true
     }
+
+    // MARK: - Profile Image
+
+    #if os(iOS)
+    /// Carga la imagen de perfil guardada.
+    private func loadProfileImage() {
+        userProfileImage = profileImageStorage.loadImage()
+    }
+
+    /// Guarda una nueva imagen de perfil.
+    ///
+    /// La imagen se redimensiona automáticamente si es mayor a 400px de ancho.
+    ///
+    /// - Parameter image: Imagen a guardar como foto de perfil.
+    func saveProfileImage(_ image: UIImage) async {
+        await profileImageStorage.saveImage(image)
+        userProfileImage = profileImageStorage.loadImage()
+    }
+
+    /// Elimina la imagen de perfil.
+    func deleteProfileImage() {
+        profileImageStorage.deleteImage()
+        userProfileImage = nil
+    }
+    #endif
 
     // MARK: - Validation
 

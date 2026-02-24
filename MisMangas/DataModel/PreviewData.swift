@@ -15,7 +15,7 @@ struct PreviewData {
     let container: ModelContainer
 
     private init() {
-        let schema = Schema([MangaModel.self, UserCollection.self])
+        let schema = Schema([MangaModel.self, UserCollection.self, OwnedVolume.self])
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
         container = try! ModelContainer(for: schema, configurations: configuration)
 

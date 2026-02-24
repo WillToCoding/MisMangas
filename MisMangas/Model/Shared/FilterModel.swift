@@ -102,6 +102,17 @@ enum MangaStatus: String, CaseIterable {
     var jikanValue: String {
         rawValue
     }
+
+    /// Nombre en inglés para evitar problemas de localización RTL en tvOS
+    var englishName: String {
+        switch self {
+        case .publishing: return "Publishing"
+        case .complete: return "Finished"
+        case .hiatus: return "On Hiatus"
+        case .discontinued: return "Discontinued"
+        case .upcoming: return "Upcoming"
+        }
+    }
 }
 
 // MARK: - Reading Status (User)
@@ -141,5 +152,25 @@ enum ReadingStatus: String, CaseIterable, Codable {
         case .onHold: return .yellow
         case .dropped: return .red
         }
+    }
+}
+
+// MARK: - Relation Type Localization
+
+/// Traduce tipos de relación de mangas (secuela, precuela, etc.) al idioma local
+func localizedRelationType(_ type: String) -> String {
+    switch type.lowercased() {
+    case "sequel": return String(localized: "relation_sequel")
+    case "prequel": return String(localized: "relation_prequel")
+    case "side story": return String(localized: "relation_side_story")
+    case "spin-off": return String(localized: "relation_spin_off")
+    case "alternative version": return String(localized: "relation_alternative")
+    case "alternative setting": return String(localized: "relation_alternative_setting")
+    case "adaptation": return String(localized: "relation_adaptation")
+    case "summary": return String(localized: "relation_summary")
+    case "full story": return String(localized: "relation_full_story")
+    case "parent story": return String(localized: "relation_parent_story")
+    case "other": return String(localized: "relation_other")
+    default: return type
     }
 }

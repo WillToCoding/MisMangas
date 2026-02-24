@@ -8,35 +8,83 @@
 import Foundation
 import SwiftData
 
-/// Manga cacheado en SwiftData para acceso offline
+/// Modelo SwiftData para persistencia local de mangas.
+///
+/// ## Overview
+/// `MangaModel` cachea los datos de un manga de la API para acceso offline.
+/// Los datos relacionados (autores, géneros, etc.) se almacenan como arrays
+/// de strings desnormalizados para simplificar las consultas.
+///
+/// ## Topics
+///
+/// ### Creación
+/// - ``init(from:)``
+/// - ``toManga()``
+///
+/// ### Relaciones
+/// - ``collections``
 @Model
 final class MangaModel {
     #Index<MangaModel>([\.title])
+
+    /// Identificador único del manga (de la API).
     @Attribute(.unique) var id: Int
+
+    /// Título principal del manga.
     var title: String
+
+    /// Título en inglés, si existe.
     var titleEnglish: String?
+
+    /// Título en japonés, si existe.
     var titleJapanese: String?
+
+    /// Estado de publicación: `finished`, `publishing`, `on_hiatus`, etc.
     var status: String
+
+    /// Puntuación media del manga (0-10).
     var score: Double
+
+    /// Número total de volúmenes, `nil` si está en publicación.
     var volumes: Int?
+
+    /// Número total de capítulos, `nil` si está en publicación.
     var chapters: Int?
+
+    /// Fecha de inicio de publicación en formato ISO 8601.
     var startDate: String?
+
+    /// Fecha de fin de publicación en formato ISO 8601.
     var endDate: String?
+
+    /// Sinopsis del manga.
     var sypnosis: String?
+
+    /// Información adicional sobre el manga.
     var background: String?
+
+    /// URL de la imagen de portada.
     var mainPicture: String
+
+    /// URL de la página del manga en MyAnimeList.
     var url: String
 
-    // Arrays simplificados (nombres para mostrar)
+    /// Nombres de los autores (desnormalizado).
     var authorNames: [String]
+
+    /// Nombres de los géneros (desnormalizado).
     var genreNames: [String]
+
+    /// Nombres de los temas (desnormalizado).
     var themeNames: [String]
+
+    /// Nombres de las demografías (desnormalizado).
     var demographicNames: [String]
 
-    // Metadata
+    /// Fecha en que se cacheó el manga.
     var cachedAt: Date
 
-    // Relación inversa
+    /// Entradas en colecciones de usuarios que contienen este manga.
     @Relationship(deleteRule: .cascade, inverse: \UserCollection.manga)
     var collections: [UserCollection]?
 
@@ -82,7 +130,12 @@ final class MangaModel {
         self.cachedAt = cachedAt
     }
 
-    /// Crea MangaModel desde un Manga de la API
+    /// Crea un `MangaModel` desde un DTO de la API.
+    ///
+    /// Extrae y desnormaliza los datos relacionados (autores, géneros, etc.)
+    /// para almacenarlos como arrays de strings.
+    ///
+    /// - Parameter manga: El DTO `Manga` recibido de la API.
     convenience init(from manga: Manga) {
         self.init(
             id: manga.id,
@@ -106,7 +159,12 @@ final class MangaModel {
         )
     }
 
-    /// Convierte a Manga para usar en vistas existentes
+    /// Convierte el modelo a un DTO `Manga` para usar en vistas.
+    ///
+    /// Reconstruye los objetos relacionados (Author, Genre, etc.) a partir
+    /// de los arrays desnormalizados. Los IDs generados son temporales.
+    ///
+    /// - Returns: Un `Manga` compatible con las vistas existentes.
     func toManga() -> Manga {
         Manga(
             id: id,
@@ -128,5 +186,10 @@ final class MangaModel {
             themes: themeNames.map { Theme(id: UUID().uuidString, theme: $0) },
             demographics: demographicNames.map { Demographic(id: UUID().uuidString, demographic: $0) }
         )
+    }
+
+    /// URL limpia de la imagen de portada.
+    var coverURL: URL? {
+        URL(string: mainPicture.replacingOccurrences(of: "\"", with: ""))
     }
 }

@@ -178,7 +178,7 @@ struct AccountPreferencesView: View {
 // MARK: - Translation Preferences
 struct TranslationPreferencesView: View {
     @State private var deeplApiKey: String = ""
-    private let translationService = TranslationService.shared
+    @Environment(TranslationService.self) private var translationService
 
     var body: some View {
         Form {

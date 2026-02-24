@@ -8,79 +8,184 @@
 import Foundation
 import SwiftData
 
-/// Entrada en la colección del usuario
-/// Contiene datos específicos de la colección (volúmenes, progreso, puntuación personal)
-/// con relación al manga cacheado
+// MARK: - OwnedVolume Model
+
+/// Representa un volumen que el usuario posee.
+@Model
+final class OwnedVolume {
+    /// Número del volumen.
+    var number: Int
+
+    /// Colección a la que pertenece este volumen.
+    @Relationship var collection: UserCollection?
+
+    init(number: Int) {
+        self.number = number
+    }
+}
+
+// MARK: - UserCollection Model
+
+/// Entrada en la colección personal del usuario.
+///
+/// ## Overview
+/// `UserCollection` representa un manga en la colección del usuario con sus datos
+/// de seguimiento: volúmenes poseídos y progreso de lectura.
+///
+/// Tiene una relación con ``MangaModel`` que contiene los datos del manga cacheado.
+///
+/// ## Topics
+///
+/// ### Progreso de lectura
+/// - ``currentReadingVolume``
+/// - ``readingStatus``
+///
+/// ### Colección física
+/// - ``ownedVolumes``
+/// - ``hasCompleteCollection``
 @Model
 final class UserCollection {
-    // Relación al manga cacheado
+    /// Manga asociado a esta entrada de colección.
     @Relationship var manga: MangaModel
 
-    // Datos de la colección del usuario
-    var volumesOwned: [Int]
+    /// Volúmenes que posee el usuario.
+    @Relationship(deleteRule: .cascade, inverse: \OwnedVolume.collection)
+    var ownedVolumes: [OwnedVolume]
+
+    /// Volumen que el usuario está leyendo actualmente.
     var currentReadingVolume: Int?
-    var currentChapter: Int?
+
+    /// Indica si el usuario tiene la colección física completa.
     var hasCompleteCollection: Bool
-    var addedDate: Date
 
-    // Datos personales del usuario
-    var userScore: Double?
-    var readingStatusRaw: String
+    /// Fecha en que se añadió el manga a la colección.
+    var addedDate: Date = Date()
 
-    /// Estado de lectura del usuario
+    /// Valor raw del estado de lectura para persistencia.
+    var readingStatusRaw: String = ReadingStatus.planToRead.rawValue
+
+    /// Indica si hay cambios locales pendientes de sincronizar con cloud.
+    var pendingSync: Bool = false
+
+    /// Fecha de última modificación (para detectar conflictos).
+    var lastModified: Date = Date()
+
+    /// Volúmenes que tenía cloud la última vez que sincronizamos (comma-separated).
+    var lastSyncedVolumesRaw: String
+
+    /// Volumen de lectura que tenía cloud la última vez que sincronizamos.
+    var lastSyncedReadingVolume: Int?
+
+    /// Volúmenes sincronizados con cloud (computed).
+    var lastSyncedVolumes: [Int] {
+        get {
+            guard !lastSyncedVolumesRaw.isEmpty else { return [] }
+            return lastSyncedVolumesRaw.split(separator: ",").compactMap { Int($0) }
+        }
+        set {
+            lastSyncedVolumesRaw = newValue.map(String.init).joined(separator: ",")
+        }
+    }
+
+    /// Estado de lectura del manga.
+    ///
+    /// Los valores posibles son: `reading`, `completed`, `onHold`, `dropped`, `planToRead`.
     var readingStatus: ReadingStatus {
         get { ReadingStatus(rawValue: readingStatusRaw) ?? .planToRead }
         set { readingStatusRaw = newValue.rawValue }
     }
 
+    /// Lista de números de volúmenes poseídos (computed para compatibilidad).
+    var volumesOwned: [Int] {
+        ownedVolumes.map(\.number).sorted()
+    }
+
     init(
         manga: MangaModel,
-        volumesOwned: [Int] = [],
+        ownedVolumes: [OwnedVolume] = [],
         currentReadingVolume: Int? = nil,
-        currentChapter: Int? = nil,
         hasCompleteCollection: Bool = false,
         addedDate: Date = Date(),
-        userScore: Double? = nil,
-        readingStatus: ReadingStatus = .planToRead
+        readingStatus: ReadingStatus = .planToRead,
+        pendingSync: Bool = false,
+        lastModified: Date = Date(),
+        lastSyncedVolumes: [Int] = [],
+        lastSyncedReadingVolume: Int? = nil
     ) {
         self.manga = manga
-        self.volumesOwned = volumesOwned
+        self.ownedVolumes = ownedVolumes
         self.currentReadingVolume = currentReadingVolume
-        self.currentChapter = currentChapter
         self.hasCompleteCollection = hasCompleteCollection
         self.addedDate = addedDate
-        self.userScore = userScore
         self.readingStatusRaw = readingStatus.rawValue
+        self.pendingSync = pendingSync
+        self.lastModified = lastModified
+        self.lastSyncedVolumesRaw = lastSyncedVolumes.map(String.init).joined(separator: ",")
+        self.lastSyncedReadingVolume = lastSyncedReadingVolume
+    }
+
+    /// Convenience initializer con array de Int para volúmenes.
+    convenience init(
+        manga: MangaModel,
+        volumesOwned: [Int],
+        currentReadingVolume: Int? = nil,
+        hasCompleteCollection: Bool = false,
+        addedDate: Date = Date(),
+        readingStatus: ReadingStatus = .planToRead,
+        pendingSync: Bool = false,
+        lastModified: Date = Date(),
+        lastSyncedVolumes: [Int] = [],
+        lastSyncedReadingVolume: Int? = nil
+    ) {
+        let volumes = volumesOwned.map { OwnedVolume(number: $0) }
+        self.init(
+            manga: manga,
+            ownedVolumes: volumes,
+            currentReadingVolume: currentReadingVolume,
+            hasCompleteCollection: hasCompleteCollection,
+            addedDate: addedDate,
+            readingStatus: readingStatus,
+            pendingSync: pendingSync,
+            lastModified: lastModified,
+            lastSyncedVolumes: lastSyncedVolumes,
+            lastSyncedReadingVolume: lastSyncedReadingVolume
+        )
     }
 }
 
-// MARK: - Computed Properties para acceso fácil
+// MARK: - Computed Properties
+
 extension UserCollection {
+    /// ID del manga asociado.
     var id: Int { manga.id }
+
+    /// Título del manga asociado.
     var title: String { manga.title }
+
+    /// Título en inglés del manga asociado.
     var titleEnglish: String? { manga.titleEnglish }
+
+    /// URL de la portada del manga asociado.
     var mainPicture: String { manga.mainPicture }
+
+    /// Puntuación media del manga asociado.
     var score: Double { manga.score }
+
+    /// Total de volúmenes del manga, `nil` si está en publicación.
     var totalVolumes: Int? { manga.volumes }
-    var totalChapters: Int? { manga.chapters }
 }
 
 // MARK: - CollectionItem Protocol Conformance
 extension UserCollection: CollectionItem {
     var collectionTitle: String { manga.title }
 
-    var collectionCoverURL: URL? {
-        URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))
-    }
+    var collectionCoverURL: URL? { manga.coverURL }
 
     var collectionScore: Double { manga.score }
-    var collectionUserScore: Double? { userScore }
     var collectionVolumesOwned: [Int] { volumesOwned }
     var collectionTotalVolumes: Int? { manga.volumes }
     var collectionReadingVolume: Int? { currentReadingVolume }
-    var collectionCurrentChapter: Int? { currentChapter }
-    var collectionTotalChapters: Int? { manga.chapters }
     var collectionIsComplete: Bool { hasCompleteCollection }
     var collectionReadingStatus: ReadingStatus { readingStatus }
-    var isCloudSynced: Bool { false }
+    var isCloudSynced: Bool { !pendingSync }
 }

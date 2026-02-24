@@ -36,7 +36,7 @@ struct VisionMangaDetailView: View {
         ScrollView {
             HStack(alignment: .top, spacing: 60) {
                 // Portada grande
-                AsyncImage(url: URL(string: updatedItem.manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
+                AsyncImage(url: updatedItem.manga.coverURL) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -60,7 +60,7 @@ struct VisionMangaDetailView: View {
                             HStack {
                                 Image(systemName: "star.fill")
                                     .foregroundStyle(.yellow)
-                                Text(String(format: "%.2f", updatedItem.manga.score))
+                                Text(updatedItem.manga.score.formatted(.number.precision(.fractionLength(2))))
                                     .font(.title.bold())
                             }
                         }

@@ -96,7 +96,7 @@ struct VisionMangaCard: View {
         HStack {
             Image(systemName: "star.fill")
                 .foregroundStyle(.yellow)
-            Text(String(format: "%.2f", score))
+            Text(score.formatted(.number.precision(.fractionLength(2))))
                 .font(.headline)
 
             Spacer()

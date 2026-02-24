@@ -12,6 +12,8 @@ import SwiftData
 struct MisMangas_macOSApp: App {
     @State private var authVM: AuthViewModel
     @State private var cloudVM: CloudCollectionViewModel
+    @State private var translationService = TranslationService()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         let auth = AuthViewModel()
@@ -24,9 +26,18 @@ struct MisMangas_macOSApp: App {
             MacMainView()
                 .environment(authVM)
                 .environment(cloudVM)
+                .environment(translationService)
                 .frame(minWidth: 900, minHeight: 600)
         }
         .modelContainer(.production)
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active && authVM.isAuthenticated {
+                // Recargar colección al volver a primer plano
+                Task {
+                    await cloudVM.loadCollection()
+                }
+            }
+        }
         .commands {
             MacCommands()
         }
@@ -38,6 +49,7 @@ struct MisMangas_macOSApp: App {
             MacPreferencesView()
                 .environment(authVM)
                 .environment(cloudVM)
+                .environment(translationService)
         }
         .modelContainer(.production)
     }
@@ -61,18 +73,18 @@ struct MacCommands: Commands {
         }
 
         CommandGroup(after: .sidebar) {
-            Button("menu_explore") {
-                NotificationCenter.default.post(name: .navigateToSection, object: NavigationItem.explore)
+            Button("nav_home") {
+                NotificationCenter.default.post(name: .navigateToSection, object: NavigationItem.home)
             }
             .keyboardShortcut("1", modifiers: .command)
 
-            Button("menu_collection") {
+            Button("nav_collection") {
                 NotificationCenter.default.post(name: .navigateToSection, object: NavigationItem.collection)
             }
             .keyboardShortcut("2", modifiers: .command)
 
-            Button("menu_best_mangas") {
-                NotificationCenter.default.post(name: .navigateToSection, object: NavigationItem.bestMangas)
+            Button("nav_profile") {
+                NotificationCenter.default.post(name: .navigateToSection, object: NavigationItem.profile)
             }
             .keyboardShortcut("3", modifiers: .command)
         }

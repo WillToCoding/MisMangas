@@ -17,7 +17,7 @@ struct WatchRootView: View {
             Group {
                 if !authVM.isAuthenticated {
                     WatchLoginPromptView()
-                } else if cloudVM.isLoading && cloudVM.cloudCollection.isEmpty {
+                } else if cloudVM.state.isLoading && cloudVM.cloudCollection.isEmpty {
                     ProgressView("loading_collection")
                 } else if cloudVM.cloudCollection.isEmpty {
                     ContentUnavailableView(

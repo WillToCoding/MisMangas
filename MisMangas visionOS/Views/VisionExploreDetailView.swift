@@ -21,7 +21,7 @@ struct VisionExploreDetailView: View {
         ScrollView {
             HStack(alignment: .top, spacing: 60) {
                 // Portada grande
-                AsyncImage(url: URL(string: manga.mainPicture.replacingOccurrences(of: "\"", with: ""))) { image in
+                AsyncImage(url: manga.coverURL) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -50,7 +50,7 @@ struct VisionExploreDetailView: View {
 
                     // Stats
                     HStack(spacing: 40) {
-                        StatBadge(title: "detail_score", value: String(format: "%.2f", manga.score), icon: "star.fill", color: .yellow)
+                        StatBadge(title: "detail_score", value: manga.score.formatted(.number.precision(.fractionLength(2))), icon: "star.fill", color: .yellow)
 
                         if let volumes = manga.volumes {
                             StatBadge(title: "detail_volumes", value: "\(volumes)", icon: "book.closed", color: .blue)
