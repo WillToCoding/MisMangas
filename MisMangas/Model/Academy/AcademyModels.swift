@@ -206,8 +206,59 @@ extension Manga {
         themes: [.test],
         demographics: [.test]
     )
+
+    /// Array de mangas de prueba con IDs únicos para previews de grids/listas
+    static let testArray: [Manga] = [
+        makeTestManga(index: 1),
+        makeTestManga(index: 2),
+        makeTestManga(index: 3),
+        makeTestManga(index: 4),
+        makeTestManga(index: 5),
+        makeTestManga(index: 6)
+    ]
+
+    private static func makeTestManga(index: Int) -> Manga {
+        Manga(
+            id: 40 + index,
+            title: "Test Manga \(index)",
+            titleEnglish: "Test Manga \(index)",
+            titleJapanese: "テストマンガ\(index)",
+            status: index % 2 == 0 ? "finished" : "publishing",
+            score: 7.0 + Double(index) * 0.2,
+            volumes: index * 10,
+            chapters: index * 50,
+            startDate: "2020-01-0\(index)T00:00:00Z",
+            endDate: index % 2 == 0 ? "2023-01-01T00:00:00Z" : nil,
+            sypnosis: "Synopsis for test manga \(index).",
+            background: nil,
+            mainPicture: "https://cdn.myanimelist.net/images/manga/1/267793l.jpg",
+            url: "https://myanimelist.net/manga/\(40 + index)",
+            authors: [.test],
+            genres: [.test],
+            themes: [.test],
+            demographics: [.test]
+        )
+    }
 }
 
 extension Metadata {
     static let test = Metadata(total: 64833, page: 1, per: 10)
+}
+
+extension UserMangaCollection {
+    static let test = UserMangaCollection(
+        id: "test-collection-1",
+        manga: .test,
+        completeCollection: false,
+        volumesOwned: [1, 2, 3, 4, 5],
+        readingVolume: 3
+    )
+
+    static let testComplete = UserMangaCollection(
+        id: "test-collection-2",
+        manga: .test,
+        completeCollection: true,
+        volumesOwned: Array(1...42),
+        readingVolume: 42
+    )
 }

@@ -5,7 +5,7 @@
 //  Created by Juan Carlos on 23/2/26.
 //
 
-#if os(iOS)
+#if os(iOS) || os(macOS) || os(tvOS) || os(visionOS)
 import Foundation
 import SwiftData
 
@@ -63,11 +63,12 @@ final class SyncViewModel {
 
     /// Sincroniza la colección cloud a SwiftData local.
     ///
-    /// Detecta conflictos reales (local Y cloud cambiaron desde lastSynced).
-    /// Si hay conflictos, los almacena en `conflicts` para que el usuario los resuelva.
+    /// Usa estrategia "last-write-wins":
+    /// 1. Primero sube los cambios locales pendientes al cloud
+    /// 2. Luego sincroniza el cloud a local
     ///
     /// - Parameter cloudCollection: Colección obtenida del servidor.
-    /// - Returns: `true` si la sincronización fue exitosa, `false` si hay conflictos.
+    /// - Returns: `true` si la sincronización fue exitosa.
     @discardableResult
     func syncToLocal(_ cloudCollection: [UserMangaCollection]) async -> Bool {
         guard let container = modelContainer else {
@@ -79,20 +80,11 @@ final class SyncViewModel {
         let dataContainer = DataContainer(modelContainer: container)
 
         do {
-            // 1. Detectar conflictos
-            let detectedConflicts = try await dataContainer.detectConflicts(cloudCollection: cloudCollection)
-            if !detectedConflicts.isEmpty {
-                print("Conflictos detectados: \(detectedConflicts.count)")
-                self.conflicts = detectedConflicts
-                state = .loaded
-                return false
-            }
-
-            // 2. Sin conflictos: subir cambios pendientes
+            // 1. Subir cambios pendientes locales (local wins para estos)
             await uploadPendingChanges()
 
-            // 3. Sincronizar cloud a local
-            try await dataContainer.syncFromCloudSkippingConflicts(cloudCollection)
+            // 2. Sincronizar cloud a local (cloud wins para el resto)
+            try await dataContainer.syncAllFromCloud(cloudCollection)
             print("Colección sincronizada a local: \(cloudCollection.count) mangas")
 
             state = .loaded
@@ -108,8 +100,13 @@ final class SyncViewModel {
 
     /// Sube los cambios locales pendientes al cloud.
     ///
-    /// Busca items en SwiftData que tengan `pendingSync = true`
-    /// y los envía al servidor.
+    /// Usa estrategia de timestamps:
+    /// - Si `lastModified > lastSyncDate` -> el cambio local es mas reciente -> subir
+    /// - Si no -> descartar cambio local (cloud probablemente tiene datos mas recientes de otro dispositivo)
+    ///
+    /// Esto permite:
+    /// - Que cambios intencionales (ej: reiniciar lectura) se suban correctamente
+    /// - Que dispositivos desactualizados no sobrescriban cambios mas recientes del cloud
     func uploadPendingChanges() async {
         guard let container = modelContainer,
               let token = authVM.authToken else { return }
@@ -120,6 +117,14 @@ final class SyncViewModel {
             let pendingItems = try await dataContainer.getPendingSyncItems()
 
             for item in pendingItems {
+                // Solo subir si el cambio local es mas reciente que la ultima sync
+                // Esto evita que un dispositivo desactualizado sobrescriba cambios del cloud
+                guard item.hasRecentLocalChanges else {
+                    print("[Sync] Descartando cambio antiguo de \(item.mangaTitle) (lastModified <= lastSyncDate)")
+                    try await dataContainer.clearPendingSync(mangaId: item.mangaId)
+                    continue
+                }
+
                 let request = UserMangaCollectionRequest(
                     manga: item.mangaId,
                     completeCollection: item.hasCompleteCollection,
@@ -130,13 +135,13 @@ final class SyncViewModel {
                 do {
                     try await repository.addToCollection(request, token: token)
                     try await dataContainer.markAsSynced(mangaId: item.mangaId)
-                    print("Subido a cloud: \(item.mangaTitle)")
+                    print("[Sync] Subido a cloud: \(item.mangaTitle)")
                 } catch {
-                    print("Error subiendo \(item.mangaTitle): \(error)")
+                    print("[Sync] Error subiendo \(item.mangaTitle): \(error)")
                 }
             }
         } catch {
-            print("Error obteniendo items pendientes: \(error)")
+            print("[Sync] Error obteniendo items pendientes: \(error)")
         }
     }
 
@@ -172,9 +177,9 @@ final class SyncViewModel {
 
             do {
                 try await repository.addToCollection(request, token: token)
-                print("✓ Sincronizado: \(item.title)")
+                print("[Sync] Sincronizado: \(item.title)")
             } catch {
-                print("✗ Error sincronizando \(item.title): \(error)")
+                print("[Sync] Error sincronizando \(item.title): \(error)")
             }
         }
 

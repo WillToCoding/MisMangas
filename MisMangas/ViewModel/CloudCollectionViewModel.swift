@@ -50,7 +50,7 @@ final class CloudCollectionViewModel {
     /// Estado actual de la vista.
     var state: ViewState = .idle
 
-    #if os(iOS)
+    #if os(iOS) || os(macOS)
     /// ViewModel de sincronización local/cloud
     private(set) var syncVM: SyncViewModel
 
@@ -72,12 +72,12 @@ final class CloudCollectionViewModel {
     init(authVM: AuthViewModel, repository: NetworkRepository = Network()) {
         self.authVM = authVM
         self.repository = repository
-        #if os(iOS)
+        #if os(iOS) || os(macOS)
         self.syncVM = SyncViewModel(repository: repository, authVM: authVM)
         #endif
     }
 
-    #if os(iOS)
+    #if os(iOS) || os(macOS)
     /// Configura el ModelContainer para sincronización local
     func setModelContainer(_ container: ModelContainer) {
         syncVM.setModelContainer(container)
@@ -104,11 +104,13 @@ final class CloudCollectionViewModel {
             cloudCollection = try await repository.getUserCollection(token: token)
             print("Colección cloud cargada: \(cloudCollection.count) mangas")
 
-            // Sincronizar a local (SwiftData) - solo iOS
-            #if os(iOS)
+            // Sincronizar a local (SwiftData)
+            #if os(iOS) || os(macOS)
             await syncVM.syncToLocal(cloudCollection)
+            #endif
 
-            // Actualizar datos del widget
+            // Actualizar datos del widget (solo iOS)
+            #if os(iOS)
             await SharedData.shared.updateWidgetFromCollection(
                 cloudCollection,
                 userEmail: authVM.userEmail
@@ -128,7 +130,7 @@ final class CloudCollectionViewModel {
 
     // MARK: - Sync Local to Cloud
 
-    #if os(iOS)
+    #if os(iOS) || os(macOS)
     /// Sincroniza la colección local de SwiftData a la nube.
     ///
     /// Útil después del primer login para migrar mangas guardados localmente
@@ -259,7 +261,7 @@ final class CloudCollectionViewModel {
     /// Llamar este metodo al hacer logout para limpiar los datos del usuario anterior.
     func clearCollection() {
         cloudCollection.removeAll()
-        #if os(iOS)
+        #if os(iOS) || os(macOS)
         syncVM.clearConflicts()
         #endif
         state = .idle
@@ -267,7 +269,7 @@ final class CloudCollectionViewModel {
 
     // MARK: - Conflict Resolution
 
-    #if os(iOS)
+    #if os(iOS) || os(macOS)
     /// Resuelve un conflicto manteniendo la version local (sube a cloud)
     func resolveConflictKeepLocal(_ conflict: SyncConflict) async {
         await syncVM.resolveConflictKeepLocal(conflict)

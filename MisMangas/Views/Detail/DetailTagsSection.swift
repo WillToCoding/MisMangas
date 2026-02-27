@@ -19,8 +19,7 @@ struct DetailTagsSection<T: Identifiable>: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
                     .font(.headline)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityHeading(.h2)
+                    .accessibilityHeader(.h2)
 
                 FlowLayout(spacing: 8) {
                     ForEach(items) { item in

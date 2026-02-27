@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FilterView: View {
     @Binding var filters: MangaFilters
-    @State private var filterVM = FilterViewModel()
+    @State var filterVM = FilterViewModel()
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -50,10 +50,8 @@ struct FilterView: View {
     private var filterContent: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 24) {
-                // Búsqueda
                 searchSection
 
-                // Demografías
                 if !filterVM.availableDemographics.isEmpty {
                     chipSection(
                         title: "filter_demographics",
@@ -63,7 +61,6 @@ struct FilterView: View {
                     )
                 }
 
-                // Géneros
                 if !filterVM.availableGenres.isEmpty {
                     chipSection(
                         title: "filter_genres",
@@ -73,7 +70,6 @@ struct FilterView: View {
                     )
                 }
 
-                // Temáticas
                 if !filterVM.availableThemes.isEmpty {
                     chipSection(
                         title: "filter_themes",
@@ -83,13 +79,9 @@ struct FilterView: View {
                     )
                 }
 
-                // Filtros avanzados
                 advancedSection
-
-                // Ordenar por
                 sortSection
 
-                // Limpiar
                 if filters.isActive {
                     clearButton
                 }
@@ -97,158 +89,6 @@ struct FilterView: View {
                 Spacer(minLength: 50)
             }
             .padding()
-        }
-    }
-
-    // MARK: - Search Section
-
-    private var searchSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("filter_search", systemImage: "magnifyingglass")
-                .font(.headline)
-
-            TextField("search_placeholder", text: $filters.searchText)
-                .textFieldStyle(.roundedBorder)
-        }
-    }
-
-    // MARK: - Chip Section
-
-    private func chipSection(
-        title: LocalizedStringKey,
-        items: [String],
-        selection: Binding<Set<String>>,
-        color: Color
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(title)
-                    .font(.headline)
-                if !selection.wrappedValue.isEmpty {
-                    Text("(\(selection.wrappedValue.count))")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            FlowLayout(spacing: 8) {
-                ForEach(items, id: \.self) { item in
-                    ChipButton(
-                        title: localizedAPIValue(item),
-                        isSelected: selection.wrappedValue.contains(item),
-                        color: color
-                    ) {
-                        if selection.wrappedValue.contains(item) {
-                            selection.wrappedValue.remove(item)
-                        } else {
-                            selection.wrappedValue.insert(item)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: - Advanced Section
-
-    private var advancedSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("filter_advanced", systemImage: "slider.horizontal.3")
-                .font(.headline)
-
-            // Año
-            HStack {
-                Text("filter_year")
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Picker("", selection: $filters.startYear) {
-                    Text("filter_any").tag(nil as Int?)
-                    ForEach((1950...2025).reversed(), id: \.self) { year in
-                        Text(String(year)).tag(year as Int?)
-                    }
-                }
-                .pickerStyle(.menu)
-            }
-
-            // Score mínimo
-            HStack {
-                Text("filter_min_score")
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Picker("", selection: $filters.minScore) {
-                    Text("filter_any").tag(nil as Double?)
-                    ForEach([6.0, 7.0, 7.5, 8.0, 8.5, 9.0], id: \.self) { score in
-                        Text("≥ \(score.formatted(.number.precision(.fractionLength(1))))").tag(score as Double?)
-                    }
-                }
-                .pickerStyle(.menu)
-            }
-
-            // Estado
-            HStack {
-                Text("filter_status")
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Picker("", selection: $filters.status) {
-                    Text("filter_any").tag(nil as MangaStatus?)
-                    ForEach(MangaStatus.allCases, id: \.self) { status in
-                        Text(status.localizedName).tag(status as MangaStatus?)
-                    }
-                }
-                .pickerStyle(.menu)
-            }
-        }
-        .padding()
-        .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
-    }
-
-    // MARK: - Sort Section
-
-    private var sortSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("filter_sort", systemImage: "arrow.up.arrow.down")
-                .font(.headline)
-
-            HStack(spacing: 8) {
-                ForEach(SortOption.allCases, id: \.self) { option in
-                    ChipButton(
-                        title: option.localizedName,
-                        isSelected: filters.sortBy == option,
-                        color: .orange
-                    ) {
-                        filters.sortBy = option
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: - Clear Button
-
-    private var clearButton: some View {
-        Button {
-            filters.clear()
-        } label: {
-            Label("action_clear_filters", systemImage: "xmark.circle.fill")
-                .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.bordered)
-        .tint(.red)
-    }
-
-    // MARK: - Error View
-
-    private func errorView(message: String) -> some View {
-        ContentUnavailableView {
-            Label("error_title", systemImage: "exclamationmark.triangle")
-        } description: {
-            Text(message)
-        } actions: {
-            Button("action_retry") {
-                Task {
-                    await filterVM.loadFilterOptions()
-                }
-            }
         }
     }
 }
@@ -271,6 +111,7 @@ struct ChipButton: View {
                 .foregroundStyle(isSelected ? .white : color)
         }
         .buttonStyle(.plain)
+        .accessibilitySelectable(label: title, isSelected: isSelected)
     }
 }
 

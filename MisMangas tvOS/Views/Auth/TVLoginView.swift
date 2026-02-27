@@ -82,3 +82,8 @@ struct TVLoginView: View {
         }
     }
 }
+
+#Preview {
+    TVLoginView()
+        .environment(AuthViewModel())
+}

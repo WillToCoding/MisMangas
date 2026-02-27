@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MisMangas_visionOSApp: App {
@@ -28,6 +29,7 @@ struct MisMangas_visionOSApp: App {
                 .environment(translationService)
         }
         .defaultSize(width: 1200, height: 800)
+        .modelContainer(.production)
 
         // Espacio inmersivo opcional
         ImmersiveSpace(id: "ImmersiveMangaSpace") {

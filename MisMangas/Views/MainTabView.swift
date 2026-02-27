@@ -8,15 +8,25 @@
 import SwiftUI
 import SwiftData
 
+enum AppTab: Int {
+    case home = 0
+    case collection = 1
+    case profile = 2
+    case search = 3
+}
+
 struct MainTabView: View {
     @Environment(AuthViewModel.self) private var authVM
     @Environment(CloudCollectionViewModel.self) private var cloudVM
     @Environment(\.modelContext) private var modelContext
 
+    @State private var selectedTab: AppTab = .home
+    @State private var pendingMangaId: Int?
+
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             // Tab 1: Inicio
-            Tab {
+            Tab(value: .home) {
                 HomeView()
             } label: {
                 Label("tab_home", systemImage: "house")
@@ -25,8 +35,8 @@ struct MainTabView: View {
             }
 
             // Tab 2: Coleccion
-            Tab {
-                CollectionView()
+            Tab(value: .collection) {
+                CollectionView(pendingMangaId: $pendingMangaId)
             } label: {
                 Label("tab_collection", systemImage: "books.vertical")
                     .symbolVariant(.fill)
@@ -34,7 +44,7 @@ struct MainTabView: View {
             }
 
             // Tab 3: Perfil
-            Tab {
+            Tab(value: .profile) {
                 ProfileView()
             } label: {
                 Label("tab_profile", systemImage: "person.circle")
@@ -43,7 +53,7 @@ struct MainTabView: View {
             }
 
             // Tab 4: Busqueda (al final)
-            Tab {
+            Tab(value: .search) {
                 SearchResultsView()
             } label: {
                 Label("nav_search", systemImage: "magnifyingglass")
@@ -62,8 +72,21 @@ struct MainTabView: View {
         }
         .task {
             // Configurar el ModelContainer para sincronización cloud → local
-            cloudVM.setModelContainer(modelContext.container)
+            let container = modelContext.container
+            cloudVM.setModelContainer(container)
             await authVM.checkAndRenewTokenIfNeeded()
+        }
+        .onOpenURL { url in
+            // Deep link desde widget
+            if url.host == "collection" {
+                selectedTab = .collection
+            } else if url.host == "manga",
+                      let mangaIdString = url.pathComponents.dropFirst().first,
+                      let mangaId = Int(mangaIdString) {
+                // mismangas://manga/{id}
+                pendingMangaId = mangaId
+                selectedTab = .collection
+            }
         }
     }
 }

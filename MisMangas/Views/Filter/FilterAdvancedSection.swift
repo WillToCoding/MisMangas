@@ -122,17 +122,18 @@ struct FilterAdvancedSection: View {
         }
     }
 
-    @ViewBuilder
     private var clearStatusButton: some View {
-        if filters.status != nil {
-            Button("filter_clear_status") {
-                #if os(iOS)
-                HapticFeedback.light.trigger()
-                #endif
-                filters.status = nil
+        Group {
+            if filters.status != nil {
+                Button("filter_clear_status") {
+                    #if os(iOS)
+                    HapticFeedback.light.trigger()
+                    #endif
+                    filters.status = nil
+                }
+                .foregroundStyle(.red)
+                .frame(minHeight: 44)
             }
-            .foregroundStyle(.red)
-            .frame(minHeight: 44)
         }
     }
 
@@ -146,8 +147,7 @@ struct FilterAdvancedSection: View {
                     .accessibilityHidden(true)
             }
         }
-        .accessibilityAddTraits(.isHeader)
-        .accessibilityHeading(.h2)
+        .accessibilityHeader(.h2)
         .accessibilityLabel(filters.hasAdvancedFilters ? String(localized: "accessibility_advanced_filters_active") : String(localized: "filter_advanced"))
     }
 }

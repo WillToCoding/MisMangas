@@ -9,6 +9,10 @@ import Foundation
 #if os(iOS)
 import WidgetKit
 import UIKit
+#elseif os(visionOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
 #endif
 
 /// ViewModel para la gestion de autenticacion de usuarios.
@@ -80,15 +84,23 @@ final class AuthViewModel {
         }
     }
 
-    #if os(iOS)
+    #if os(iOS) || os(visionOS)
     /// Imagen de perfil del usuario.
     var userProfileImage: UIImage?
+    #elseif os(macOS)
+    /// Imagen de perfil del usuario.
+    var userProfileImage: NSImage?
+    #elseif os(tvOS)
+    /// Avatar seleccionado del usuario.
+    var userAvatar: Avatar?
     #endif
 
     private let keychain: KeychainServiceProtocol
     private let repository: NetworkRepository
-    #if os(iOS)
-    private let profileImageStorage: ProfileImageStorage
+    #if os(iOS) || os(macOS) || os(visionOS)
+    let profileImageStorage: ProfileImageStorage
+    #elseif os(tvOS)
+    let avatarStorage: AvatarStorage
     #endif
 
     /// Crea una nueva instancia e intenta restaurar la sesion guardada.
@@ -97,7 +109,7 @@ final class AuthViewModel {
     ///   - keychain: Servicio de Keychain. Por defecto usa `KeychainHelper`.
     ///   - repository: Repositorio de red. Por defecto usa `Network`.
     ///   - profileImageStorage: Almacenamiento de imagen de perfil (solo iOS).
-    #if os(iOS)
+    #if os(iOS) || os(macOS) || os(visionOS)
     init(
         keychain: KeychainServiceProtocol = KeychainHelper(),
         repository: NetworkRepository = Network(),
@@ -108,6 +120,18 @@ final class AuthViewModel {
         self.profileImageStorage = profileImageStorage
         loadSavedSession()
         loadProfileImage()
+    }
+    #elseif os(tvOS)
+    init(
+        keychain: KeychainServiceProtocol = KeychainHelper(),
+        repository: NetworkRepository = Network(),
+        avatarStorage: AvatarStorage = AvatarStorage()
+    ) {
+        self.keychain = keychain
+        self.repository = repository
+        self.avatarStorage = avatarStorage
+        loadSavedSession()
+        loadAvatar()
     }
     #else
     init(
@@ -213,6 +237,13 @@ final class AuthViewModel {
             userEmail = email
             isAuthenticated = true
 
+            // Cargar imagen de perfil guardada
+            #if os(iOS) || os(macOS) || os(visionOS)
+            loadProfileImage()
+            #elseif os(tvOS)
+            loadAvatar()
+            #endif
+
             print("Login exitoso para: \(email)")
         } catch {
             isLoading = false
@@ -294,10 +325,16 @@ final class AuthViewModel {
         errorMessage = nil
         showSessionExpiredAlert = false
 
-        // Limpiar datos del widget y foto de perfil
+        // Limpiar datos del widget
         #if os(iOS)
         SharedData.shared.clearWidgetData()
-        deleteProfileImage()
+        #endif
+
+        // Limpiar imagen de perfil en memoria (no borrar del disco)
+        #if os(iOS) || os(macOS) || os(visionOS)
+        userProfileImage = nil
+        #elseif os(tvOS)
+        userAvatar = nil
         #endif
 
         print("Sesión cerrada")
@@ -312,31 +349,6 @@ final class AuthViewModel {
         logout()
         showSessionExpiredAlert = true
     }
-
-    // MARK: - Profile Image
-
-    #if os(iOS)
-    /// Carga la imagen de perfil guardada.
-    private func loadProfileImage() {
-        userProfileImage = profileImageStorage.loadImage()
-    }
-
-    /// Guarda una nueva imagen de perfil.
-    ///
-    /// La imagen se redimensiona automáticamente si es mayor a 400px de ancho.
-    ///
-    /// - Parameter image: Imagen a guardar como foto de perfil.
-    func saveProfileImage(_ image: UIImage) async {
-        await profileImageStorage.saveImage(image)
-        userProfileImage = profileImageStorage.loadImage()
-    }
-
-    /// Elimina la imagen de perfil.
-    func deleteProfileImage() {
-        profileImageStorage.deleteImage()
-        userProfileImage = nil
-    }
-    #endif
 
     // MARK: - Validation
 

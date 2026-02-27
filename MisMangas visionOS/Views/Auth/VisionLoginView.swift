@@ -102,3 +102,8 @@ struct VisionLoginView: View {
         }
     }
 }
+
+#Preview {
+    VisionLoginView()
+        .environment(AuthViewModel())
+}

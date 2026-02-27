@@ -193,3 +193,28 @@ final class MangaModel {
         URL(string: mainPicture.replacingOccurrences(of: "\"", with: ""))
     }
 }
+
+// MARK: - Preview Support
+extension MangaModel {
+    @MainActor
+    static var preview: MangaModel {
+        MangaModel(
+            id: 1,
+            title: "One Piece",
+            titleEnglish: "One Piece",
+            titleJapanese: "ワンピース",
+            status: "Publishing",
+            score: 9.2,
+            volumes: 109,
+            chapters: 1100,
+            startDate: "1997-07-22",
+            sypnosis: "Monkey D. Luffy sets off on an adventure...",
+            mainPicture: "https://cdn.myanimelist.net/images/manga/2/253146.jpg",
+            url: "https://myanimelist.net/manga/13/One_Piece",
+            authorNames: ["Eiichiro Oda"],
+            genreNames: ["Action", "Adventure", "Comedy"],
+            themeNames: ["Pirates"],
+            demographicNames: ["Shounen"]
+        )
+    }
+}

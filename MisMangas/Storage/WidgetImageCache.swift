@@ -7,9 +7,12 @@
 
 import Foundation
 import UIKit
+import NetworkAPI
 
 @MainActor
 final class WidgetImageCache {
+    /// Ancho máximo para imágenes de widget (evitar error de imagen demasiado grande)
+    private let maxImageWidth: CGFloat = 150
     static let shared = WidgetImageCache()
 
     private let appGroupID = "group.com.murtidev.MisMangas"
@@ -44,7 +47,19 @@ final class WidgetImageCache {
         // Descargar imagen
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            try data.write(to: localPath)
+
+            // Redimensionar para widget
+            guard let originalImage = UIImage(data: data) else { return nil }
+
+            let resizedImage: UIImage
+            if originalImage.size.width > maxImageWidth {
+                resizedImage = await originalImage.resize(width: maxImageWidth) ?? originalImage
+            } else {
+                resizedImage = originalImage
+            }
+
+            guard let jpegData = resizedImage.jpegData(compressionQuality: 0.8) else { return nil }
+            try jpegData.write(to: localPath)
             return localPath.path
         } catch {
             print("[WidgetImageCache] Error descargando imagen: \(error)")

@@ -50,6 +50,7 @@ private struct ConflictRow: View {
             // Titulo del manga
             Text(conflict.mangaTitle)
                 .font(.headline)
+                .accessibilityHeader()
 
             // Comparacion Local vs Cloud
             HStack(spacing: 16) {
@@ -68,8 +69,11 @@ private struct ConflictRow: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(localAccessibilityLabel)
 
                 Divider()
+                    .accessibilityHidden(true)
 
                 // Cloud
                 VStack(alignment: .leading, spacing: 4) {
@@ -86,6 +90,8 @@ private struct ConflictRow: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(cloudAccessibilityLabel)
             }
             .padding(.vertical, 8)
 
@@ -99,6 +105,7 @@ private struct ConflictRow: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(.blue)
+                .accessibilityHint(String(localized: "accessibility_keep_local_hint"))
 
                 Button {
                     resolveUseCloud()
@@ -108,10 +115,29 @@ private struct ConflictRow: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(.purple)
+                .accessibilityHint(String(localized: "accessibility_use_cloud_hint"))
             }
             .disabled(isResolving)
         }
         .padding(.vertical, 4)
+    }
+
+    private var localAccessibilityLabel: String {
+        var label = String(localized: "sync_local") + ", "
+        label += String(localized: "accessibility_volumes_count \(conflict.localVolumesOwned.count)")
+        if let vol = conflict.localReadingVolume {
+            label += ", " + String(localized: "accessibility_reading_volume \(vol)")
+        }
+        return label
+    }
+
+    private var cloudAccessibilityLabel: String {
+        var label = String(localized: "sync_cloud") + ", "
+        label += String(localized: "accessibility_volumes_count \(conflict.cloudVolumesOwned.count)")
+        if let vol = conflict.cloudReadingVolume {
+            label += ", " + String(localized: "accessibility_reading_volume \(vol)")
+        }
+        return label
     }
 
     private func resolveKeepLocal() {
@@ -133,7 +159,6 @@ private struct ConflictRow: View {
 
 // MARK: - Preview
 
-#Preview {
+#Preview(traits: .sampleData) {
     SyncConflictView()
-        .environment(CloudCollectionViewModel(authVM: AuthViewModel()))
 }

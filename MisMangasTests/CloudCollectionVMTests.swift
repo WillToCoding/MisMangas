@@ -193,4 +193,31 @@ struct CloudCollectionVMTests {
         #expect(successVM.state == .empty)
         #expect(successVM.cloudCollection.isEmpty)
     }
+
+    // MARK: - Sync Integration
+
+    @Test("syncConflicts delega a SyncVM")
+    func checkConflictsDelegation() {
+        #expect(vm.syncConflicts.isEmpty)
+        #expect(vm.hasConflicts == false)
+    }
+
+    @Test("clearCollection limpia conflictos de SyncVM")
+    func checkClearCollectionClearsSync() {
+        vm.clearCollection()
+
+        #expect(vm.syncConflicts.isEmpty)
+        #expect(vm.state == .idle)
+    }
+
+    @Test("loadCollection con token carga y sincroniza")
+    func checkLoadCollectionSyncs() async {
+        let successNetwork = NetworkTest()
+        let successVM = CloudCollectionViewModel(authVM: authVM, repository: successNetwork)
+        authVM.authToken = "test-token"
+
+        await successVM.loadCollection()
+
+        #expect(successVM.state == .empty || successVM.state == .loaded)
+    }
 }

@@ -26,8 +26,7 @@ struct DetailHeaderView: View {
                 Text(manga.title)
                     .font(.title2.bold())
                     .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityHeading(.h1)
+                    .accessibilityHeader(.h1)
 
                 if let englishTitle = manga.titleEnglish, englishTitle != manga.title {
                     Text(englishTitle)
@@ -72,36 +71,36 @@ struct DetailStatsView: View {
                 value: manga.score.formatted(.number.precision(.fractionLength(2))),
                 label: "detail_score",
                 icon: "star.fill",
-                color: .orange
+                color: .orange,
+                accessibilityText: String(localized: "accessibility_score \(manga.score.formatted(.number.precision(.fractionLength(1))))")
             )
-            .accessibilityLabel(String(localized: "accessibility_score \(manga.score.formatted(.number.precision(.fractionLength(1))))"))
 
-            // Volumes (siempre visible)
+            // Volumes
             StatCard(
                 value: manga.volumes.map { "\($0)" } ?? "?",
                 label: "detail_volumes",
                 icon: "books.vertical",
-                color: .blue
+                color: .blue,
+                accessibilityText: "\(manga.volumes ?? 0) " + String(localized: "accessibility_volumes")
             )
-            .accessibilityLabel("\(manga.volumes ?? 0) " + String(localized: "accessibility_volumes"))
 
-            // Chapters (siempre visible)
+            // Chapters
             StatCard(
                 value: manga.chapters.map { "\($0)" } ?? "?",
                 label: "detail_chapters",
                 icon: "book.pages",
-                color: .purple
+                color: .purple,
+                accessibilityText: "\(manga.chapters ?? 0) " + String(localized: "accessibility_chapters")
             )
-            .accessibilityLabel("\(manga.chapters ?? 0) " + String(localized: "accessibility_chapters"))
 
             // Status
             StatCard(
                 value: isFinished ? String(localized: "status_finished") : String(localized: "status_publishing"),
                 label: "detail_status",
                 icon: isFinished ? "checkmark.circle.fill" : "clock.fill",
-                color: isFinished ? .green : .blue
+                color: isFinished ? .green : .blue,
+                accessibilityText: String(localized: "accessibility_status") + ": " + (isFinished ? String(localized: "status_finished") : String(localized: "status_publishing"))
             )
-            .accessibilityLabel(String(localized: "accessibility_status") + ": " + (isFinished ? String(localized: "status_finished") : String(localized: "status_publishing")))
         }
     }
 }
@@ -112,6 +111,7 @@ private struct StatCard: View {
     let label: LocalizedStringKey
     let icon: String
     let color: Color
+    let accessibilityText: String
 
     var body: some View {
         VStack(spacing: 4) {
@@ -131,6 +131,8 @@ private struct StatCard: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityText)
     }
 }
 

@@ -15,8 +15,7 @@ struct DetailAuthorsView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("detail_authors")
                     .font(.headline)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityHeading(.h2)
+                    .accessibilityHeader(.h2)
 
                 ForEach(authors) { author in
                     AuthorRow(author: author)

@@ -68,7 +68,12 @@ final class SharedData {
     // MARK: - Update from Collection
 
     func updateWidgetFromCollection(_ collection: [UserMangaCollection], userEmail: String?) async {
-        // Filtrar mangas con volumen de lectura
+        // Calcular estadísticas de la colección
+        let totalInCollection = collection.count
+        let completedCount = collection.filter { $0.completeCollection }.count
+        let readingCount = collection.filter { $0.readingVolume != nil && !$0.completeCollection }.count
+
+        // Filtrar mangas con volumen de lectura (leyendo activamente)
         let mangasConLectura = collection.filter { $0.readingVolume != nil }
 
         // Cachear imágenes
@@ -100,8 +105,10 @@ final class SharedData {
 
         let widgetData = WidgetData(
             mangas: limitedMangas,
-            lastUpdated: Date(),
-            userEmail: userEmail
+            totalInCollection: totalInCollection,
+            completedCount: completedCount,
+            readingCount: readingCount,
+            lastUpdated: Date()
         )
 
         saveWidgetData(widgetData)

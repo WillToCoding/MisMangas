@@ -42,6 +42,7 @@ struct CollectionViewiPad: View {
                         Label("collection_cloud_label", systemImage: "cloud.fill")
                             .foregroundStyle(.blue)
                             .font(.caption)
+                            .accessibilityLabel(String(localized: "accessibility_cloud_synced"))
                     }
                 }
             }
@@ -82,59 +83,61 @@ struct CollectionViewiPad: View {
     }
 
     // MARK: - Cloud Sidebar
-    @ViewBuilder
     private var cloudSidebar: some View {
-        if cloudVM.state.isLoading {
-            ProgressView("loading_collection")
-        } else if let error = cloudVM.state.errorMessage {
-            ContentUnavailableView(
-                "error_loading",
-                systemImage: "exclamationmark.triangle",
-                description: Text(error)
-            )
-        } else if cloudVM.cloudCollection.isEmpty {
-            ContentUnavailableView(
-                "collection_empty_title",
-                systemImage: "books.vertical",
-                description: Text("collection_empty_description")
-            )
-        } else {
-            List(selection: $selectedManga) {
-                ForEach(cloudVM.cloudCollection) { item in
-                    CollectionRow(item: item)
-                        .tag(item.manga)
-                        .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
-                                mangaToDelete = item.manga.id
-                                showDeleteAlert = true
-                            } label: {
-                                Label("action_delete", systemImage: "trash")
+        Group {
+            if cloudVM.state.isLoading {
+                ProgressView("loading_collection")
+            } else if let error = cloudVM.state.errorMessage {
+                ContentUnavailableView(
+                    "error_loading",
+                    systemImage: "exclamationmark.triangle",
+                    description: Text(error)
+                )
+            } else if cloudVM.cloudCollection.isEmpty {
+                ContentUnavailableView(
+                    "collection_empty_title",
+                    systemImage: "books.vertical",
+                    description: Text("collection_empty_description")
+                )
+            } else {
+                List(selection: $selectedManga) {
+                    ForEach(cloudVM.cloudCollection) { item in
+                        CollectionRow(item: item)
+                            .tag(item.manga)
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    mangaToDelete = item.manga.id
+                                    showDeleteAlert = true
+                                } label: {
+                                    Label("action_delete", systemImage: "trash")
+                                }
                             }
-                        }
+                    }
                 }
+                .listStyle(.plain)
             }
-            .listStyle(.plain)
         }
     }
 
     // MARK: - Local Sidebar
-    @ViewBuilder
     private var localSidebar: some View {
-        if localCollection.isEmpty {
-            ContentUnavailableView(
-                "collection_empty_title",
-                systemImage: "books.vertical",
-                description: Text("collection_empty_description")
-            )
-        } else {
-            List(selection: $selectedManga) {
-                ForEach(localCollection) { item in
-                    CollectionRow(item: item)
-                        .tag(item.manga.toManga())
+        Group {
+            if localCollection.isEmpty {
+                ContentUnavailableView(
+                    "collection_empty_title",
+                    systemImage: "books.vertical",
+                    description: Text("collection_empty_description")
+                )
+            } else {
+                List(selection: $selectedManga) {
+                    ForEach(localCollection) { item in
+                        CollectionRow(item: item)
+                            .tag(item.manga.toManga())
+                    }
+                    .onDelete(perform: deleteLocalMangas)
                 }
-                .onDelete(perform: deleteLocalMangas)
+                .listStyle(.plain)
             }
-            .listStyle(.plain)
         }
     }
 

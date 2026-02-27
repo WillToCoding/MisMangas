@@ -17,13 +17,11 @@ struct MisMangasShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: ShowCurrentReadingIntent(),
             phrases: [
-                "¿Qué estoy leyendo en \(.applicationName)?",
-                "Mi manga actual en \(.applicationName)",
-                "¿Qué manga leo en \(.applicationName)?",
-                "¿Por dónde voy en \(.applicationName)?",
-                "Manga actual de \(.applicationName)"
+                "siri_phrase_current_1 \(.applicationName)",
+                "siri_phrase_current_2 \(.applicationName)",
+                "siri_phrase_current_3 \(.applicationName)"
             ],
-            shortTitle: "Manga Actual",
+            shortTitle: LocalizedStringResource("siri_current_manga"),
             systemImageName: "book.fill"
         )
 
@@ -31,12 +29,10 @@ struct MisMangasShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: ReadingProgressIntent(),
             phrases: [
-                "Mi progreso de lectura en \(.applicationName)",
-                "¿Cuántos mangas leo en \(.applicationName)?",
-                "Progreso de \(.applicationName)",
-                "Mis lecturas en \(.applicationName)"
+                "siri_phrase_progress_1 \(.applicationName)",
+                "siri_phrase_progress_2 \(.applicationName)"
             ],
-            shortTitle: "Progreso de Lectura",
+            shortTitle: LocalizedStringResource("siri_reading_progress"),
             systemImageName: "chart.bar.fill"
         )
 
@@ -44,12 +40,11 @@ struct MisMangasShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: ShowCollectionIntent(),
             phrases: [
-                "Mi colección de mangas en \(.applicationName)",
-                "Abrir mi colección en \(.applicationName)",
-                "Ver colección de \(.applicationName)",
-                "Mostrar \(.applicationName)"
+                "siri_phrase_collection_1 \(.applicationName)",
+                "siri_phrase_collection_2 \(.applicationName)",
+                "siri_phrase_collection_3 \(.applicationName)"
             ],
-            shortTitle: "Mi Colección",
+            shortTitle: LocalizedStringResource("siri_my_collection"),
             systemImageName: "books.vertical.fill"
         )
     }

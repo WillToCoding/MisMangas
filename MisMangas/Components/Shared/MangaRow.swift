@@ -58,10 +58,10 @@ struct MangaRow: View {
             }
         }
         .padding(.vertical, 4)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
-        .accessibilityHint(String(localized: "accessibility_double_tap_details"))
-        .accessibilityAddTraits(.isButton)
+        .accessibilityCard(
+            label: accessibilityLabel,
+            hint: String(localized: "accessibility_double_tap_details")
+        )
     }
 
     // MARK: - Accessibility

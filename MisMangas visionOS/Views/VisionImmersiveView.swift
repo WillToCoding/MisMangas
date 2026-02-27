@@ -166,3 +166,8 @@ struct ImmersiveMangaCard: View {
         }
     }
 }
+
+#Preview("Immersive Card") {
+    ImmersiveMangaCard(item: .test)
+        .padding()
+}

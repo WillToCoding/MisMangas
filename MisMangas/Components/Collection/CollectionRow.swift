@@ -56,26 +56,28 @@ struct CollectionRow<Item: CollectionItem>: View {
         }
     }
 
-    @ViewBuilder
     private var collectionStatus: some View {
-        if item.collectionIsComplete {
-            Label("collection_complete", systemImage: "checkmark.circle.fill")
-                .font(.caption)
-                .foregroundStyle(.green)
-        } else {
-            let total = item.collectionTotalVolumes.map(String.init) ?? "?"
-            Text("volumes_owned_of \(item.collectionVolumesOwned.count) \(total)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+        Group {
+            if item.collectionIsComplete {
+                Label("collection_complete", systemImage: "checkmark.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.green)
+            } else {
+                let total = item.collectionTotalVolumes.map(String.init) ?? "?"
+                Text("volumes_owned_of \(item.collectionVolumesOwned.count) \(total)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 
-    @ViewBuilder
     private var readingProgress: some View {
-        if let currentReading = item.collectionReadingVolume {
-            Label("vol_current \(currentReading)", systemImage: "book.fill")
-                .font(.caption2)
-                .foregroundStyle(.blue)
+        Group {
+            if let currentReading = item.collectionReadingVolume {
+                Label("vol_current \(currentReading)", systemImage: "book.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.blue)
+            }
         }
     }
 
@@ -124,12 +126,6 @@ struct CollectionRow<Item: CollectionItem>: View {
 
 #Preview("Cloud Collection") {
     List {
-        CollectionRow(item: UserMangaCollection(
-            id: "1",
-            manga: .test,
-            completeCollection: false,
-            volumesOwned: [1, 2, 3],
-            readingVolume: 2
-        ))
+        CollectionRow(item: UserMangaCollection.test)
     }
 }

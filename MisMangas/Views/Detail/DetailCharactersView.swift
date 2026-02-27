@@ -15,21 +15,21 @@ struct DetailCharactersView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("detail_characters")
                 .font(.headline)
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityHeading(.h2)
+                .accessibilityHeader(.h2)
 
             content
         }
     }
 
-    @ViewBuilder
     private var content: some View {
-        if isLoading {
-            loadingView
-        } else if characters.isEmpty {
-            emptyView
-        } else {
-            charactersList
+        Group {
+            if isLoading {
+                loadingView
+            } else if characters.isEmpty {
+                emptyView
+            } else {
+                charactersList
+            }
         }
     }
 

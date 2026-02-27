@@ -28,6 +28,7 @@ struct PreviewContainer: PreviewModifier {
             .modelContainer(context)
             .environment(authVM)
             .environment(CloudCollectionViewModel(authVM: authVM))
+            .environment(TranslationService())
     }
 }
 

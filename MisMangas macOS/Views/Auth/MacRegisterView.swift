@@ -45,7 +45,7 @@ struct MacRegisterView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    TextField("email@example.com", text: $email)
+                    TextField("login_email_placeholder", text: $email)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.emailAddress)
                         .autocorrectionDisabled()

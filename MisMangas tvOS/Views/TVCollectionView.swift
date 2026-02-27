@@ -6,51 +6,194 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TVCollectionView: View {
     @Bindable var cloudVM: CloudCollectionViewModel
+    @Query(sort: \UserCollection.addedDate, order: .reverse) private var localCollection: [UserCollection]
+    @Environment(AuthViewModel.self) private var authVM
+    @Environment(\.modelContext) private var modelContext
 
-    private let demographicConfig: [(key: String, title: LocalizedStringKey, icon: String, color: Color)] = [
-        ("Shounen", "section_shounen", "flame.fill", .orange),
-        ("Seinen", "section_seinen", "person.fill", .purple),
-        ("Shoujo", "section_shoujo", "heart.fill", .pink),
-        ("Josei", "section_josei", "sparkles", .indigo),
-        ("Kids", "section_kids", "star.fill", .yellow)
-    ]
+    // MARK: - Stats computados
+
+    private var totalMangas: Int {
+        authVM.isAuthenticated ? cloudVM.cloudCollection.count : localCollection.count
+    }
+
+    private var completedMangas: Int {
+        if authVM.isAuthenticated {
+            return cloudVM.cloudCollection.filter { item in
+                guard let total = item.manga.volumes else { return false }
+                return item.readingVolume == total
+            }.count
+        } else {
+            return localCollection.filter { item in
+                guard let total = item.manga.volumes else { return false }
+                return item.currentReadingVolume == total
+            }.count
+        }
+    }
+
+    private var overallProgress: Int {
+        if authVM.isAuthenticated {
+            let items = cloudVM.cloudCollection.compactMap { item -> (current: Int, total: Int)? in
+                guard let total = item.manga.volumes, total > 0 else { return nil }
+                return (item.readingVolume ?? 0, total)
+            }
+            guard !items.isEmpty else { return 0 }
+            let totalRead = items.reduce(0) { $0 + $1.current }
+            let totalVolumes = items.reduce(0) { $0 + $1.total }
+            return totalVolumes > 0 ? Int((Double(totalRead) / Double(totalVolumes)) * 100) : 0
+        } else {
+            let items = localCollection.compactMap { item -> (current: Int, total: Int)? in
+                guard let total = item.manga.volumes, total > 0 else { return nil }
+                return (item.currentReadingVolume ?? 0, total)
+            }
+            guard !items.isEmpty else { return 0 }
+            let totalRead = items.reduce(0) { $0 + $1.current }
+            let totalVolumes = items.reduce(0) { $0 + $1.total }
+            return totalVolumes > 0 ? Int((Double(totalRead) / Double(totalVolumes)) * 100) : 0
+        }
+    }
+
+    private var isEmpty: Bool {
+        authVM.isAuthenticated ? cloudVM.cloudCollection.isEmpty : localCollection.isEmpty
+    }
+
+    // MARK: - Body
 
     var body: some View {
+        Group {
+            if isEmpty && !cloudVM.state.isLoading {
+                ContentUnavailableView(
+                    "collection_empty_title",
+                    systemImage: "books.vertical",
+                    description: Text("collection_empty_description")
+                )
+            } else {
+                collectionContent
+            }
+        }
+        .navigationTitle("nav_collection")
+        .navigationDestination(for: UserMangaCollection.self) { item in
+            TVMangaDetailView(
+                item: item,
+                onSave: { readingVolume, volumesOwned, isComplete in
+                    try await cloudVM.addToCollection(
+                        manga: item.manga,
+                        volumesOwned: volumesOwned,
+                        readingVolume: readingVolume,
+                        completeCollection: isComplete
+                    )
+                },
+                onDelete: {
+                    try await cloudVM.removeFromCollection(mangaId: item.manga.id)
+                },
+                onRefresh: {
+                    await cloudVM.loadCollection()
+                }
+            )
+        }
+        .navigationDestination(for: UserCollection.self) { item in
+            TVMangaDetailView(
+                item: item,
+                onSave: { readingVolume, volumesOwned, isComplete in
+                    let dataContainer = DataContainer(modelContainer: modelContext.container)
+                    try await dataContainer.updateUserStats(
+                        mangaId: item.manga.id,
+                        currentVolume: readingVolume,
+                        volumesOwned: volumesOwned
+                    )
+                },
+                onDelete: {
+                    let dataContainer = DataContainer(modelContainer: modelContext.container)
+                    try await dataContainer.removeFromCollection(mangaId: item.manga.id)
+                },
+                onRefresh: { }
+            )
+        }
+    }
+
+    // MARK: - Collection Content
+
+    private var collectionContent: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 60) {
-                // Secciones por demografía
-                ForEach(demographicConfig, id: \.key) { config in
-                    let items = cloudVM.cloudCollection.filter { item in
-                        item.manga.demographics.contains { $0.demographic == config.key }
-                    }
-                    if !items.isEmpty {
-                        TVCollectionSection(
-                            title: config.title,
-                            icon: config.icon,
-                            color: config.color
-                        ) {
-                            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                                NavigationLink(value: item) {
-                                    TVCollectionCardLabel(item: item, loadDelay: Double(index) * 0.1)
-                                }
-                                .buttonStyle(.card)
-                            }
-                        }
-                    }
+                // Refresh Button (solo cloud)
+                if authVM.isAuthenticated {
+                    refreshButton
                 }
 
-                // Mangas sin demografía
-                let otherItems = cloudVM.cloudCollection.filter { $0.manga.demographics.isEmpty }
-                if !otherItems.isEmpty {
+                // Stats Header
+                statsHeader
+
+                // Secciones
+                if authVM.isAuthenticated {
+                    cloudSections
+                } else {
+                    localSections
+                }
+
+                Spacer(minLength: 100)
+            }
+            .padding(.vertical, 50)
+        }
+    }
+
+    // MARK: - Refresh Button
+
+    private var refreshButton: some View {
+        HStack {
+            Spacer()
+            Button {
+                Task {
+                    await cloudVM.loadCollection()
+                }
+            } label: {
+                if cloudVM.state.isLoading {
+                    ProgressView()
+                        .frame(width: 40, height: 40)
+                } else {
+                    Label("action_refresh", systemImage: "arrow.clockwise")
+                        .font(.system(size: 28, weight: .semibold))
+                }
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(.horizontal, 80)
+        .focusSection()
+    }
+
+    // MARK: - Stats Header
+
+    private var statsHeader: some View {
+        Button { } label: {
+            TVStatsHeader(
+                totalMangas: totalMangas,
+                completedMangas: completedMangas,
+                overallProgress: overallProgress
+            )
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, 80)
+        .focusSection()
+    }
+
+    // MARK: - Cloud Sections
+
+    private var cloudSections: some View {
+        Group {
+            ForEach(DemographicsConfig.list) { config in
+                let items = cloudVM.cloudCollection.filter { item in
+                    item.manga.demographics.contains { $0.demographic == config.id }
+                }
+                if !items.isEmpty {
                     TVCollectionSection(
-                        title: "section_other",
-                        icon: "square.grid.2x2",
-                        color: .gray
+                        title: config.title,
+                        icon: config.icon,
+                        color: config.color
                     ) {
-                        ForEach(Array(otherItems.enumerated()), id: \.element.id) { index, item in
+                        ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                             NavigationLink(value: item) {
                                 TVCollectionCardLabel(item: item, loadDelay: Double(index) * 0.1)
                             }
@@ -58,158 +201,72 @@ struct TVCollectionView: View {
                         }
                     }
                 }
-
-                Spacer(minLength: 100)
             }
-            .padding(.vertical, 50)
-        }
-        .navigationTitle("nav_collection")
-        .navigationDestination(for: UserMangaCollection.self) { item in
-            TVMangaDetailView(item: item) {
-                Task {
-                    await cloudVM.loadCollection()
+
+            let otherItems = cloudVM.cloudCollection.filter { $0.manga.demographics.isEmpty }
+            if !otherItems.isEmpty {
+                TVCollectionSection(
+                    title: "section_other",
+                    icon: "square.grid.2x2",
+                    color: .gray
+                ) {
+                    ForEach(Array(otherItems.enumerated()), id: \.element.id) { index, item in
+                        NavigationLink(value: item) {
+                            TVCollectionCardLabel(item: item, loadDelay: Double(index) * 0.1)
+                        }
+                        .buttonStyle(.card)
+                    }
                 }
             }
         }
     }
-}
 
-// MARK: - Collection Section
+    // MARK: - Local Sections
 
-struct TVCollectionSection<Content: View>: View {
-    let title: LocalizedStringKey
-    let icon: String
-    let color: Color
-    @ViewBuilder let content: () -> Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 30) {
-            // Header
-            Label(title, systemImage: icon)
-                .font(.system(size: 42, weight: .bold))
-                .foregroundStyle(color)
-                .padding(.horizontal, 80)
-
-            // Horizontal scroll
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 40) {
-                    content()
+    private var localSections: some View {
+        Group {
+            ForEach(DemographicsConfig.list) { config in
+                let items = localCollection.filter { item in
+                    item.manga.demographicNames.contains(config.id)
                 }
-                .padding(.horizontal, 80)
-            }
-            .focusSection()
-        }
-    }
-}
-
-// MARK: - Collection Card Label
-
-struct TVCollectionCardLabel: View {
-    let item: UserMangaCollection
-    let loadDelay: Double
-
-    @State private var coverVM = MangaCoverVM()
-    @State private var shouldLoad = false
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            // Portada
-            ZStack(alignment: .topTrailing) {
-                Group {
-                    if let image = coverVM.image {
-                        #if os(tvOS)
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                        #endif
-                    } else {
-                        Rectangle()
-                            .fill(.gray.opacity(0.3))
-                            .overlay {
-                                if coverVM.isLoading {
-                                    ProgressView()
-                                } else {
-                                    Image(systemName: "photo")
-                                        .font(.system(size: 50))
-                                        .foregroundStyle(.secondary)
-                                }
+                if !items.isEmpty {
+                    TVCollectionSection(
+                        title: config.title,
+                        icon: config.icon,
+                        color: config.color
+                    ) {
+                        ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                            NavigationLink(value: item) {
+                                TVCollectionCardLabel(item: item, loadDelay: Double(index) * 0.1)
                             }
+                            .buttonStyle(.card)
+                        }
                     }
                 }
-                .frame(width: 250, height: 375)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-
-                // Badge de estado
-                statusBadge
-                    .padding(12)
             }
 
-            // Info
-            VStack(alignment: .leading, spacing: 8) {
-                Text(item.manga.title)
-                    .font(.system(size: 24, weight: .bold))
-                    .lineLimit(2)
-                    .frame(width: 250, alignment: .leading)
-
-                // Progreso
-                if let total = item.manga.volumes {
-                    let reading = item.readingVolume ?? 1
-                    HStack(spacing: 8) {
-                        Text("Vol. \(reading)/\(total)")
-                            .font(.system(size: 20))
-                            .foregroundStyle(.secondary)
-
-                        Spacer()
-
-                        Text("\(Int((Double(reading) / Double(total)) * 100))%")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(.blue)
+            let otherItems = localCollection.filter { $0.manga.demographicNames.isEmpty }
+            if !otherItems.isEmpty {
+                TVCollectionSection(
+                    title: "section_other",
+                    icon: "square.grid.2x2",
+                    color: .gray
+                ) {
+                    ForEach(Array(otherItems.enumerated()), id: \.element.id) { index, item in
+                        NavigationLink(value: item) {
+                            TVCollectionCardLabel(item: item, loadDelay: Double(index) * 0.1)
+                        }
+                        .buttonStyle(.card)
                     }
-                    .frame(width: 250)
-
-                    ProgressView(value: Double(reading), total: Double(total))
-                        .frame(width: 250)
-                        .tint(.blue)
-                } else {
-                    HStack(spacing: 6) {
-                        Image(systemName: "clock")
-                        Text("status_publishing")
-                    }
-                    .font(.system(size: 20))
-                    .foregroundStyle(.secondary)
                 }
             }
-        }
-        .onAppear {
-            Task {
-                try? await Task.sleep(for: .seconds(loadDelay))
-                shouldLoad = true
-                coverVM.getImage(url: item.manga.coverURL)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var statusBadge: some View {
-        // Solo mostrar badge de colección completa si realmente tiene todos los volúmenes
-        if let total = item.manga.volumes, item.volumesOwned.count >= total {
-            Image(systemName: "checkmark.seal.fill")
-                .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(.white)
-                .padding(8)
-                .background(.green, in: Circle())
-        } else if let reading = item.readingVolume, reading > 1 {
-            Image(systemName: "book.fill")
-                .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(.white)
-                .padding(8)
-                .background(.blue, in: Circle())
         }
     }
 }
 
 #Preview {
-    let authVM = AuthViewModel()
-    return TVCollectionView(cloudVM: CloudCollectionViewModel(authVM: authVM))
+    @Previewable @State var authVM = AuthViewModel()
+    TVCollectionView(cloudVM: CloudCollectionViewModel(authVM: authVM))
+        .environment(authVM)
+        .modelContainer(for: [MangaModel.self, UserCollection.self, OwnedVolume.self], inMemory: true)
 }

@@ -6,25 +6,25 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct MacProfileView: View {
     @Environment(AuthViewModel.self) private var authVM
     @Environment(CloudCollectionViewModel.self) private var cloudVM
+
     @State private var showLoginSheet = false
     @State private var showLogoutAlert = false
     @State private var showSettings = false
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var profileImage: NSImage?
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                // MARK: - Header del Perfil
                 profileHeader
                     .padding(.top, 20)
 
-                // MARK: - Cuenta
                 accountSection
-
-                // MARK: - Almacenamiento
                 storageSection
 
                 Spacer(minLength: 40)
@@ -33,15 +33,7 @@ struct MacProfileView: View {
         }
         .frame(minWidth: 400)
         .navigationTitle("nav_profile")
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    showSettings = true
-                } label: {
-                    Image(systemName: "gearshape.fill")
-                }
-            }
-        }
+        .toolbar { toolbarContent }
         .sheet(isPresented: $showLoginSheet) {
             MacLoginView()
                 .frame(minWidth: 400, minHeight: 300)
@@ -60,14 +52,24 @@ struct MacProfileView: View {
         }
     }
 
+    // MARK: - Toolbar
+
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape.fill")
+            }
+        }
+    }
+
     // MARK: - Profile Header
+
     private var profileHeader: some View {
         VStack(spacing: 16) {
-            Image(systemName: "person.circle.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
-                .foregroundStyle(authVM.isAuthenticated ? .blue : .secondary)
+            avatarPicker
 
             if authVM.isAuthenticated {
                 Text(authVM.userEmail ?? "Usuario")
@@ -93,9 +95,48 @@ struct MacProfileView: View {
         .frame(maxWidth: .infinity)
         .padding(24)
         .background(.blue.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+        .task(id: selectedPhotoItem) {
+            guard let newItem = selectedPhotoItem,
+                  let data = try? await newItem.loadTransferable(type: Data.self),
+                  let image = NSImage(data: data) else { return }
+            await authVM.saveProfileImage(image)
+            profileImage = image
+        }
+        .onAppear {
+            profileImage = authVM.userProfileImage
+        }
+        .onChange(of: authVM.isAuthenticated) { _, isAuthenticated in
+            profileImage = isAuthenticated ? authVM.userProfileImage : nil
+        }
+    }
+
+    private var avatarPicker: some View {
+        let currentImage = profileImage
+        let isAuthenticated = authVM.isAuthenticated
+
+        return PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+            Group {
+                if let image = currentImage {
+                    Image(nsImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.blue, lineWidth: 2))
+                } else {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundStyle(isAuthenticated ? .blue : .secondary)
+                }
+            }
+            .frame(width: 80, height: 80)
+        }
+        .buttonStyle(.plain)
+        .disabled(!isAuthenticated)
     }
 
     // MARK: - Account Section
+
     private var accountSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("profile_account", systemImage: "person.crop.circle.fill")
@@ -103,44 +144,9 @@ struct MacProfileView: View {
                 .foregroundStyle(.blue)
 
             if authVM.isAuthenticated {
-                Button(role: .destructive) {
-                    showLogoutAlert = true
-                } label: {
-                    HStack {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                        Text("action_logout")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(12)
-                    .background(.red.opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
-                }
-                .buttonStyle(.plain)
+                logoutButton
             } else {
-                HStack(spacing: 12) {
-                    Button {
-                        showLoginSheet = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "person.badge.key.fill")
-                            Text("action_login")
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-
-                    Button {
-                        showLoginSheet = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "person.badge.plus")
-                            Text("action_register")
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                }
+                authButtons
             }
 
             Text(authVM.isAuthenticated ? "profile_storage_cloud" : "profile_storage_local")
@@ -152,7 +158,51 @@ struct MacProfileView: View {
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
     }
 
+    private var logoutButton: some View {
+        Button(role: .destructive) {
+            showLogoutAlert = true
+        } label: {
+            HStack {
+                Image(systemName: "rectangle.portrait.and.arrow.right")
+                Text("action_logout")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.secondary)
+            }
+            .padding(12)
+            .background(.red.opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var authButtons: some View {
+        HStack(spacing: 12) {
+            Button {
+                showLoginSheet = true
+            } label: {
+                HStack {
+                    Image(systemName: "person.badge.key.fill")
+                    Text("action_login")
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+
+            Button {
+                showLoginSheet = true
+            } label: {
+                HStack {
+                    Image(systemName: "person.badge.plus")
+                    Text("action_register")
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+        }
+    }
+
     // MARK: - Storage Section
+
     private var storageSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("profile_storage", systemImage: "externaldrive.fill")
@@ -165,13 +215,8 @@ struct MacProfileView: View {
                     .frame(width: 24)
                 Text("profile_cloud_collection")
                 Spacer()
-                if authVM.isAuthenticated {
-                    Text("\(cloudVM.cloudCollection.count) mangas")
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("-")
-                        .foregroundStyle(.secondary)
-                }
+                Text(authVM.isAuthenticated ? "\(cloudVM.cloudCollection.count) mangas" : "-")
+                    .foregroundStyle(.secondary)
             }
             .padding(.vertical, 8)
 
@@ -192,148 +237,11 @@ struct MacProfileView: View {
         .padding(20)
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
     }
-
-}
-
-// MARK: - Mac Settings View
-struct MacSettingsView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State private var deeplApiKey: String = ""
-
-    @Environment(TranslationService.self) private var translationService
-    private let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
-
-    var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            HStack {
-                Text("settings_title")
-                    .font(.title2.bold())
-                Spacer()
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
-                }
-                .buttonStyle(.plain)
-            }
-            .padding()
-
-            Divider()
-
-            ScrollView {
-                VStack(spacing: 24) {
-                    // MARK: - Traducción
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Label("translation_settings_title", systemImage: "globe")
-                                .font(.headline)
-                                .foregroundStyle(.purple)
-                            Spacer()
-                            if translationService.isConfigured {
-                                Label("translation_settings_configured", systemImage: "checkmark.circle.fill")
-                                    .font(.caption)
-                                    .foregroundStyle(.green)
-                            }
-                        }
-
-                        Text("translation_settings_footer")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-
-                        SecureField("translation_settings_api_key_placeholder", text: $deeplApiKey)
-                            .textFieldStyle(.roundedBorder)
-                            .onChange(of: deeplApiKey) { _, newValue in
-                                translationService.apiKey = newValue
-                            }
-                    }
-                    .padding(16)
-                    .background(.purple.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
-
-                    // MARK: - Acerca de
-                    VStack(alignment: .leading, spacing: 12) {
-                        Label("profile_about", systemImage: "info.circle.fill")
-                            .font(.headline)
-                            .foregroundStyle(.gray)
-
-                        HStack {
-                            Text("profile_version")
-                            Spacer()
-                            Text(appVersion)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.vertical, 4)
-
-                        Divider()
-
-                        Link(destination: URL(string: "https://www.willtocoding.com/proyectos/mismangas/privacy")!) {
-                            HStack {
-                                Image(systemName: "hand.raised.fill")
-                                    .frame(width: 20)
-                                Text("profile_privacy_policy")
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .buttonStyle(.plain)
-
-                        Link(destination: URL(string: "https://www.willtocoding.com/proyectos/mismangas/terms")!) {
-                            HStack {
-                                Image(systemName: "doc.text.fill")
-                                    .frame(width: 20)
-                                Text("profile_terms_of_service")
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .buttonStyle(.plain)
-
-                        Link(destination: URL(string: "https://www.willtocoding.com/proyectos/mismangas/accessibility")!) {
-                            HStack {
-                                Image(systemName: "accessibility")
-                                    .frame(width: 20)
-                                Text("profile_accessibility")
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .buttonStyle(.plain)
-
-                        Link(destination: URL(string: "https://www.willtocoding.com/proyectos/mismangas/contact")!) {
-                            HStack {
-                                Image(systemName: "envelope.fill")
-                                    .frame(width: 20)
-                                Text("profile_contact")
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .padding(16)
-                    .background(.gray.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
-                }
-                .padding(20)
-            }
-        }
-        .onAppear {
-            deeplApiKey = translationService.apiKey
-        }
-    }
 }
 
 #Preview {
     MacProfileView()
         .environment(AuthViewModel())
         .environment(CloudCollectionViewModel(authVM: AuthViewModel()))
+        .environment(TranslationService())
 }

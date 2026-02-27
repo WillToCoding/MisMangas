@@ -15,6 +15,7 @@ struct AddToCollectionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AuthViewModel.self) private var authVM
     @Environment(CloudCollectionViewModel.self) private var cloudVM
+    @Query private var localCollection: [UserCollection]
 
     @State private var selectedVolumes: Set<Int> = []
     @State private var currentReadingVolume: Int = 1
@@ -22,6 +23,15 @@ struct AddToCollectionView: View {
     @State private var readingStatus: ReadingStatus = .planToRead
     @State private var showSuccess = false
     @State private var isSaving = false
+    @State private var isUpdate = false
+
+    private var isAlreadyInCollection: Bool {
+        if authVM.isAuthenticated {
+            return cloudVM.isInCollection(manga.id)
+        } else {
+            return localCollection.contains { $0.id == manga.id }
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -111,18 +121,19 @@ struct AddToCollectionView: View {
                     .accessibilityHint(String(localized: "accessibility_save_collection_hint"))
                 }
             }
-            .alert("saved_title", isPresented: $showSuccess) {
+            .alert(isUpdate ? "updated_title" : "saved_title", isPresented: $showSuccess) {
                 Button("action_ok") {
                     dismiss()
                 }
             } message: {
-                Text("add_success_message")
+                Text(isUpdate ? "update_success_message" : "add_success_message")
             }
         }
     }
 
     private func saveToCollection() async {
         isSaving = true
+        isUpdate = isAlreadyInCollection
         let volumes = Array(selectedVolumes).sorted()
 
         // Guardar en local usando DataContainer (background)

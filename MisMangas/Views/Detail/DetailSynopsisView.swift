@@ -18,7 +18,7 @@ struct DetailSynopsisView: View {
     let onToggleTranslation: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 20) {
             if let synopsis {
                 synopsisSection(synopsis)
             }
@@ -31,12 +31,12 @@ struct DetailSynopsisView: View {
 
     // MARK: - Synopsis Section
     private func synopsisSection(_ synopsis: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("detail_synopsis")
-                    .font(.headline)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityHeading(.h2)
+                Label("detail_synopsis", systemImage: "text.alignleft")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.primary)
+                    .accessibilityHeader(.h2)
 
                 Spacer()
 
@@ -44,43 +44,49 @@ struct DetailSynopsisView: View {
             }
 
             Text(showOriginal ? synopsis : (translatedSynopsis ?? synopsis))
-                .font(.body)
-                .lineSpacing(4)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .lineSpacing(6)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
     }
 
     // MARK: - Background Section
     private func backgroundSection(_ background: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("detail_background")
-                .font(.headline)
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityHeading(.h2)
+        VStack(alignment: .leading, spacing: 12) {
+            Label("detail_background", systemImage: "info.circle.fill")
+                .font(.subheadline.bold())
+                .foregroundStyle(.primary)
+                .accessibilityHeader(.h2)
 
             Text(showOriginal ? background : (translatedBackground ?? background))
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .lineSpacing(4)
+                .lineSpacing(5)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
     }
 
     // MARK: - Translation Button
-    @ViewBuilder
     private var translationButton: some View {
-        if canTranslate {
-            if isTranslating {
-                ProgressView()
-                    .scaleEffect(0.8)
-            } else if translatedSynopsis != nil {
-                Button(action: onToggleTranslation) {
-                    Label(
-                        showOriginal ? "translation_show_translated" : "translation_show_original",
-                        systemImage: "globe"
-                    )
-                    .font(.caption)
+        Group {
+            if canTranslate {
+                if isTranslating {
+                    ProgressView()
+                        .scaleEffect(0.7)
+                } else if translatedSynopsis != nil {
+                    Button(action: onToggleTranslation) {
+                        Image(systemName: showOriginal ? "globe" : "text.bubble")
+                            .font(.subheadline)
+                            .foregroundStyle(.blue)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(showOriginal ? String(localized: "translation_show_translated") : String(localized: "translation_show_original"))
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
             }
         }
     }
@@ -92,24 +98,45 @@ struct DetailDatesView: View {
     let endDate: String?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: 16) {
             if let startDate {
-                dateRow(label: "detail_start_date", date: startDate, accessibilityLabel: "accessibility_start_date")
+                dateItem(
+                    icon: "calendar.badge.plus",
+                    label: "detail_start_date",
+                    date: startDate,
+                    color: .green,
+                    accessibilityLabel: "accessibility_start_date"
+                )
             }
 
             if let endDate {
-                dateRow(label: "detail_end_date", date: endDate, accessibilityLabel: "accessibility_end_date")
+                dateItem(
+                    icon: "calendar.badge.checkmark",
+                    label: "detail_end_date",
+                    date: endDate,
+                    color: .blue,
+                    accessibilityLabel: "accessibility_end_date"
+                )
             }
+
+            Spacer()
         }
     }
 
-    private func dateRow(label: LocalizedStringKey, date: String, accessibilityLabel: String) -> some View {
-        HStack {
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Text(formatDate(date))
-                .font(.caption)
+    private func dateItem(icon: String, label: LocalizedStringKey, date: String, color: Color, accessibilityLabel: String) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.subheadline)
+                .foregroundStyle(color)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Text(formatDate(date))
+                    .font(.caption.bold())
+                    .foregroundStyle(.primary)
+            }
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(String(localized: String.LocalizationValue(accessibilityLabel)) + ": " + formatDate(date))
@@ -126,27 +153,24 @@ struct DetailDatesView: View {
     }
 }
 
-#Preview {
-    ScrollView {
-        VStack(alignment: .leading, spacing: 20) {
-            DetailSynopsisView(
-                synopsis: "This is a sample synopsis for the manga. It contains information about the story.",
-                background: "This manga was created in 1997 and became very popular.",
-                translatedSynopsis: nil,
-                translatedBackground: nil,
-                isTranslating: false,
-                showOriginal: false,
-                canTranslate: true,
-                onToggleTranslation: {}
-            )
+#Preview("Synopsis") {
+    DetailSynopsisView(
+        synopsis: Manga.test.sypnosis,
+        background: Manga.test.background,
+        translatedSynopsis: nil,
+        translatedBackground: nil,
+        isTranslating: false,
+        showOriginal: false,
+        canTranslate: true,
+        onToggleTranslation: {}
+    )
+    .padding()
+}
 
-            Divider()
-
-            DetailDatesView(
-                startDate: "1997-07-22T00:00:00Z",
-                endDate: "2025-01-01T00:00:00Z"
-            )
-        }
-        .padding()
-    }
+#Preview("Dates") {
+    DetailDatesView(
+        startDate: Manga.test.startDate,
+        endDate: Manga.test.endDate
+    )
+    .padding()
 }

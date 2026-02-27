@@ -16,12 +16,48 @@ import AppKit
 typealias PlatformImage = NSImage
 #endif
 
-/// ViewModel para cargar y cachear imágenes de covers de manga
+/// ViewModel para cargar y cachear imagenes de portadas de manga.
+///
+/// `MangaCoverVM` gestiona la carga asincrona de imagenes con cache en disco.
+/// Soporta todas las plataformas Apple usando `PlatformImage` como alias.
+///
+/// ## Ejemplo de uso
+///
+/// ```swift
+/// struct MangaRow: View {
+///     @State private var coverVM = MangaCoverVM()
+///
+///     var body: some View {
+///         Image(uiImage: coverVM.image ?? UIImage())
+///             .onAppear {
+///                 coverVM.getImage(url: manga.coverURL)
+///             }
+///     }
+/// }
+/// ```
+///
+/// ## Plataformas
+///
+/// | Plataforma | Tipo de imagen |
+/// |------------|----------------|
+/// | iOS, tvOS, watchOS, visionOS | `UIImage` |
+/// | macOS | `NSImage` |
 @Observable @MainActor
 final class MangaCoverVM {
+    /// Imagen cargada, `nil` si no se ha cargado o hubo error.
     var image: PlatformImage?
+
+    /// Indica si hay una descarga en curso.
     var isLoading = false
 
+    /// Carga una imagen desde URL con cache en disco.
+    ///
+    /// El metodo verifica primero si la imagen existe en cache local.
+    /// Si no existe, la descarga y guarda en disco para uso futuro.
+    ///
+    /// - Parameter url: URL de la imagen a cargar. Si es `nil`, no hace nada.
+    ///
+    /// - Note: Las llamadas concurrentes con `isLoading == true` se ignoran.
     func getImage(url: URL?) {
         guard let url else { return }
 

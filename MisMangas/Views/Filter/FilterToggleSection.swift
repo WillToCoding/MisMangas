@@ -47,8 +47,7 @@ struct FilterToggleSection: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .accessibilityAddTraits(.isHeader)
-        .accessibilityHeading(.h2)
+        .accessibilityHeader(.h2)
         .accessibilityLabel(accessibilityTitle + (selectedItems.isEmpty ? "" : ", \(selectedItems.count) " + String(localized: "accessibility_selected")))
     }
 }

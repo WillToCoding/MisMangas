@@ -21,8 +21,7 @@ struct FilterSortSection: View {
             .accessibilityLabel(String(localized: "accessibility_sort_order"))
         } header: {
             Text("sort_by")
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityHeading(.h2)
+                .accessibilityHeader(.h2)
         }
     }
 }

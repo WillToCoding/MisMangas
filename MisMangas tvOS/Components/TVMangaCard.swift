@@ -12,34 +12,28 @@ struct TVMangaCard: View {
     let loadDelay: Double
 
     @Environment(\.isFocused) private var isFocused
-    @State private var shouldLoad = false
+    @State private var coverVM = MangaCoverVM()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Portada
-            AsyncImage(url: shouldLoad ? item.manga.coverURL : nil) { phase in
-                switch phase {
-                case .empty:
-                    Rectangle()
-                        .fill(.gray.opacity(0.3))
-                        .overlay {
-                            ProgressView()
-                        }
-                case .success(let image):
-                    image
+            Group {
+                if let image = coverVM.image {
+                    Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                case .failure:
+                } else {
                     Rectangle()
                         .fill(.gray.opacity(0.3))
                         .overlay {
-                            Image(systemName: "photo")
-                                .font(.system(size: 60))
-                                .foregroundStyle(.gray)
+                            if coverVM.isLoading {
+                                ProgressView()
+                            } else {
+                                Image(systemName: "photo")
+                                    .font(.system(size: 60))
+                                    .foregroundStyle(.gray)
+                            }
                         }
-                @unknown default:
-                    Rectangle()
-                        .fill(.gray.opacity(0.3))
                 }
             }
             .frame(width: 300, height: 450)
@@ -53,7 +47,7 @@ struct TVMangaCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text(item.manga.title)
                     .font(.system(size: 28, weight: .bold))
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .frame(width: 300, height: 70, alignment: .topLeading)
 
                 HStack(spacing: 12) {
@@ -96,8 +90,13 @@ struct TVMangaCard: View {
         .onAppear {
             Task {
                 try? await Task.sleep(for: .seconds(loadDelay))
-                shouldLoad = true
+                coverVM.getImage(url: item.manga.coverURL)
             }
         }
     }
+}
+
+#Preview {
+    TVMangaCard(item: .test, loadDelay: 0)
+        .padding(40)
 }

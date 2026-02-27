@@ -9,34 +9,31 @@ import SwiftUI
 import SwiftData
 
 struct CollectionView: View {
-    @Query(sort: \UserCollection.addedDate, order: .reverse) private var localCollection: [UserCollection]
-    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \UserCollection.addedDate, order: .reverse) var localCollection: [UserCollection]
+    @Environment(\.modelContext) var modelContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.scenePhase) private var scenePhase
-    @Environment(AuthViewModel.self) private var authVM
-    @Environment(CloudCollectionViewModel.self) private var cloudVM
+    @Environment(AuthViewModel.self) var authVM
+    @Environment(CloudCollectionViewModel.self) var cloudVM
 
-    @Namespace private var namespace
-    @State private var showDeleteAlert = false
-    @State private var mangaToDelete: Int?
-    @State private var showConflictsSheet = false
-    @State private var collectionItemToEdit: UserMangaCollection?
-    @State private var localItemToEdit: UserCollection?
+    @Binding var pendingMangaId: Int?
+    @State private var navigationPath = NavigationPath()
+    @Namespace var namespace
+    @State var showDeleteAlert = false
+    @State var mangaToDelete: Int?
+    @State var collectionItemToEdit: UserMangaCollection?
+    @State var localItemToEdit: UserCollection?
 
-    private var isIPad: Bool {
+    init(pendingMangaId: Binding<Int?> = .constant(nil)) {
+        self._pendingMangaId = pendingMangaId
+    }
+
+    var isIPad: Bool {
         horizontalSizeClass == .regular
     }
 
-    private let demographicConfig: [(key: String, title: LocalizedStringKey, icon: String, color: Color)] = [
-        ("Shounen", "section_shounen", "flame.fill", .orange),
-        ("Seinen", "section_seinen", "person.fill", .purple),
-        ("Shoujo", "section_shoujo", "heart.fill", .pink),
-        ("Josei", "section_josei", "sparkles", .indigo),
-        ("Kids", "section_kids", "star.fill", .yellow)
-    ]
-
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             Group {
                 if authVM.isAuthenticated {
                     cloudCollectionView
@@ -75,9 +72,6 @@ struct CollectionView: View {
             } message: {
                 Text("collection_delete_message")
             }
-            .sheet(isPresented: $showConflictsSheet) {
-                SyncConflictView()
-            }
             .sheet(item: $collectionItemToEdit) { item in
                 if isIPad {
                     iPadEditCollectionView(item: item)
@@ -92,11 +86,6 @@ struct CollectionView: View {
                     EditLocalCollectionView(collection: item)
                 }
             }
-            .onChange(of: cloudVM.hasConflicts) { _, hasConflicts in
-                if hasConflicts {
-                    showConflictsSheet = true
-                }
-            }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active && authVM.isAuthenticated {
                     Task {
@@ -104,221 +93,28 @@ struct CollectionView: View {
                     }
                 }
             }
+            .onChange(of: pendingMangaId) { _, newValue in
+                if let mangaId = newValue, let manga = findManga(by: mangaId) {
+                    navigationPath.append(manga)
+                    pendingMangaId = nil
+                }
+            }
         }
     }
 
-    // MARK: - Cloud Collection (por demografía)
+    // MARK: - Deep Link Navigation
 
-    @ViewBuilder
-    private var cloudCollectionView: some View {
-        if cloudVM.state.isLoading {
-            ProgressView("loading_collection")
-        } else if let error = cloudVM.state.errorMessage {
-            ContentUnavailableView(
-                "error_loading",
-                systemImage: "exclamationmark.triangle",
-                description: Text(error)
-            )
-        } else if cloudVM.cloudCollection.isEmpty {
-            emptyStateView
+    private func findManga(by id: Int) -> Manga? {
+        if authVM.isAuthenticated {
+            return cloudVM.cloudCollection.first { $0.manga.id == id }?.manga
         } else {
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 24) {
-                    // Stats
-                    collectionStats(count: cloudVM.cloudCollection.count, isCloud: true)
-
-                    // Secciones por demografía
-                    ForEach(demographicConfig, id: \.key) { config in
-                        let items = cloudItemsByDemographic(config.key)
-                        if !items.isEmpty {
-                            cloudSection(title: config.title, icon: config.icon, color: config.color, items: items)
-                        }
-                    }
-
-                    // Sin demografía
-                    let other = cloudItemsWithoutDemographic()
-                    if !other.isEmpty {
-                        cloudSection(title: "section_other", icon: "square.grid.2x2", color: .gray, items: other)
-                    }
-
-                    Spacer(minLength: 50)
-                }
-                .padding(.top)
-            }
+            return localCollection.first { $0.manga.id == id }?.manga.toManga()
         }
-    }
-
-    // MARK: - Local Collection (por demografía)
-
-    @ViewBuilder
-    private var localCollectionView: some View {
-        if localCollection.isEmpty {
-            emptyStateView
-        } else {
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 24) {
-                    // Stats
-                    collectionStats(count: localCollection.count, isCloud: false)
-
-                    // Secciones por demografía
-                    ForEach(demographicConfig, id: \.key) { config in
-                        let items = localItemsByDemographic(config.key)
-                        if !items.isEmpty {
-                            localSection(title: config.title, icon: config.icon, color: config.color, items: items)
-                        }
-                    }
-
-                    // Sin demografía
-                    let other = localItemsWithoutDemographic()
-                    if !other.isEmpty {
-                        localSection(title: "section_other", icon: "square.grid.2x2", color: .gray, items: other)
-                    }
-
-                    Spacer(minLength: 50)
-                }
-                .padding(.top)
-            }
-        }
-    }
-
-    // MARK: - Stats Header
-
-    private func collectionStats(count: Int, isCloud: Bool) -> some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text("\(count)")
-                    .font(.largeTitle.bold())
-                Text("collection_total_mangas")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            if isCloud {
-                Label("collection_cloud_label", systemImage: "cloud.fill")
-                    .font(.caption)
-                    .foregroundStyle(.blue)
-            }
-        }
-        .padding(.horizontal)
-    }
-
-    // MARK: - Cloud Section
-
-    private func cloudSection(title: LocalizedStringKey, icon: String, color: Color, items: [UserMangaCollection]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Label(title, systemImage: icon)
-                    .font(.title3.bold())
-                    .foregroundStyle(color)
-
-                Text("(\(items.count))")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 16) {
-                    ForEach(items) { item in
-                        NavigationLink(value: item.manga) {
-                            MangaCard(manga: item.manga, namespace: namespace)
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            Button {
-                                collectionItemToEdit = item
-                            } label: {
-                                Label("action_edit", systemImage: "pencil")
-                            }
-
-                            Divider()
-
-                            Button(role: .destructive) {
-                                mangaToDelete = item.manga.id
-                                showDeleteAlert = true
-                            } label: {
-                                Label("action_delete", systemImage: "trash")
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal)
-            }
-        }
-    }
-
-    // MARK: - Local Section
-
-    private func localSection(title: LocalizedStringKey, icon: String, color: Color, items: [UserCollection]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Label(title, systemImage: icon)
-                    .font(.title3.bold())
-                    .foregroundStyle(color)
-
-                Text("(\(items.count))")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 16) {
-                    ForEach(items) { item in
-                        NavigationLink(value: item.manga.toManga()) {
-                            MangaCard(manga: item.manga.toManga(), namespace: namespace)
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            Button {
-                                localItemToEdit = item
-                            } label: {
-                                Label("action_edit", systemImage: "pencil")
-                            }
-
-                            Divider()
-
-                            Button(role: .destructive) {
-                                mangaToDelete = item.manga.id
-                                showDeleteAlert = true
-                            } label: {
-                                Label("action_delete", systemImage: "trash")
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal)
-            }
-        }
-    }
-
-    // MARK: - Grouping (Cloud)
-
-    private func cloudItemsByDemographic(_ demographic: String) -> [UserMangaCollection] {
-        cloudVM.cloudCollection
-            .filter { $0.manga.demographics.contains { $0.demographic == demographic } }
-    }
-
-    private func cloudItemsWithoutDemographic() -> [UserMangaCollection] {
-        cloudVM.cloudCollection
-            .filter { $0.manga.demographics.isEmpty }
-    }
-
-    // MARK: - Grouping (Local)
-
-    private func localItemsByDemographic(_ demographic: String) -> [UserCollection] {
-        localCollection
-            .filter { $0.manga.demographicNames.contains(demographic) }
-    }
-
-    private func localItemsWithoutDemographic() -> [UserCollection] {
-        localCollection
-            .filter { $0.manga.demographicNames.isEmpty }
     }
 
     // MARK: - Empty State
 
-    private var emptyStateView: some View {
+    var emptyStateView: some View {
         ContentUnavailableView(
             "collection_empty_title",
             systemImage: "books.vertical",

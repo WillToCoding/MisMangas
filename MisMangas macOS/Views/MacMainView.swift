@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 enum NavigationItem: Hashable {
     case home
@@ -15,7 +16,9 @@ enum NavigationItem: Hashable {
 }
 
 struct MacMainView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(AuthViewModel.self) private var authVM
+    @Environment(CloudCollectionViewModel.self) private var cloudVM
 
     @State private var selectedSection: NavigationItem? = .home
     @State private var selectedManga: Manga?
@@ -75,6 +78,12 @@ struct MacMainView: View {
                 selectedSection = section
             }
         }
+        .task {
+            // Configurar el ModelContainer para sincronización cloud -> local
+            let container = modelContext.container
+            cloudVM.setModelContainer(container)
+            await authVM.checkAndRenewTokenIfNeeded()
+        }
     }
 
     private var colorScheme: ColorScheme? {
@@ -90,7 +99,9 @@ struct MacMainView: View {
 }
 
 #Preview {
+    let authVM = AuthViewModel()
     MacMainView()
-        .environment(AuthViewModel())
-        .environment(CloudCollectionViewModel(authVM: AuthViewModel()))
+        .environment(authVM)
+        .environment(CloudCollectionViewModel(authVM: authVM))
+        .modelContainer(.preview)
 }

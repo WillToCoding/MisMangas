@@ -12,16 +12,17 @@ import SwiftUI
 extension View {
     /// Aplica animación solo si Reduce Motion está desactivado
     /// Uso: .accessibilityAnimation(.spring(), value: isExpanded, reduceMotion: reduceMotion)
-    @ViewBuilder
     func accessibilityAnimation<V: Equatable>(
         _ animation: Animation?,
         value: V,
         reduceMotion: Bool
     ) -> some View {
-        if reduceMotion {
-            self
-        } else {
-            self.animation(animation, value: value)
+        Group {
+            if reduceMotion {
+                self
+            } else {
+                self.animation(animation, value: value)
+            }
         }
     }
 }
@@ -31,29 +32,31 @@ extension View {
 extension View {
     /// Aplica material solo si Reduce Transparency está desactivado
     /// Uso: .accessibilityBackground(material: .ultraThinMaterial, reduceTransparency: reduceTransparency)
-    @ViewBuilder
     func accessibilityBackground(
         material: Material,
         reduceTransparency: Bool,
         fallbackColor: Color = .systemBackground
     ) -> some View {
-        if reduceTransparency {
-            self.background(fallbackColor)
-        } else {
-            self.background(material)
+        Group {
+            if reduceTransparency {
+                self.background(fallbackColor)
+            } else {
+                self.background(material)
+            }
         }
     }
 
     /// Aplica blur solo si Reduce Transparency está desactivado
-    @ViewBuilder
     func accessibilityBlur(
         radius: CGFloat,
         reduceTransparency: Bool
     ) -> some View {
-        if reduceTransparency {
-            self
-        } else {
-            self.blur(radius: radius)
+        Group {
+            if reduceTransparency {
+                self
+            } else {
+                self.blur(radius: radius)
+            }
         }
     }
 }
@@ -74,10 +77,12 @@ extension View {
 extension Color {
     /// Color de fondo del sistema (adaptativo a light/dark mode)
     static var systemBackground: Color {
-        #if os(iOS) || os(tvOS) || os(visionOS)
+        #if os(iOS) || os(visionOS)
         Color(uiColor: .systemBackground)
         #elseif os(macOS)
         Color(nsColor: .windowBackgroundColor)
+        #elseif os(tvOS)
+        Color.black
         #else
         Color.white
         #endif
@@ -85,13 +90,98 @@ extension Color {
 
     /// Color de fondo secundario del sistema
     static var secondarySystemBackground: Color {
-        #if os(iOS) || os(tvOS) || os(visionOS)
+        #if os(iOS) || os(visionOS)
         Color(uiColor: .secondarySystemBackground)
         #elseif os(macOS)
         Color(nsColor: .controlBackgroundColor)
+        #elseif os(tvOS)
+        Color.gray.opacity(0.2)
         #else
         Color.gray.opacity(0.1)
         #endif
+    }
+}
+
+// MARK: - Accessibility Header
+
+extension View {
+    /// Marca como header semántico con nivel de jerarquía
+    ///
+    /// Reemplaza:
+    /// ```swift
+    /// .accessibilityAddTraits(.isHeader)
+    /// .accessibilityHeading(.h2)
+    /// ```
+    ///
+    /// Uso:
+    /// ```swift
+    /// Text("Sección")
+    ///     .accessibilityHeader(.h2)
+    /// ```
+    func accessibilityHeader(_ level: AccessibilityHeadingLevel = .h2) -> some View {
+        self
+            .accessibilityAddTraits(.isHeader)
+            .accessibilityHeading(level)
+    }
+}
+
+// MARK: - Accessibility Card
+
+extension View {
+    /// Configura accesibilidad completa para cards/botones interactivos
+    ///
+    /// Reemplaza:
+    /// ```swift
+    /// .accessibilityElement(children: .combine)
+    /// .accessibilityLabel(label)
+    /// .accessibilityValue(value)
+    /// .accessibilityHint(hint)
+    /// .accessibilityAddTraits(.isButton)
+    /// ```
+    ///
+    /// Uso:
+    /// ```swift
+    /// VStack { ... }
+    ///     .accessibilityCard(
+    ///         label: "Naruto",
+    ///         value: "Puntuación 8.5",
+    ///         hint: "Doble toque para ver detalles"
+    ///     )
+    /// ```
+    func accessibilityCard(label: String, value: String? = nil, hint: String? = nil) -> some View {
+        self
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(label)
+            .accessibilityValue(value ?? "")
+            .accessibilityHint(hint ?? "")
+            .accessibilityAddTraits(.isButton)
+    }
+}
+
+// MARK: - Accessibility Selectable
+
+extension View {
+    /// Configura accesibilidad para elementos seleccionables (chips, filtros)
+    ///
+    /// Reemplaza:
+    /// ```swift
+    /// .accessibilityLabel(label)
+    /// .accessibilityAddTraits(isSelected ? .isSelected : [])
+    /// .accessibilityHint(isSelected ? "deseleccionar" : "seleccionar")
+    /// ```
+    ///
+    /// Uso:
+    /// ```swift
+    /// Text("Acción")
+    ///     .accessibilitySelectable(label: "Género Acción", isSelected: true)
+    /// ```
+    func accessibilitySelectable(label: String, isSelected: Bool) -> some View {
+        self
+            .accessibilityLabel(label)
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
+            .accessibilityHint(isSelected
+                ? String(localized: "accessibility_tap_deselect")
+                : String(localized: "accessibility_tap_select"))
     }
 }
 

@@ -15,8 +15,9 @@ extension ModelContainer {
         PreviewData.shared.container
     }
 
-    /// Container para producción
-    static var production: ModelContainer {
+    /// Container singleton para producción
+    @MainActor
+    static let production: ModelContainer = {
         let schema = Schema([MangaModel.self, UserCollection.self, OwnedVolume.self])
         let configuration = ModelConfiguration(
             schema: schema,
@@ -29,5 +30,5 @@ extension ModelContainer {
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
-    }
+    }()
 }

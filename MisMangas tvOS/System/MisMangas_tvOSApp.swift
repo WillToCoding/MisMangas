@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MisMangas_tvOSApp: App {
@@ -35,5 +36,6 @@ struct MisMangas_tvOSApp: App {
                     }
                 }
         }
+        .modelContainer(.production)
     }
 }

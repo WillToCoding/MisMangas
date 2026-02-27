@@ -49,10 +49,26 @@ struct WidgetManga: Codable, Identifiable, Sendable {
 /// Datos compartidos entre App y Widget
 struct WidgetData: Codable, Sendable {
     let mangas: [WidgetManga]
+    let totalInCollection: Int
+    let completedCount: Int
+    let readingCount: Int
     let lastUpdated: Date
-    let userEmail: String?
 
-    static let empty = WidgetData(mangas: [], lastUpdated: Date(), userEmail: nil)
+    /// Progreso global de lectura (promedio de todos los mangas leyendo)
+    var overallProgress: Double {
+        let validMangas = mangas.filter { $0.totalVolumes != nil }
+        guard !validMangas.isEmpty else { return 0 }
+        let total = validMangas.reduce(0.0) { $0 + $1.progressPercentage }
+        return total / Double(validMangas.count)
+    }
+
+    static let empty = WidgetData(
+        mangas: [],
+        totalInCollection: 0,
+        completedCount: 0,
+        readingCount: 0,
+        lastUpdated: Date()
+    )
 
     /// Datos de ejemplo para placeholder/preview
     static let placeholder = WidgetData(
@@ -118,7 +134,9 @@ struct WidgetData: Codable, Sendable {
                 lastUpdated: Date().addingTimeInterval(-18000)
             )
         ],
-        lastUpdated: Date(),
-        userEmail: "usuario@example.com"
+        totalInCollection: 12,
+        completedCount: 3,
+        readingCount: 6,
+        lastUpdated: Date()
     )
 }

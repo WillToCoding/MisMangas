@@ -18,23 +18,23 @@ struct DetailRelatedView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("detail_related_mangas")
                 .font(.headline)
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityHeading(.h2)
+                .accessibilityHeader(.h2)
 
             content
         }
     }
 
-    @ViewBuilder
     private var content: some View {
-        if isLoading {
-            loadingView
-        } else if relatedMangas.isEmpty && recommendations.isEmpty {
-            emptyView
-        } else {
-            VStack(alignment: .leading, spacing: 12) {
-                relationsSection
-                recommendationsSection
+        Group {
+            if isLoading {
+                loadingView
+            } else if relatedMangas.isEmpty && recommendations.isEmpty {
+                emptyView
+            } else {
+                VStack(alignment: .leading, spacing: 12) {
+                    relationsSection
+                    recommendationsSection
+                }
             }
         }
     }
@@ -56,6 +56,7 @@ struct DetailRelatedView: View {
     }
 
     // MARK: - Relations Section
+
     private var relationsSection: some View {
         ForEach(relatedMangas) { relation in
             RelationGroup(
@@ -67,135 +68,28 @@ struct DetailRelatedView: View {
     }
 
     // MARK: - Recommendations Section
-    @ViewBuilder
+
     private var recommendationsSection: some View {
-        if !recommendations.isEmpty {
-            Text("detail_recommendations")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.top, 8)
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityHeading(.h3)
+        Group {
+            if !recommendations.isEmpty {
+                Text("detail_recommendations")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 8)
+                    .accessibilityHeader(.h3)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(recommendations.prefix(10)) { rec in
-                        RecommendationCard(
-                            recommendation: rec,
-                            onTap: { Task { await onMangaTap(rec.entry.malId) } }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Relation Group
-private struct RelationGroup: View {
-    let relation: JikanRelation
-    let mangaDetails: [Int: Manga]
-    let onMangaTap: (Int) async -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(localizedRelationType(relation.relation))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityHeading(.h3)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(relation.entry.filter { $0.type == "manga" }) { entry in
-                        RelatedMangaCard(
-                            entry: entry,
-                            manga: mangaDetails[entry.malId],
-                            onTap: { Task { await onMangaTap(entry.malId) } }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Related Manga Card
-private struct RelatedMangaCard: View {
-    let entry: JikanRelationEntry
-    let manga: Manga?
-    let onTap: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            VStack(spacing: 4) {
-                if let manga = manga {
-                    CachedCoverImage(
-                        url: manga.coverURL,
-                        width: 60,
-                        height: 80
-                    )
-                    .accessibilityHidden(true)
-                } else {
-                    // Placeholder mientras carga
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(width: 60, height: 80)
-                        .overlay {
-                            ProgressView()
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(recommendations.prefix(10)) { rec in
+                            RecommendationCard(
+                                recommendation: rec,
+                                onTap: { Task { await onMangaTap(rec.entry.malId) } }
+                            )
                         }
-                        .accessibilityHidden(true)
+                    }
                 }
-
-                Text(entry.name)
-                    .font(.caption2)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 60)
-                    .foregroundStyle(.primary)
             }
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(entry.name)
-        .accessibilityHint(String(localized: "accessibility_double_tap_details"))
-    }
-}
-
-// MARK: - Recommendation Card
-private struct RecommendationCard: View {
-    let recommendation: JikanRecommendation
-    let onTap: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            VStack(spacing: 4) {
-                CachedCoverImage(
-                    url: URL(string: recommendation.entry.images.jpg.imageUrl),
-                    width: 60,
-                    height: 80
-                )
-                .accessibilityHidden(true)
-
-                Text(recommendation.entry.title)
-                    .font(.caption2)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 60)
-                    .foregroundStyle(.primary)
-
-                HStack(spacing: 2) {
-                    Image(systemName: "hand.thumbsup.fill")
-                        .font(.caption2)
-                    Text("\(recommendation.votes)")
-                        .font(.caption2)
-                }
-                .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
-            }
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("\(recommendation.entry.title), \(recommendation.votes) " + String(localized: "accessibility_votes"))
-        .accessibilityHint(String(localized: "accessibility_double_tap_details"))
     }
 }
 

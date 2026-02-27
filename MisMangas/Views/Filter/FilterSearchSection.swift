@@ -28,8 +28,7 @@ struct FilterSearchSection: View {
             }
         } header: {
             Text("filter_search")
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityHeading(.h2)
+                .accessibilityHeader(.h2)
         } footer: {
             if !searchText.isEmpty {
                 Text("\"\(searchText)\"")

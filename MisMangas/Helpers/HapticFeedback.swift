@@ -49,4 +49,18 @@ enum HapticFeedback: Sendable {
         }
     }
 }
+#elseif os(macOS)
+import AppKit
+
+enum HapticFeedback: Sendable {
+    case success, error, warning, light, medium, heavy, selection
+
+    @MainActor
+    func trigger() {
+        NSHapticFeedbackManager.defaultPerformer.perform(
+            .levelChange,
+            performanceTime: .default
+        )
+    }
+}
 #endif

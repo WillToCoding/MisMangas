@@ -8,14 +8,51 @@
 import SwiftUI
 import SwiftData
 
-/// Actor para operaciones de SwiftData en background
-/// Maneja el cacheo de mangas y la gestión de la colección
+/// Actor para operaciones de SwiftData en background.
+///
+/// `DataContainer` encapsula todas las operaciones CRUD de SwiftData
+/// ejecutandolas fuera del hilo principal para no bloquear la UI.
+///
+/// ## Uso
+///
+/// ```swift
+/// let container = DataContainer(modelContainer: modelContext.container)
+///
+/// // Cachear manga
+/// try await container.cacheManga(manga)
+///
+/// // Agregar a coleccion
+/// try await container.addToCollection(
+///     manga: manga,
+///     volumesOwned: [1, 2, 3],
+///     currentReadingVolume: 2,
+///     hasCompleteCollection: false
+/// )
+/// ```
+///
+/// ## Operaciones
+///
+/// | Categoria | Metodos |
+/// |-----------|---------|
+/// | Cache | ``cacheManga(_:)``, ``getCachedManga(id:)``, ``isMangaCached(id:)`` |
+/// | Coleccion | ``addToCollection(manga:volumesOwned:currentReadingVolume:hasCompleteCollection:readingStatus:markPending:)``, ``removeFromCollection(mangaId:)`` |
+/// | Lectura | ``updateReadingProgress(mangaId:currentVolume:)``, ``updateUserStats(mangaId:readingStatus:currentVolume:volumesOwned:hasCompleteCollection:markPending:)`` |
+/// | Consulta | ``isInCollection(mangaId:)``, ``getCollectionEntry(mangaId:)`` |
+///
+/// - Note: Usa `@ModelActor` para acceso seguro a SwiftData desde cualquier hilo.
 @ModelActor
 actor DataContainer {
 
     // MARK: - Manga Caching
 
-    /// Cachea un manga en SwiftData (o actualiza si ya existe)
+    /// Cachea un manga en SwiftData (o actualiza si ya existe).
+    ///
+    /// Si el manga ya existe (mismo ID), actualiza todos sus campos.
+    /// Si no existe, crea un nuevo ``MangaModel``.
+    ///
+    /// - Parameter manga: Manga del dominio a cachear.
+    /// - Returns: El ``MangaModel`` creado o actualizado.
+    /// - Throws: Error de SwiftData si falla el guardado.
     @discardableResult
     func cacheManga(_ manga: Manga) throws -> MangaModel {
         let mangaId = manga.id
@@ -60,7 +97,10 @@ actor DataContainer {
         }
     }
 
-    /// Obtiene un manga cacheado por ID
+    /// Obtiene un manga cacheado por ID.
+    ///
+    /// - Parameter id: ID del manga en la API.
+    /// - Returns: El ``MangaModel`` si existe, `nil` si no esta cacheado.
     func getCachedManga(id: Int) throws -> MangaModel? {
         var fetch = FetchDescriptor<MangaModel>(
             predicate: #Predicate { $0.id == id }
@@ -69,7 +109,10 @@ actor DataContainer {
         return try modelContext.fetch(fetch).first
     }
 
-    /// Verifica si un manga está cacheado
+    /// Verifica si un manga esta cacheado.
+    ///
+    /// - Parameter id: ID del manga en la API.
+    /// - Returns: `true` si existe en cache local.
     func isMangaCached(id: Int) throws -> Bool {
         let fetch = FetchDescriptor<MangaModel>(
             predicate: #Predicate { $0.id == id }
@@ -79,8 +122,18 @@ actor DataContainer {
 
     // MARK: - Collection Management
 
-    /// Añade un manga a la colección del usuario
-    /// - Parameter markPending: Si true, marca como pendiente de sync
+    /// Añade un manga a la coleccion del usuario.
+    ///
+    /// Si el manga ya existe en la coleccion, actualiza sus datos.
+    /// Primero cachea el manga antes de agregarlo a la coleccion.
+    ///
+    /// - Parameters:
+    ///   - manga: Manga a agregar.
+    ///   - volumesOwned: Volumenes que posee el usuario.
+    ///   - currentReadingVolume: Volumen actual de lectura.
+    ///   - hasCompleteCollection: Si tiene la coleccion fisica completa.
+    ///   - readingStatus: Estado de lectura.
+    ///   - markPending: Si `true`, marca como pendiente de sincronizar con cloud.
     func addToCollection(
         manga: Manga,
         volumesOwned: [Int],
@@ -133,7 +186,10 @@ actor DataContainer {
         }
     }
 
-    /// Elimina un manga de la colección
+    /// Elimina un manga de la coleccion.
+    ///
+    /// - Parameter mangaId: ID del manga a eliminar.
+    /// - Note: El manga cacheado no se elimina, solo la entrada de coleccion.
     func removeFromCollection(mangaId: Int) throws {
         var fetch = FetchDescriptor<UserCollection>(
             predicate: #Predicate { $0.manga.id == mangaId }
@@ -146,7 +202,11 @@ actor DataContainer {
         }
     }
 
-    /// Actualiza el progreso de lectura
+    /// Actualiza el progreso de lectura.
+    ///
+    /// - Parameters:
+    ///   - mangaId: ID del manga.
+    ///   - currentVolume: Nuevo volumen actual de lectura.
     func updateReadingProgress(mangaId: Int, currentVolume: Int) throws {
         var fetch = FetchDescriptor<UserCollection>(
             predicate: #Predicate { $0.manga.id == mangaId }
@@ -159,8 +219,18 @@ actor DataContainer {
         }
     }
 
-    /// Actualiza los stats personales del usuario
-    /// - Parameter markPending: Si true, marca como pendiente de sync (cambio local sin subir a cloud)
+    /// Actualiza los stats personales del usuario.
+    ///
+    /// Permite actualizar uno o varios campos de la entrada de coleccion.
+    /// Solo se actualizan los campos que no son `nil`.
+    ///
+    /// - Parameters:
+    ///   - mangaId: ID del manga.
+    ///   - readingStatus: Nuevo estado de lectura (opcional).
+    ///   - currentVolume: Nuevo volumen actual (opcional).
+    ///   - volumesOwned: Nuevos volumenes poseidos (opcional).
+    ///   - hasCompleteCollection: Si tiene coleccion completa (opcional).
+    ///   - markPending: Si `true`, marca como pendiente de sincronizar con cloud.
     func updateUserStats(
         mangaId: Int,
         readingStatus: ReadingStatus? = nil,
@@ -203,7 +273,10 @@ actor DataContainer {
         }
     }
 
-    /// Verifica si un manga está en la colección
+    /// Verifica si un manga esta en la coleccion.
+    ///
+    /// - Parameter mangaId: ID del manga.
+    /// - Returns: `true` si el manga tiene entrada en la coleccion.
     func isInCollection(mangaId: Int) throws -> Bool {
         let fetch = FetchDescriptor<UserCollection>(
             predicate: #Predicate { $0.manga.id == mangaId }
@@ -211,7 +284,10 @@ actor DataContainer {
         return try modelContext.fetchCount(fetch) > 0
     }
 
-    /// Obtiene la entrada de colección para un manga
+    /// Obtiene la entrada de coleccion para un manga.
+    ///
+    /// - Parameter mangaId: ID del manga.
+    /// - Returns: La ``UserCollection`` si existe, `nil` si no esta en coleccion.
     func getCollectionEntry(mangaId: Int) throws -> UserCollection? {
         var fetch = FetchDescriptor<UserCollection>(
             predicate: #Predicate { $0.manga.id == mangaId }
@@ -219,218 +295,4 @@ actor DataContainer {
         fetch.fetchLimit = 1
         return try modelContext.fetch(fetch).first
     }
-
-    // MARK: - Cloud Sync
-
-    /// Sincroniza un item de la colección cloud a local
-    /// Preserva datos locales que no existen en cloud (readingStatus)
-    /// Guarda lastSynced para detectar conflictos futuros
-    func syncFromCloud(_ cloudItem: UserMangaCollection) throws {
-        let mangaId = cloudItem.manga.id
-
-        // Primero cachear el manga
-        let mangaModel = try cacheManga(cloudItem.manga)
-
-        // Buscar si ya existe en la colección local
-        var fetch = FetchDescriptor<UserCollection>(
-            predicate: #Predicate { $0.manga.id == mangaId }
-        )
-        fetch.fetchLimit = 1
-
-        if let existing = try modelContext.fetch(fetch).first {
-            // Actualizar solo datos que vienen de cloud, preservar readingStatus local
-            for vol in existing.ownedVolumes {
-                modelContext.delete(vol)
-            }
-            existing.ownedVolumes = cloudItem.volumesOwned.map { OwnedVolume(number: $0) }
-            existing.currentReadingVolume = cloudItem.readingVolume
-            existing.hasCompleteCollection = cloudItem.completeCollection
-            // Guardar snapshot de cloud para detectar conflictos
-            existing.lastSyncedVolumes = cloudItem.volumesOwned
-            existing.lastSyncedReadingVolume = cloudItem.readingVolume
-            existing.pendingSync = false
-        } else {
-            // Crear nueva entrada con datos de cloud
-            let collection = UserCollection(
-                manga: mangaModel,
-                volumesOwned: cloudItem.volumesOwned,
-                currentReadingVolume: cloudItem.readingVolume,
-                hasCompleteCollection: cloudItem.completeCollection,
-                readingStatus: cloudItem.completeCollection ? .completed : .reading,
-                lastSyncedVolumes: cloudItem.volumesOwned,
-                lastSyncedReadingVolume: cloudItem.readingVolume
-            )
-            modelContext.insert(collection)
-        }
-
-        if modelContext.hasChanges {
-            try modelContext.save()
-        }
-    }
-
-    /// Sincroniza toda la colección cloud a local (sin conflictos)
-    func syncAllFromCloud(_ cloudCollection: [UserMangaCollection]) throws {
-        for item in cloudCollection {
-            try syncFromCloud(item)
-        }
-    }
-
-    // MARK: - Sync Management
-
-    /// Obtiene todos los items pendientes de sincronizar con cloud
-    func getPendingSyncItems() throws -> [PendingSyncItem] {
-        let fetch = FetchDescriptor<UserCollection>(
-            predicate: #Predicate { $0.pendingSync == true }
-        )
-        return try modelContext.fetch(fetch).map { collection in
-            PendingSyncItem(
-                mangaId: collection.manga.id,
-                mangaTitle: collection.manga.title,
-                hasCompleteCollection: collection.hasCompleteCollection,
-                volumesOwned: collection.volumesOwned,
-                currentReadingVolume: collection.currentReadingVolume
-            )
-        }
-    }
-
-    /// Marca un item como sincronizado (ya no tiene cambios pendientes)
-    /// Actualiza lastSynced con los valores actuales
-    func markAsSynced(mangaId: Int) throws {
-        var fetch = FetchDescriptor<UserCollection>(
-            predicate: #Predicate { $0.manga.id == mangaId }
-        )
-        fetch.fetchLimit = 1
-
-        if let collection = try modelContext.fetch(fetch).first {
-            collection.pendingSync = false
-            // Guardar valores actuales como lastSynced
-            collection.lastSyncedVolumes = collection.volumesOwned
-            collection.lastSyncedReadingVolume = collection.currentReadingVolume
-            try modelContext.save()
-        }
-    }
-
-    /// Detecta conflictos entre local y cloud
-    /// Conflicto = local tiene cambios pendientes Y cloud cambio desde ultima sync
-    func detectConflicts(cloudCollection: [UserMangaCollection]) throws -> [SyncConflict] {
-        var conflicts: [SyncConflict] = []
-
-        for cloudItem in cloudCollection {
-            let mangaId = cloudItem.manga.id
-            var fetch = FetchDescriptor<UserCollection>(
-                predicate: #Predicate { $0.manga.id == mangaId }
-            )
-            fetch.fetchLimit = 1
-
-            if let local = try modelContext.fetch(fetch).first, local.pendingSync {
-                // Local tiene cambios pendientes, verificar si cloud cambio desde lastSynced
-                let lastSyncedVolumes = Set(local.lastSyncedVolumes)
-                let cloudVolumes = Set(cloudItem.volumesOwned)
-                let lastSyncedReading = local.lastSyncedReadingVolume
-                let cloudReading = cloudItem.readingVolume
-
-                // Valores actuales de local
-                let localVolumes = Set(local.volumesOwned)
-                let localReading = local.currentReadingVolume
-
-                // Si local actual == cloud actual, no hay conflicto (mismo cambio en ambos)
-                let localEqualsCloud = localVolumes == cloudVolumes && localReading == cloudReading
-                if localEqualsCloud {
-                    // Marcar como sincronizado, no hay conflicto
-                    local.pendingSync = false
-                    local.lastSyncedVolumes = cloudItem.volumesOwned
-                    local.lastSyncedReadingVolume = cloudReading
-                    continue
-                }
-
-                // Si cloud difiere de lastSynced, otro dispositivo lo modifico
-                let cloudChanged = lastSyncedVolumes != cloudVolumes || lastSyncedReading != cloudReading
-
-                if cloudChanged {
-                    // Conflicto real: local cambio Y cloud cambio Y son diferentes
-                    conflicts.append(SyncConflict(
-                        mangaId: mangaId,
-                        mangaTitle: local.manga.title,
-                        localVolumesOwned: local.volumesOwned,
-                        localReadingVolume: local.currentReadingVolume,
-                        cloudVolumesOwned: cloudItem.volumesOwned,
-                        cloudReadingVolume: cloudReading
-                    ))
-                }
-                // Si cloud == lastSynced, no hay conflicto, solo subir local
-            }
-        }
-
-        return conflicts
-    }
-
-    /// Sincroniza cloud a local, omitiendo items con conflicto
-    func syncFromCloudSkippingConflicts(_ cloudCollection: [UserMangaCollection]) throws {
-        for cloudItem in cloudCollection {
-            let mangaId = cloudItem.manga.id
-            var fetch = FetchDescriptor<UserCollection>(
-                predicate: #Predicate { $0.manga.id == mangaId }
-            )
-            fetch.fetchLimit = 1
-
-            // Si existe local con pendingSync, no sobrescribir (es conflicto)
-            if let local = try modelContext.fetch(fetch).first, local.pendingSync {
-                continue
-            }
-
-            // No hay conflicto, sincronizar normalmente
-            try syncFromCloud(cloudItem)
-        }
-    }
-
-    /// Resuelve un conflicto eligiendo la versión local (sube a cloud después)
-    func resolveConflictKeepLocal(mangaId: Int) throws {
-        // El item local ya tiene pendingSync = true, solo necesitamos
-        // que el CloudCollectionViewModel lo suba a cloud
-        // No hacemos nada aquí, el pendingSync ya está marcado
-    }
-
-    /// Resuelve un conflicto eligiendo la versión cloud
-    func resolveConflictUseCloud(mangaId: Int, cloudItem: UserMangaCollection) throws {
-        var fetch = FetchDescriptor<UserCollection>(
-            predicate: #Predicate { $0.manga.id == mangaId }
-        )
-        fetch.fetchLimit = 1
-
-        if let local = try modelContext.fetch(fetch).first {
-            // Sobrescribir con datos de cloud
-            for vol in local.ownedVolumes {
-                modelContext.delete(vol)
-            }
-            local.ownedVolumes = cloudItem.volumesOwned.map { OwnedVolume(number: $0) }
-            local.currentReadingVolume = cloudItem.readingVolume
-            local.hasCompleteCollection = cloudItem.completeCollection
-            local.pendingSync = false
-            local.lastModified = Date()
-
-            try modelContext.save()
-        }
-    }
-}
-
-// MARK: - Sync Types
-
-/// Representa un conflicto entre datos locales y cloud
-struct SyncConflict: Identifiable {
-    let id = UUID()
-    let mangaId: Int
-    let mangaTitle: String
-    let localVolumesOwned: [Int]
-    let localReadingVolume: Int?
-    let cloudVolumesOwned: [Int]
-    let cloudReadingVolume: Int?
-}
-
-/// Item pendiente de sincronizar
-struct PendingSyncItem {
-    let mangaId: Int
-    let mangaTitle: String
-    let hasCompleteCollection: Bool
-    let volumesOwned: [Int]
-    let currentReadingVolume: Int?
 }

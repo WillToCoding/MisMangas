@@ -74,10 +74,10 @@ struct MangaGridCell: View {
             .accessibilityHidden(true)
         }
         .frame(width: 150)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
-        .accessibilityHint(String(localized: "accessibility_double_tap_details"))
-        .accessibilityAddTraits(.isButton)
+        .accessibilityCard(
+            label: accessibilityLabel,
+            hint: String(localized: "accessibility_double_tap_details")
+        )
     }
 
     // MARK: - Accessibility
@@ -98,14 +98,10 @@ struct MangaGridCell: View {
 #Preview("Grid con mangas") {
     @Previewable @Namespace var namespace
     NavigationStack {
-        MangaGridView(mangas: [
-            .test,
-            .test,
-            .test,
-            .test,
-            .test,
-            .test
-        ], namespace: namespace)
+        MangaGridView(
+            mangas: Manga.testArray,
+            namespace: namespace
+        )
     }
 }
 

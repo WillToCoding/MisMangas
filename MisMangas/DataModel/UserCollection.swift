@@ -67,8 +67,11 @@ final class UserCollection {
     /// Indica si hay cambios locales pendientes de sincronizar con cloud.
     var pendingSync: Bool = false
 
-    /// Fecha de última modificación (para detectar conflictos).
+    /// Fecha de última modificación local (para detectar conflictos).
     var lastModified: Date = Date()
+
+    /// Fecha de última sincronización exitosa con cloud.
+    var lastSyncDate: Date = Date.distantPast
 
     /// Volúmenes que tenía cloud la última vez que sincronizamos (comma-separated).
     var lastSyncedVolumesRaw: String
@@ -109,6 +112,7 @@ final class UserCollection {
         readingStatus: ReadingStatus = .planToRead,
         pendingSync: Bool = false,
         lastModified: Date = Date(),
+        lastSyncDate: Date = Date.distantPast,
         lastSyncedVolumes: [Int] = [],
         lastSyncedReadingVolume: Int? = nil
     ) {
@@ -120,6 +124,7 @@ final class UserCollection {
         self.readingStatusRaw = readingStatus.rawValue
         self.pendingSync = pendingSync
         self.lastModified = lastModified
+        self.lastSyncDate = lastSyncDate
         self.lastSyncedVolumesRaw = lastSyncedVolumes.map(String.init).joined(separator: ",")
         self.lastSyncedReadingVolume = lastSyncedReadingVolume
     }
@@ -134,6 +139,7 @@ final class UserCollection {
         readingStatus: ReadingStatus = .planToRead,
         pendingSync: Bool = false,
         lastModified: Date = Date(),
+        lastSyncDate: Date = Date.distantPast,
         lastSyncedVolumes: [Int] = [],
         lastSyncedReadingVolume: Int? = nil
     ) {
@@ -147,6 +153,7 @@ final class UserCollection {
             readingStatus: readingStatus,
             pendingSync: pendingSync,
             lastModified: lastModified,
+            lastSyncDate: lastSyncDate,
             lastSyncedVolumes: lastSyncedVolumes,
             lastSyncedReadingVolume: lastSyncedReadingVolume
         )
@@ -178,14 +185,32 @@ extension UserCollection {
 // MARK: - CollectionItem Protocol Conformance
 extension UserCollection: CollectionItem {
     var collectionTitle: String { manga.title }
-
+    var collectionTitleJapanese: String? { manga.titleJapanese }
     var collectionCoverURL: URL? { manga.coverURL }
-
     var collectionScore: Double { manga.score }
     var collectionVolumesOwned: [Int] { volumesOwned }
     var collectionTotalVolumes: Int? { manga.volumes }
+    var collectionTotalChapters: Int? { manga.chapters }
     var collectionReadingVolume: Int? { currentReadingVolume }
     var collectionIsComplete: Bool { hasCompleteCollection }
     var collectionReadingStatus: ReadingStatus { readingStatus }
-    var isCloudSynced: Bool { !pendingSync }
+    var collectionStatus: String { manga.status }
+    var collectionSynopsis: String? { manga.sypnosis }
+    var collectionGenres: [String] { manga.genreNames }
+    var collectionMangaId: Int { manga.id }
+    var isCloudSynced: Bool { false }  // Local collection is never "cloud"
+}
+
+// MARK: - Preview Support
+extension UserCollection {
+    @MainActor
+    static var preview: UserCollection {
+        UserCollection(
+            manga: .preview,
+            volumesOwned: [1, 2, 3, 4, 5],
+            currentReadingVolume: 3,
+            hasCompleteCollection: false,
+            readingStatus: .reading
+        )
+    }
 }

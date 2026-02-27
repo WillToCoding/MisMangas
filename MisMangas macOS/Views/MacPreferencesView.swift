@@ -74,14 +74,14 @@ struct GeneralPreferencesView: View {
                 HStack {
                     Text("mac_version")
                     Spacer()
-                    Text("1.0.0")
+                    Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
                         .foregroundStyle(.secondary)
                 }
 
                 HStack {
                     Text("mac_build")
                     Spacer()
-                    Text("2025.12.11")
+                    Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1")
                         .foregroundStyle(.secondary)
                 }
             } header: {
@@ -202,7 +202,7 @@ struct TranslationPreferencesView: View {
                     Divider()
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("DeepL API Key")
+                        Text("translation_deepl_api_key")
                             .font(.subheadline)
 
                         SecureField("translation_settings_api_key_placeholder", text: $deeplApiKey)
@@ -244,5 +244,6 @@ struct TranslationPreferencesView: View {
     MacPreferencesView()
         .environment(AuthViewModel())
         .environment(CloudCollectionViewModel(authVM: AuthViewModel()))
+        .environment(TranslationService())
         .modelContainer(.preview)
 }

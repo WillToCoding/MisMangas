@@ -22,6 +22,7 @@ struct VisionMangaCard: View {
     var genres: [String]? = nil
 
     @State private var isHovered = false
+    @State private var coverVM = MangaCoverVM()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -57,29 +58,23 @@ struct VisionMangaCard: View {
     // MARK: - Subviews
 
     private var coverImage: some View {
-        AsyncImage(url: URL(string: imageURL.replacingOccurrences(of: "\"", with: ""))) { phase in
-            switch phase {
-            case .empty:
-                Rectangle()
-                    .fill(.gray.opacity(0.3))
-                    .overlay {
-                        ProgressView()
-                    }
-            case .success(let image):
-                image
+        Group {
+            if let image = coverVM.image {
+                Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-            case .failure:
+            } else {
                 Rectangle()
                     .fill(.gray.opacity(0.3))
                     .overlay {
-                        Image(systemName: "photo")
-                            .font(.largeTitle)
-                            .foregroundStyle(.gray)
+                        if coverVM.isLoading {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "photo")
+                                .font(.largeTitle)
+                                .foregroundStyle(.gray)
+                        }
                     }
-            @unknown default:
-                Rectangle()
-                    .fill(.gray.opacity(0.3))
             }
         }
         .frame(
@@ -90,6 +85,10 @@ struct VisionMangaCard: View {
         .shadow(radius: isHovered ? 20 : 10)
         .scaleEffect(isHovered ? 1.05 : 1.0)
         .animation(.spring(response: 0.3), value: isHovered)
+        .onAppear {
+            let url = URL(string: imageURL.replacingOccurrences(of: "\"", with: ""))
+            coverVM.getImage(url: url)
+        }
     }
 
     private var scoreAndVolumes: some View {

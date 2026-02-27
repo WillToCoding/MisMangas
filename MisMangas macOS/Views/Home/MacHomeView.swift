@@ -12,14 +12,6 @@ struct MacHomeView: View {
 
     @State private var viewModel = HomeViewModel()
 
-    private let demographicConfig: [(key: String, title: LocalizedStringKey, icon: String, color: Color)] = [
-        ("Shounen", "section_shounen", "flame.fill", .orange),
-        ("Seinen", "section_seinen", "person.fill", .purple),
-        ("Shoujo", "section_shoujo", "heart.fill", .pink),
-        ("Josei", "section_josei", "sparkles", .indigo),
-        ("Kids", "section_kids", "star.fill", .yellow)
-    ]
-
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 24) {
@@ -62,10 +54,10 @@ struct MacHomeView: View {
 
     // MARK: - Normal Content
 
-    @ViewBuilder
     private var normalContent: some View {
-        // Hero carousel con los mejores mangas
-        if !viewModel.bestMangas.isEmpty {
+        Group {
+            // Hero carousel con los mejores mangas
+            if !viewModel.bestMangas.isEmpty {
             MacHorizontalSection(
                 title: "section_best_rated",
                 icon: "trophy.fill",
@@ -83,8 +75,8 @@ struct MacHomeView: View {
         }
 
         // Secciones por demografía
-        ForEach(demographicConfig, id: \.key) { config in
-            if let mangas = viewModel.mangasByDemographic[config.key], !mangas.isEmpty {
+        ForEach(DemographicsConfig.list) { config in
+            if let mangas = viewModel.mangasByDemographic[config.id], !mangas.isEmpty {
                 MacHorizontalSection(
                     title: config.title,
                     icon: config.icon,
@@ -100,6 +92,7 @@ struct MacHomeView: View {
                     }
                 }
             }
+        }
         }
     }
 
@@ -259,6 +252,7 @@ struct MacHeroCard: View {
 }
 
 #Preview {
-    MacHomeView(selection: .constant(nil))
+    @Previewable @State var selection: Manga? = nil
+    MacHomeView(selection: $selection)
         .frame(width: 600, height: 800)
 }

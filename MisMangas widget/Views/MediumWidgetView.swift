@@ -15,17 +15,30 @@ struct MediumWidgetView: View {
         Array(entry.widgetData.mangas.prefix(3))
     }
 
+    private let collectionURL = URL(string: "mismangas://collection")
+
     var body: some View {
-        if mangas.isEmpty {
-            emptyState
-        } else {
-            HStack(spacing: 12) {
-                ForEach(mangas) { manga in
-                    MangaCardView(manga: manga)
+        Group {
+            if mangas.isEmpty {
+                emptyState
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    // Stats Header
+                    WidgetStatsHeader(widgetData: entry.widgetData, compact: false)
+
+                    // Mangas
+                    HStack(spacing: 12) {
+                        ForEach(mangas) { manga in
+                            Link(destination: URL(string: "mismangas://manga/\(manga.id)")!) {
+                                WidgetMangaCard(manga: manga, style: .medium)
+                            }
+                        }
+                    }
                 }
+                .padding()
             }
-            .padding()
         }
+        .widgetURL(collectionURL)
     }
 
     private var emptyState: some View {
@@ -46,45 +59,14 @@ struct MediumWidgetView: View {
     }
 }
 
-struct MangaCardView: View {
-    let manga: WidgetManga
+#Preview("Con datos", as: .systemMedium) {
+    MisMangas_widget()
+} timeline: {
+    MangaWidgetEntry(date: .now, widgetData: .placeholder)
+}
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            // Portada
-            if let image = manga.localImage {
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            } else {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(LinearGradient(
-                        colors: [.purple.opacity(0.6), .blue.opacity(0.6)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ))
-                    .frame(height: 80)
-                    .overlay {
-                        Image(systemName: "book.closed")
-                            .foregroundStyle(.white.opacity(0.7))
-                    }
-            }
-
-            // Info
-            Text(manga.title)
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .lineLimit(1)
-
-            Text(manga.progressText)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-
-            // Progreso
-            ProgressView(value: manga.progressPercentage)
-                .tint(Color.accentColor)
-        }
-    }
+#Preview("Vacío", as: .systemMedium) {
+    MisMangas_widget()
+} timeline: {
+    MangaWidgetEntry(date: .now, widgetData: .empty)
 }

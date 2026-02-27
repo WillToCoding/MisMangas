@@ -20,8 +20,8 @@ struct HomeView: View {
                         heroCarousel
                     }
 
-                    ForEach(DemographicsConfig.list, id: \.key) { config in
-                        if let mangas = viewModel.mangasByDemographic[config.key], !mangas.isEmpty {
+                    ForEach(DemographicsConfig.list) { config in
+                        if let mangas = viewModel.mangasByDemographic[config.id], !mangas.isEmpty {
                             section(title: config.title, icon: config.icon, color: config.color, mangas: mangas)
                         }
                     }
@@ -44,22 +44,47 @@ struct HomeView: View {
 
     // MARK: - Hero
 
+    @State private var currentHeroIndex = 0
+
     private var heroCarousel: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        let heroMangas = Array(viewModel.bestMangas.prefix(5))
+
+        return VStack(alignment: .leading, spacing: 12) {
             Label("section_best_rated", systemImage: "trophy.fill")
                 .font(.title2.bold())
                 .padding(.horizontal)
+                .accessibilityHeader(.h2)
 
-            TabView {
-                ForEach(viewModel.bestMangas.prefix(5)) { manga in
+            TabView(selection: $currentHeroIndex) {
+                ForEach(Array(heroMangas.enumerated()), id: \.element.id) { index, manga in
                     NavigationLink(value: manga) {
                         HeroCard(manga: manga)
                     }
                     .buttonStyle(.plain)
+                    .tag(index)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .automatic))
             .frame(height: 280)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(heroAccessibilityLabel(for: heroMangas))
+            .accessibilityValue(String(localized: "accessibility_page_of \(currentHeroIndex + 1) \(heroMangas.count)"))
+            .accessibilityHint(String(localized: "accessibility_double_tap_details"))
+            .accessibilityAddTraits(.isButton)
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                case .increment:
+                    if currentHeroIndex < heroMangas.count - 1 {
+                        currentHeroIndex += 1
+                    }
+                case .decrement:
+                    if currentHeroIndex > 0 {
+                        currentHeroIndex -= 1
+                    }
+                @unknown default:
+                    break
+                }
+            }
         }
     }
 
@@ -71,6 +96,7 @@ struct HomeView: View {
                 .font(.title3.bold())
                 .foregroundStyle(color)
                 .padding(.horizontal)
+                .accessibilityHeader(.h2)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 16) {
@@ -84,6 +110,15 @@ struct HomeView: View {
                 .padding(.horizontal)
             }
         }
+    }
+
+    // MARK: - Accessibility
+
+    private func heroAccessibilityLabel(for mangas: [Manga]) -> String {
+        guard currentHeroIndex < mangas.count else { return "" }
+        let manga = mangas[currentHeroIndex]
+        let score = String(localized: "accessibility_score \(manga.score.formatted(.number.precision(.fractionLength(1))))")
+        return "\(manga.title), \(score)"
     }
 }
 
@@ -120,9 +155,11 @@ struct HeroCard: View {
             }
             .frame(height: 250)
             .clipShape(RoundedRectangle(cornerRadius: 20))
+            .accessibilityHidden(true)
 
             LinearGradient(colors: [.clear, .black.opacity(0.8)], startPoint: .top, endPoint: .bottom)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(manga.title)
@@ -132,6 +169,7 @@ struct HeroCard: View {
 
                 HStack(spacing: 4) {
                     Image(systemName: "star.fill").foregroundStyle(.yellow)
+                        .accessibilityHidden(true)
                     Text(manga.score.formatted(.number.precision(.fractionLength(1)))).fontWeight(.semibold)
                 }
                 .font(.subheadline)
@@ -140,6 +178,11 @@ struct HeroCard: View {
             .padding()
         }
         .padding(.horizontal)
+        .accessibilityCard(
+            label: manga.title,
+            value: String(localized: "accessibility_score \(manga.score.formatted(.number.precision(.fractionLength(1))))"),
+            hint: String(localized: "accessibility_double_tap_details")
+        )
         .onAppear {
             coverVM.getImage(url: coverURL)
         }

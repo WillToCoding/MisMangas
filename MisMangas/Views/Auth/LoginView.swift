@@ -36,8 +36,7 @@ struct LoginView: View {
                         .accessibilityHint(String(localized: "accessibility_enter_password"))
                 } header: {
                     Text("login_credentials")
-                        .accessibilityAddTraits(.isHeader)
-                        .accessibilityHeading(.h2)
+                        .accessibilityHeader(.h2)
                 }
 
                 // MARK: - Botones

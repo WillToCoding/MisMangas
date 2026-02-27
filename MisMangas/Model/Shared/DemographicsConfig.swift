@@ -7,26 +7,31 @@
 
 import SwiftUI
 
+/// Representa una sección de demografía con sus propiedades visuales.
+struct DemographicSection: Identifiable {
+    let id: String
+    let title: LocalizedStringKey
+    let icon: String
+    let color: Color
+}
+
+
 /// Configuración centralizada de demografías de manga.
-/// Evita duplicación de este array en múltiples vistas.
 @MainActor
 enum DemographicsConfig {
-    /// Lista de demografías con sus propiedades visuales.
-    static let list: [(key: String, title: LocalizedStringKey, icon: String, color: Color)] = [
-        ("Shounen", "section_shounen", "flame.fill", .orange),
-        ("Seinen", "section_seinen", "person.fill", .purple),
-        ("Shoujo", "section_shoujo", "heart.fill", .pink),
-        ("Josei", "section_josei", "sparkles", .indigo),
-        ("Kids", "section_kids", "star.fill", .yellow)
+    static let list: [DemographicSection] = [
+        DemographicSection(id: "Shounen", title: "section_shounen", icon: "flame.fill", color: .orange),
+        DemographicSection(id: "Seinen", title: "section_seinen", icon: "person.fill", color: .purple),
+        DemographicSection(id: "Shoujo", title: "section_shoujo", icon: "heart.fill", color: .pink),
+        DemographicSection(id: "Josei", title: "section_josei", icon: "sparkles", color: .indigo),
+        DemographicSection(id: "Kids", title: "section_kids", icon: "star.fill", color: .yellow)
     ]
 
-    /// Busca la configuración de una demografía por su key.
-    static func config(for key: String) -> (key: String, title: LocalizedStringKey, icon: String, color: Color)? {
-        list.first { $0.key == key }
+    static func config(for id: String) -> DemographicSection? {
+        list.first { $0.id == id }
     }
 
-    /// Todas las keys de demografía disponibles.
     static var allKeys: [String] {
-        list.map(\.key)
+        list.map(\.id)
     }
 }

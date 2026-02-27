@@ -16,6 +16,14 @@ struct MangaCard: View {
 
     private var coverURL: URL? { manga.coverURL }
 
+    private var accessibilityLabel: String {
+        var label = manga.title
+        if showBadge {
+            label += ", \(badgeText)"
+        }
+        return label
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Imagen con overlay de gradiente
@@ -65,9 +73,11 @@ struct MangaCard: View {
                 .padding(.top, 8)
         }
         .frame(width: 140)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(manga.title)
-        .accessibilityHint(String(localized: "accessibility_double_tap_details"))
+        .accessibilityCard(
+            label: accessibilityLabel,
+            value: String(localized: "accessibility_score \(manga.score.formatted(.number.precision(.fractionLength(1))))"),
+            hint: String(localized: "accessibility_double_tap_details")
+        )
     }
 }
 

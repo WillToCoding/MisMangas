@@ -11,21 +11,47 @@ struct VisionCollectionView: View {
     @Bindable var cloudVM: CloudCollectionViewModel
     @Environment(\.scenePhase) private var scenePhase
 
-    private let demographicConfig: [(key: String, title: LocalizedStringKey, icon: String, color: Color)] = [
-        ("Shounen", "section_shounen", "flame.fill", .orange),
-        ("Seinen", "section_seinen", "person.fill", .purple),
-        ("Shoujo", "section_shoujo", "heart.fill", .pink),
-        ("Josei", "section_josei", "sparkles", .indigo),
-        ("Kids", "section_kids", "star.fill", .yellow)
-    ]
+    // MARK: - Stats
+
+    private var totalMangas: Int {
+        cloudVM.cloudCollection.count
+    }
+
+    private var completedMangas: Int {
+        cloudVM.cloudCollection.filter { item in
+            guard let total = item.manga.volumes else { return false }
+            return item.readingVolume == total
+        }.count
+    }
+
+    private var overallProgress: Int {
+        let items = cloudVM.cloudCollection.compactMap { item -> (current: Int, total: Int)? in
+            guard let total = item.manga.volumes, total > 0 else { return nil }
+            return (item.readingVolume ?? 0, total)
+        }
+        guard !items.isEmpty else { return 0 }
+        let totalRead = items.reduce(0) { $0 + $1.current }
+        let totalVolumes = items.reduce(0) { $0 + $1.total }
+        return totalVolumes > 0 ? Int((Double(totalRead) / Double(totalVolumes)) * 100) : 0
+    }
 
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 50) {
-                // Secciones por demografía
-                ForEach(demographicConfig, id: \.key) { config in
+                // Stats Header
+                if !cloudVM.cloudCollection.isEmpty {
+                    VisionStatsHeader(
+                        totalMangas: totalMangas,
+                        completedMangas: completedMangas,
+                        overallProgress: overallProgress
+                    )
+                    .padding(.horizontal, 60)
+                }
+
+                // Sections by demographic
+                ForEach(DemographicsConfig.list) { config in
                     let items = cloudVM.cloudCollection.filter { item in
-                        item.manga.demographics.contains { $0.demographic == config.key }
+                        item.manga.demographics.contains { $0.demographic == config.id }
                     }
                     if !items.isEmpty {
                         VisionHorizontalSection(
@@ -43,7 +69,7 @@ struct VisionCollectionView: View {
                     }
                 }
 
-                // Mangas sin demografía
+                // Mangas without demographic
                 let otherItems = cloudVM.cloudCollection.filter { $0.manga.demographics.isEmpty }
                 if !otherItems.isEmpty {
                     VisionHorizontalSection(
@@ -67,11 +93,22 @@ struct VisionCollectionView: View {
         .navigationTitle("nav_collection")
         .navigationDestination(for: String.self) { itemId in
             if let item = cloudVM.cloudCollection.first(where: { $0.id == itemId }) {
-                VisionMangaDetailView(item: item) {
-                    Task {
+                VisionMangaDetailView(
+                    item: item,
+                    onSave: { readingVolume, volumesOwned, isComplete in
+                        try await cloudVM.addToCollection(
+                            manga: item.manga,
+                            volumesOwned: volumesOwned,
+                            readingVolume: readingVolume,
+                            completeCollection: isComplete
+                        )
+                        await cloudVM.loadCollection()
+                    },
+                    onDelete: {
+                        try await cloudVM.removeFromCollection(mangaId: item.manga.id)
                         await cloudVM.loadCollection()
                     }
-                }
+                )
             }
         }
         .refreshable {
@@ -94,114 +131,9 @@ struct VisionCollectionView: View {
     }
 }
 
-// MARK: - Vision Horizontal Section
-struct VisionHorizontalSection<Content: View>: View {
-    let title: LocalizedStringKey
-    let icon: String
-    let color: Color
-    @ViewBuilder let content: () -> Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            // Header
-            Label(title, systemImage: icon)
-                .font(.title.bold())
-                .foregroundStyle(color)
-                .padding(.horizontal, 60)
-
-            // Horizontal scroll
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 30) {
-                    content()
-                }
-                .padding(.horizontal, 60)
-            }
-        }
-    }
-}
-
-// MARK: - Vision Collection Card
-struct VisionCollectionCard: View {
-    let item: UserMangaCollection
-    @State private var coverVM = MangaCoverVM()
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Portada
-            ZStack(alignment: .topTrailing) {
-                Group {
-                    if let image = coverVM.image {
-                        #if os(visionOS)
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                        #endif
-                    } else {
-                        Rectangle()
-                            .fill(.gray.opacity(0.3))
-                            .overlay {
-                                if coverVM.isLoading {
-                                    ProgressView()
-                                } else {
-                                    Image(systemName: "photo")
-                                        .font(.largeTitle)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                    }
-                }
-                .frame(width: 200, height: 300)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-
-                // Badge de estado
-                if let total = item.manga.volumes, item.volumesOwned.count >= total {
-                    Image(systemName: "checkmark.seal.fill")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                        .padding(8)
-                        .background(.green, in: Circle())
-                        .padding(8)
-                } else if let reading = item.readingVolume, reading > 1 {
-                    Image(systemName: "book.fill")
-                        .font(.title3)
-                        .foregroundStyle(.white)
-                        .padding(8)
-                        .background(.blue, in: Circle())
-                        .padding(8)
-                }
-            }
-
-            // Info
-            VStack(alignment: .leading, spacing: 8) {
-                Text(item.manga.title)
-                    .font(.headline)
-                    .lineLimit(2)
-                    .frame(width: 200, alignment: .leading)
-
-                if let total = item.manga.volumes {
-                    let reading = item.readingVolume ?? 1
-                    HStack {
-                        Text("Vol. \(reading)/\(total)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-
-                        Spacer()
-
-                        Text("\(Int((Double(reading) / Double(total)) * 100))%")
-                            .font(.caption.bold())
-                            .foregroundStyle(.blue)
-                    }
-                    .frame(width: 200)
-
-                    ProgressView(value: Double(reading), total: Double(total))
-                        .frame(width: 200)
-                        .tint(.blue)
-                }
-            }
-        }
-        .task {
-            coverVM.getImage(url: item.manga.coverURL)
-        }
+#Preview {
+    let authVM = AuthViewModel()
+    NavigationStack {
+        VisionCollectionView(cloudVM: CloudCollectionViewModel(authVM: authVM))
     }
 }

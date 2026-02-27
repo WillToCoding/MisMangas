@@ -14,12 +14,27 @@ import Foundation
 /// `MangaDetailViewModel` maneja la carga de datos adicionales para la vista de detalle:
 /// personajes, mangas relacionados, recomendaciones y traducciones.
 ///
+/// ## Caracteristicas
+///
+/// - Carga personajes desde Jikan API
+/// - Carga relaciones y recomendaciones
+/// - Traduce sinopsis con DeepL
+/// - Navegacion a mangas relacionados
+///
 /// ## Ejemplo de uso
 ///
 /// ```swift
 /// let viewModel = MangaDetailViewModel(manga: selectedManga)
 /// await viewModel.loadAllData()
+///
+/// // Navegar a manga relacionado
+/// await viewModel.loadAndNavigateToManga(id: relatedId)
 /// ```
+///
+/// ## Plataformas
+///
+/// Disponible en iOS, macOS, tvOS y visionOS. No disponible en watchOS
+/// por limitaciones de recursos.
 @MainActor
 @Observable
 final class MangaDetailViewModel {

@@ -27,12 +27,18 @@ struct RegisterView: View {
                     .textInputAutocapitalization(.never)
                     .keyboardType(.emailAddress)
                     .autocorrectionDisabled()
+                    .accessibilityLabel(String(localized: "accessibility_email_field"))
+                    .accessibilityHint(String(localized: "accessibility_enter_email"))
 
                 SecureField("login_password", text: $password)
                     .textContentType(.newPassword)
+                    .accessibilityLabel(String(localized: "accessibility_password_field"))
+                    .accessibilityHint(String(localized: "accessibility_enter_password"))
 
                 SecureField("register_confirm_password", text: $confirmPassword)
                     .textContentType(.newPassword)
+                    .accessibilityLabel(String(localized: "accessibility_confirm_password"))
+                    .accessibilityHint(String(localized: "accessibility_confirm_password_hint"))
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("register_password_hint")
@@ -87,6 +93,7 @@ struct RegisterView: View {
                         if isLoading {
                             ProgressView()
                                 .tint(.white)
+                                .accessibilityLabel(String(localized: "accessibility_registering"))
                         } else {
                             Text("action_register")
                                 .fontWeight(.semibold)
@@ -95,6 +102,8 @@ struct RegisterView: View {
                     }
                 }
                 .disabled(!isFormValid || isLoading)
+                .accessibilityLabel(isLoading ? String(localized: "accessibility_registering") : String(localized: "action_register"))
+                .accessibilityHint(String(localized: "accessibility_register_account_hint"))
             }
         }
         .navigationTitle("nav_register")
