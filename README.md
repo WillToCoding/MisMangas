@@ -73,10 +73,9 @@
 </p>
 
 - Split view navigation optimized for large screens
-- Drag & drop support for collection management
 - Keyboard shortcuts for power users
 - Adaptive grid layouts for all orientations
-- Pointer/trackpad hover effects
+- Swipe actions for collection management
 
 ---
 
@@ -110,7 +109,6 @@
 - Large cards (400×600) optimized for 10-foot UI
 - 20 selectable avatars in 5 categories
 - Haptic feedback (Siri Remote 2nd gen+)
-- Top Shelf support for quick access
 - Parallax effect on focused elements
 
 ---
@@ -131,7 +129,6 @@
 - RealityKit rendering with spatial gestures
 - Glassmorphic cards with hover effects
 - Spatial windows (1200×800)
-- Eye tracking and pinch-to-select interaction
 - Ornaments for contextual actions
 
 ---
@@ -148,8 +145,6 @@
 - Swipe "+1" for quick volume tracking
 - Stats header with reading progress
 - Shared session via iPhone Keychain
-- Digital Crown scrolling
-- Complications ready
 
 ---
 
