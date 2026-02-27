@@ -130,7 +130,7 @@
 <p align="center">
   <img src="snapshots/Targets/watchOS/Icon.png" width="140" alt="Apple Watch Icon">
   &nbsp;&nbsp;&nbsp;
-  <img src="snapshots/Targets/watchOS/List.png" width="140" alt="Apple Watch List">
+  <img src="snapshots/Targets/watchOS/List.PNG" width="140" alt="Apple Watch List">
 </p>
 
 - Compact collection list
