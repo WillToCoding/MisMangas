@@ -128,8 +128,8 @@
 - **Immersive 3D Gallery** — Circular layout with up to 12 mangas
 - RealityKit rendering with spatial gestures
 - Glassmorphic cards with hover effects
-- Spatial windows (1200×800)
-- Ornaments for contextual actions
+- Full collection management with cloud sync
+- DeepL translation support
 
 ---
 
