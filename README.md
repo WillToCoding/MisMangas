@@ -8,14 +8,14 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Swift-6.0-F05138?style=for-the-badge&logo=swift&logoColor=white" alt="Swift">
-  <img src="https://img.shields.io/badge/Platforms-6-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Platforms">
+  <img src="https://img.shields.io/badge/Platforms-5-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Platforms">
   <img src="https://img.shields.io/badge/Clean_Architecture-MVVM-9B59B6?style=for-the-badge" alt="Architecture">
   <img src="https://img.shields.io/badge/License-MIT-2ECC71?style=for-the-badge" alt="License">
 </p>
 
 <p align="center">
   <b>🎓 Final project for Swift Developer Program 2025 — Apple Coding Academy</b><br>
-  <i>Completed at Deluxe level: 6 platforms + widgets + Siri Shortcuts</i>
+  <i>Completed at Deluxe level: 5 platforms + widgets + Siri Shortcuts</i>
 </p>
 
 ---
