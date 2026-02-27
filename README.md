@@ -349,6 +349,17 @@ open MisMangas.xcodeproj
 
 ---
 
+<img src="https://img.shields.io/badge/📄_LEGAL-7F8C8D?style=for-the-badge" alt="Legal">
+
+<p align="center">
+  <a href="https://www.willtocoding.com/proyectos/mismangas/privacy">Privacy Policy</a> ·
+  <a href="https://www.willtocoding.com/proyectos/mismangas/accessibility">Accessibility</a> ·
+  <a href="https://www.willtocoding.com/proyectos/mismangas/terms">Terms</a> ·
+  <a href="https://www.willtocoding.com/proyectos/mismangas/contact">Contact</a>
+</p>
+
+---
+
 <p align="center">
   <b>MIT License</b> · Made with ❤️ by <b>Juan Carlos</b>
 </p>
