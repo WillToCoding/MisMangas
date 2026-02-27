@@ -58,6 +58,9 @@
 - Haptic feedback throughout the app
 - Siri Shortcuts with App Intents
 - Photo picker for profile image
+- Pull-to-refresh and infinite scroll
+- Swipe actions for quick collection management
+- Dynamic Type and VoiceOver support
 
 ---
 
@@ -70,8 +73,10 @@
 </p>
 
 - Split view navigation optimized for large screens
-- Drag & drop support
-- Keyboard shortcuts
+- Drag & drop support for collection management
+- Keyboard shortcuts for power users
+- Adaptive grid layouts for all orientations
+- Pointer/trackpad hover effects
 
 ---
 
@@ -85,8 +90,10 @@
 
 - 3-column NavigationSplitView
 - Keyboard shortcuts: `⌘F` search, `⌘R` refresh, `⌘,` preferences
-- Menu bar commands
+- Menu bar commands and toolbar actions
 - Resizable window (min 900×600)
+- Native macOS settings panel
+- Right-click context menus
 
 ---
 
@@ -103,6 +110,8 @@
 - Large cards (400×600) optimized for 10-foot UI
 - 20 selectable avatars in 5 categories
 - Haptic feedback (Siri Remote 2nd gen+)
+- Top Shelf support for quick access
+- Parallax effect on focused elements
 
 ---
 
@@ -122,6 +131,8 @@
 - RealityKit rendering with spatial gestures
 - Glassmorphic cards with hover effects
 - Spatial windows (1200×800)
+- Eye tracking and pinch-to-select interaction
+- Ornaments for contextual actions
 
 ---
 
@@ -133,19 +144,21 @@
   <img src="snapshots/Targets/watchOS/List.PNG" width="140" alt="Apple Watch List">
 </p>
 
-- Compact collection list
+- Compact collection list with cover thumbnails
 - Swipe "+1" for quick volume tracking
-- Stats header with progress
+- Stats header with reading progress
 - Shared session via iPhone Keychain
+- Digital Crown scrolling
+- Complications ready
 
 ---
 
 <img src="https://img.shields.io/badge/🧩_WIDGETS-FF2D55?style=for-the-badge" alt="Widgets">
 
 <p align="center">
-  <img src="snapshots/Widgets/HomeScreen.png" width="240" alt="Home Screen Widgets">
-  &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="snapshots/Widgets/LockScreen.png" width="240" alt="Lock Screen Widgets">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="snapshots/Widgets/HomeScreen.png" width="240" alt="Home Screen Widgets">
 </p>
 
 **Home Screen**
@@ -191,12 +204,25 @@ Clean Architecture + MVVM. **Zero third-party dependencies** — pure Apple fram
 
 | Category | Technologies |
 |:--------:|-------------|
-| **UI** | SwiftUI, RealityKit |
+| **UI** | SwiftUI, RealityKit, WidgetKit, AppIntents |
 | **Data** | SwiftData, Keychain, App Groups |
 | **Async** | async/await, @Observable, Sendable, Actors |
 | **APIs** | Academy API, Jikan API, DeepL API |
 | **Testing** | Swift Testing (100+ tests) |
-| **i18n** | String Catalogs (xcstrings) |
+| **Localization** | String Catalogs (xcstrings) |
+
+---
+
+<img src="https://img.shields.io/badge/📚_FRAMEWORKS-3498DB?style=for-the-badge" alt="Frameworks">
+
+| Platform | Key Frameworks |
+|:--------:|----------------|
+| **iOS/iPadOS** | WidgetKit, AppIntents, PhotosUI |
+| **macOS** | AppKit integration, Settings |
+| **tvOS** | TVUIKit, Focus Engine |
+| **visionOS** | RealityKit, Spatial Frameworks |
+| **watchOS** | WatchKit, ClockKit |
+| **Shared** | SwiftUI, SwiftData, Foundation, Security (Keychain) |
 
 ---
 
@@ -204,14 +230,17 @@ Clean Architecture + MVVM. **Zero third-party dependencies** — pure Apple fram
 
 ```
 MisMangas/
-├── 📱 MisMangas/              # iOS/iPadOS
-├── 🖥️ MisMangas macOS/        # macOS
-├── 📺 MisMangas tvOS/         # tvOS
-├── 🥽 MisMangas visionOS/     # visionOS
-├── ⌚ MisMangas watchOS/       # watchOS
-├── 🧩 MisMangas widget/       # Widgets
-├── 📦 Packages/NetworkAPI/    # Swift Package
-└── 🧪 MisMangasTests/         # Tests
+├── 📱 MisMangas/                    # iOS/iPadOS shared code
+├── 🖥️ MisMangas macOS/              # macOS target
+├── 📺 MisMangas tvOS/               # tvOS target
+├── 🥽 MisMangas visionOS/           # visionOS target
+├── ⌚ MisMangas watchOS Watch App/  # watchOS target
+├── 🧩 MisMangas widget/             # WidgetKit extension
+├── 🧪 MisMangasTests/               # Unit tests
+└── 📦 Packages/                     # Local packages
+
+Package Dependencies/
+└── 🔗 NetworkAPI (local)            # Async/await networking
 ```
 
 ---
@@ -264,10 +293,10 @@ struct MangaVMTests {
 
 | Language | Code | Coverage |
 |:--------:|:----:|:--------:|
-| 🇪🇸 Spanish | `es` | ~96% |
-| 🇺🇸 English | `en` | ~99% |
-| 🇸🇦 Arabic | `ar` | ~99% |
-| 🇯🇵 Japanese | `ja` | ~99% |
+| 🇪🇸 Spanish | `ES` | ~96% |
+| 🇺🇸 English | `EN` | ~99% |
+| 🇸🇦 Arabic | `AR` | ~99% |
+| 🇯🇵 Japanese | `JA` | ~99% |
 
 **~450 localized strings** using String Catalogs (xcstrings)
 
@@ -287,7 +316,7 @@ struct MangaVMTests {
 
 | Platform | Version |
 |:--------:|:-------:|
-| iOS / iPadOS | 26.1+ |
+| iOS / iPadOS | 26.2+ |
 | macOS | 26.2+ |
 | tvOS | 26.2+ |
 | watchOS | 26.2+ |
