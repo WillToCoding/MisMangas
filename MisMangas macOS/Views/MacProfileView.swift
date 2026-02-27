@@ -13,6 +13,7 @@ struct MacProfileView: View {
     @Environment(CloudCollectionViewModel.self) private var cloudVM
 
     @State private var showLoginSheet = false
+    @State private var showRegisterSheet = false
     @State private var showLogoutAlert = false
     @State private var showSettings = false
     @State private var selectedPhotoItem: PhotosPickerItem?
@@ -37,6 +38,10 @@ struct MacProfileView: View {
         .sheet(isPresented: $showLoginSheet) {
             MacLoginView()
                 .frame(minWidth: 400, minHeight: 300)
+        }
+        .sheet(isPresented: $showRegisterSheet) {
+            MacRegisterView()
+                .frame(minWidth: 450, minHeight: 500)
         }
         .sheet(isPresented: $showSettings) {
             MacSettingsView()
@@ -189,7 +194,7 @@ struct MacProfileView: View {
             .buttonStyle(.borderedProminent)
 
             Button {
-                showLoginSheet = true
+                showRegisterSheet = true
             } label: {
                 HStack {
                     Image(systemName: "person.badge.plus")

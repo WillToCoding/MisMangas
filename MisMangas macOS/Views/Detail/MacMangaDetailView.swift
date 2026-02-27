@@ -60,6 +60,9 @@ struct MacMangaDetailView: View {
             }
             .frame(minWidth: 800, minHeight: 600)
         }
+        .onChange(of: manga.id) {
+            viewModel = MangaDetailViewModel(manga: manga)
+        }
         .task(id: manga.id) {
             viewModel.configure(translationService: translationService)
             await viewModel.loadAllData()

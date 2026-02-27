@@ -66,8 +66,7 @@ struct RelatedMangaCard: View {
 
                 Text(entry.name)
                     .font(.caption2)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
                     .frame(width: 60)
                     .foregroundStyle(.primary)
             }
@@ -96,8 +95,7 @@ struct RecommendationCard: View {
 
                 Text(recommendation.entry.title)
                     .font(.caption2)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
                     .frame(width: 60)
                     .foregroundStyle(.primary)
 

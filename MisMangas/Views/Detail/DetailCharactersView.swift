@@ -75,8 +75,7 @@ private struct CharacterCard: View {
 
             Text(characterData.character.name)
                 .font(.caption2)
-                .lineLimit(2)
-                .multilineTextAlignment(.center)
+                .lineLimit(1)
                 .frame(width: 80)
 
             Text(characterData.role)
