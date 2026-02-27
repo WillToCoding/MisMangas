@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <b>🎓 Final project for Swift Developer Program 2025 — Apple Coding Academy</b><br>
+  <b>🎓 Final project for Swift Developer Program 2026 — Apple Coding Academy</b><br>
   <i>Completed at Deluxe level: 5 platforms + widgets + Siri Shortcuts</i>
 </p>
 
@@ -356,5 +356,5 @@ open MisMangas.xcodeproj
 </p>
 
 <p align="center">
-  <i>Swift Developer Program 2025 — Apple Coding Academy</i>
+  <i>Swift Developer Program 2026 — Apple Coding Academy</i>
 </p>
