@@ -99,10 +99,10 @@ struct MacSettingsView: View {
 
             Divider()
 
-            aboutLink(icon: "hand.raised.fill", title: "profile_privacy_policy", url: "https://www.willtocoding.com/proyectos/mismangas/privacy")
-            aboutLink(icon: "doc.text.fill", title: "profile_terms_of_service", url: "https://www.willtocoding.com/proyectos/mismangas/terms")
-            aboutLink(icon: "accessibility", title: "profile_accessibility", url: "https://www.willtocoding.com/proyectos/mismangas/accessibility")
-            aboutLink(icon: "envelope.fill", title: "profile_contact", url: "https://www.willtocoding.com/proyectos/mismangas/contact")
+            aboutLink(icon: "hand.raised.fill", title: "profile_privacy_policy", url: "https://www.willtocoding.com/projects/mismangas/privacy")
+            aboutLink(icon: "doc.text.fill", title: "profile_terms_of_service", url: "https://www.willtocoding.com/projects/mismangas/terms")
+            aboutLink(icon: "accessibility", title: "profile_accessibility", url: "https://www.willtocoding.com/projects/mismangas/accessibility")
+            aboutLink(icon: "envelope.fill", title: "profile_contact", url: "https://www.willtocoding.com/projects/mismangas/contact")
         }
         .padding(16)
         .background(.gray.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))

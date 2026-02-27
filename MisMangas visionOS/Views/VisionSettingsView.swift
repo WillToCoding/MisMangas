@@ -82,25 +82,25 @@ struct VisionSettingsView: View {
                 VisionLinkRow(
                     icon: "hand.raised.fill",
                     title: "profile_privacy_policy",
-                    url: "https://www.willtocoding.com/proyectos/mismangas/privacy"
+                    url: "https://www.willtocoding.com/projects/mismangas/privacy"
                 )
 
                 VisionLinkRow(
                     icon: "doc.text.fill",
                     title: "profile_terms_of_service",
-                    url: "https://www.willtocoding.com/proyectos/mismangas/terms"
+                    url: "https://www.willtocoding.com/projects/mismangas/terms"
                 )
 
                 VisionLinkRow(
                     icon: "accessibility",
                     title: "profile_accessibility",
-                    url: "https://www.willtocoding.com/proyectos/mismangas/accessibility"
+                    url: "https://www.willtocoding.com/projects/mismangas/accessibility"
                 )
 
                 VisionLinkRow(
                     icon: "envelope.fill",
                     title: "profile_contact",
-                    url: "https://www.willtocoding.com/proyectos/mismangas/contact"
+                    url: "https://www.willtocoding.com/projects/mismangas/contact"
                 )
             }
         }
