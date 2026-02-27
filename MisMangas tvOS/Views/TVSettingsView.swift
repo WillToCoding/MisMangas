@@ -110,25 +110,25 @@ struct TVSettingsView: View {
                 TVLinkRow(
                     icon: "hand.raised.fill",
                     title: "profile_privacy_policy",
-                    url: "www.willtocoding.com/projects/mismangas/privacy"
+                    url: AppURLs.privacy
                 )
 
                 TVLinkRow(
                     icon: "doc.text.fill",
                     title: "profile_terms_of_service",
-                    url: "www.willtocoding.com/projects/mismangas/terms"
+                    url: AppURLs.terms
                 )
 
                 TVLinkRow(
                     icon: "accessibility",
                     title: "profile_accessibility",
-                    url: "www.willtocoding.com/projects/mismangas/accessibility"
+                    url: AppURLs.accessibility
                 )
 
                 TVLinkRow(
                     icon: "envelope.fill",
                     title: "profile_contact",
-                    url: "www.willtocoding.com/projects/mismangas/contact"
+                    url: AppURLs.contact
                 )
             }
         }

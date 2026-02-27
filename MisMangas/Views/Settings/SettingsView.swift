@@ -80,7 +80,7 @@ struct SettingsView: View {
                     .accessibilityHint(String(localized: "profile_view_onboarding_hint"))
 
                     // Política de Privacidad
-                    Link(destination: URL(string: "https://www.willtocoding.com/projects/mismangas/privacy")!) {
+                    Link(destination: URL(string: AppURLs.privacy)!) {
                         HStack {
                             Image(systemName: "hand.raised.fill")
                                 .foregroundStyle(.blue)
@@ -97,7 +97,7 @@ struct SettingsView: View {
                     .accessibilityHint(String(localized: "accessibility_opens_safari"))
 
                     // Términos de Servicio
-                    Link(destination: URL(string: "https://www.willtocoding.com/projects/mismangas/terms")!) {
+                    Link(destination: URL(string: AppURLs.terms)!) {
                         HStack {
                             Image(systemName: "doc.text.fill")
                                 .foregroundStyle(.blue)
@@ -114,7 +114,7 @@ struct SettingsView: View {
                     .accessibilityHint(String(localized: "accessibility_opens_safari"))
 
                     // Accesibilidad
-                    Link(destination: URL(string: "https://www.willtocoding.com/projects/mismangas/accessibility")!) {
+                    Link(destination: URL(string: AppURLs.accessibility)!) {
                         HStack {
                             Image(systemName: "accessibility")
                                 .foregroundStyle(.blue)
@@ -131,7 +131,7 @@ struct SettingsView: View {
                     .accessibilityHint(String(localized: "accessibility_opens_safari"))
 
                     // Contacto
-                    Link(destination: URL(string: "https://www.willtocoding.com/projects/mismangas/contact")!) {
+                    Link(destination: URL(string: AppURLs.contact)!) {
                         HStack {
                             Image(systemName: "envelope.fill")
                                 .foregroundStyle(.blue)

@@ -291,6 +291,10 @@
 		E8A3EC192EEB7F2F002254D4 /* CloudCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844327B2EEA536D00A5DF42 /* CloudCollectionViewModel.swift */; };
 		E8A3EC242EEB823D002254D4 /* NetworkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = E8A3EC232EEB823D002254D4 /* NetworkAPI */; };
 		E8AF41702F516190005BABBA /* Documentation.docc in Sources */ = {isa = PBXBuildFile; fileRef = E8AF416D2F516190005BABBA /* Documentation.docc */; };
+		E8AF41862F51F7CE005BABBA /* AppURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AF41852F51F7CE005BABBA /* AppURLs.swift */; };
+		E8AF41872F51F7CE005BABBA /* AppURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AF41852F51F7CE005BABBA /* AppURLs.swift */; };
+		E8AF41882F51F7CE005BABBA /* AppURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AF41852F51F7CE005BABBA /* AppURLs.swift */; };
+		E8AF41892F51F7CE005BABBA /* AppURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AF41852F51F7CE005BABBA /* AppURLs.swift */; };
 		E8C9496B2F4C59210052F667 /* ServiceProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C949692F4C59210052F667 /* ServiceProtocols.swift */; };
 		E8C9496D2F4C59360052F667 /* DemographicsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C9496C2F4C59360052F667 /* DemographicsConfig.swift */; };
 		E8C9496E2F4C59360052F667 /* DemographicsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C9496C2F4C59360052F667 /* DemographicsConfig.swift */; };
@@ -609,6 +613,7 @@
 		E8A3EC0E2EEB7B4E002254D4 /* MisMangas watchOS Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MisMangas watchOS Watch App.entitlements"; sourceTree = "<group>"; };
 		E8A3EC122EEB7E64002254D4 /* MisMangas.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MisMangas.entitlements; sourceTree = "<group>"; };
 		E8AF416D2F516190005BABBA /* Documentation.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Documentation.docc; sourceTree = "<group>"; };
+		E8AF41852F51F7CE005BABBA /* AppURLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppURLs.swift; sourceTree = "<group>"; };
 		E8C949692F4C59210052F667 /* ServiceProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProtocols.swift; sourceTree = "<group>"; };
 		E8C9496C2F4C59360052F667 /* DemographicsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemographicsConfig.swift; sourceTree = "<group>"; };
 		E8C949722F4C594B0052F667 /* ModelDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDTO.swift; sourceTree = "<group>"; };
@@ -741,6 +746,7 @@
 		E810F41E2EFDA087006FD985 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				E8AF41852F51F7CE005BABBA /* AppURLs.swift */,
 				E84EF4B92F3025AF003BD971 /* DeviceHelper.swift */,
 				E810F4202EFDA1CD006FD985 /* AccessibilityHelper.swift */,
 				E810F41D2EFDA087006FD985 /* HapticFeedback.swift */,
@@ -1889,6 +1895,7 @@
 				E89599722F4B99B900844646 /* MangaDetailViewModel.swift in Sources */,
 				E84EF4562F2FFD66003BD971 /* DetailRelatedView.swift in Sources */,
 				E844327A2EEA514800A5DF42 /* ProfileView.swift in Sources */,
+				E8AF41872F51F7CE005BABBA /* AppURLs.swift in Sources */,
 				E84EF44E2F2FFD0E003BD971 /* DetailHeaderView.swift in Sources */,
 				E844326B2EEA472D00A5DF42 /* FilterView.swift in Sources */,
 				E8D6AD372F48E32E00ADC0AB /* RegisterView.swift in Sources */,
@@ -1957,6 +1964,7 @@
 			files = (
 				E84EF4852F3004F2003BD971 /* FilterModel.swift in Sources */,
 				E84EF49D2F300537003BD971 /* AcademyRepository.swift in Sources */,
+				E8AF41892F51F7CE005BABBA /* AppURLs.swift in Sources */,
 				E86EEF542EED8E9200B369B3 /* NetworkRepository.swift in Sources */,
 				E8533B832F4FC9F6007C9FC6 /* VisionRelatedMangasSection.swift in Sources */,
 				E8D232C92F511C380093BDED /* AccessibilityHelper.swift in Sources */,
@@ -2061,6 +2069,7 @@
 				E84EF4932F300516003BD971 /* JikanURL.swift in Sources */,
 				E863E8D92F4EA3040054B30D /* TVRelatedMangasSection.swift in Sources */,
 				E8533AF92F4F6E6D007C9FC6 /* TVMangaDetailView+Actions.swift in Sources */,
+				E8AF41882F51F7CE005BABBA /* AppURLs.swift in Sources */,
 				E8533AFA2F4F6E6D007C9FC6 /* TVMangaDetailView+Sections.swift in Sources */,
 				E89599AE2F4BBF7300844646 /* MangaCoverVM.swift in Sources */,
 				E84EF47D2F3004CD003BD971 /* JikanModels.swift in Sources */,
@@ -2134,6 +2143,7 @@
 				E8A3EB832EEB2CB1002254D4 /* MacMainView.swift in Sources */,
 				E89599812F4B9D4400844646 /* MacHomeView.swift in Sources */,
 				E8A3EB842EEB2CB1002254D4 /* MisMangas_macOSApp.swift in Sources */,
+				E8AF41862F51F7CE005BABBA /* AppURLs.swift in Sources */,
 				E8A3EB532EEB2A7C002254D4 /* NetworkRepository.swift in Sources */,
 				E89599942F4BB25700844646 /* OnboardingView.swift in Sources */,
 				E8A3EB552EEB2A8D002254D4 /* KeychainHelper.swift in Sources */,
