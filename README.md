@@ -297,7 +297,7 @@ struct MangaVMTests {
 
 <img src="https://img.shields.io/badge/♿_ACCESSIBILITY-2980B9?style=for-the-badge" alt="Accessibility">
 
-- **124 accessibility labels** across all platforms
+- **150 accessibility labels** across all platforms
 - VoiceOver optimized with semantic headers (H1, H2, H3)
 - Dynamic Type support
 - Reduce Motion / Reduce Transparency respected
