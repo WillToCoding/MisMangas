@@ -288,18 +288,18 @@ struct MangaVMTests {
 
 | Language | Code | Coverage |
 |:--------:|:----:|:--------:|
-| 🇪🇸 Spanish | `ES` | ~96% |
-| 🇺🇸 English | `EN` | ~99% |
-| 🇸🇦 Arabic | `AR` | ~99% |
-| 🇯🇵 Japanese | `JA` | ~99% |
+| 🇪🇸 Spanish | `ES` | 100% |
+| 🇺🇸 English | `EN` | 98.5% |
+| 🇸🇦 Arabic | `AR` | 98.5% |
+| 🇯🇵 Japanese | `JA` | 98.5% |
 
-**~450 localized strings** using String Catalogs (xcstrings)
+**452 localized strings** using String Catalogs (xcstrings)
 
 ---
 
 <img src="https://img.shields.io/badge/♿_ACCESSIBILITY-2980B9?style=for-the-badge" alt="Accessibility">
 
-- **87 accessibility labels** across all platforms
+- **124 accessibility labels** across all platforms
 - VoiceOver optimized with semantic headers (H1, H2, H3)
 - Dynamic Type support
 - Reduce Motion / Reduce Transparency respected
@@ -316,7 +316,7 @@ struct MangaVMTests {
 | tvOS | 26.2+ |
 | watchOS | 26.2+ |
 | visionOS | 26.2+ |
-| Xcode | 26+ |
+| Xcode | 26.2+ |
 
 ---
 
