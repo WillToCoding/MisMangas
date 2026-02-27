@@ -87,7 +87,7 @@
 </p>
 
 - 3-column NavigationSplitView
-- Keyboard shortcuts: `⌘F` search, `⌘R` refresh, `⌘,` preferences
+- Keyboard shortcuts: `⌘R` refresh, `⌘,` preferences
 - Menu bar commands and toolbar actions
 - Resizable window (min 900×600)
 - Native macOS settings panel
