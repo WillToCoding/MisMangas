@@ -46,12 +46,12 @@
 
 ---
 
-<img src="https://img.shields.io/badge/📱_iOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iOS">
+<img src="https://img.shields.io/badge/📱_iPhone-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iPhone">
 
 <p align="center">
-  <img src="snapshots/Targets/iOS/Home.png" width="200" alt="iOS Home">
+  <img src="snapshots/Targets/iOS/Home.png" width="200" alt="iPhone Home">
   &nbsp;&nbsp;&nbsp;
-  <img src="snapshots/Targets/iOS/Profile.jpeg" width="200" alt="iOS Profile">
+  <img src="snapshots/Targets/iOS/Profile.png" width="200" alt="iPhone Profile">
 </p>
 
 - Tab navigation with adaptive layouts
@@ -61,12 +61,12 @@
 
 ---
 
-<img src="https://img.shields.io/badge/📱_iPadOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iPadOS">
+<img src="https://img.shields.io/badge/📱_iPad-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iPad">
 
 <p align="center">
-  <img src="snapshots/Targets/iPadOS/MyCollection.png" width="380" alt="iPadOS Collection">
+  <img src="snapshots/Targets/iPadOS/MyCollection.png" width="380" alt="iPad Collection">
   &nbsp;&nbsp;
-  <img src="snapshots/Targets/iPadOS/RelatedManga.png" width="380" alt="iPadOS Related Manga">
+  <img src="snapshots/Targets/iPadOS/RelatedManga.png" width="380" alt="iPad Related Manga">
 </p>
 
 - Split view navigation optimized for large screens
@@ -75,12 +75,12 @@
 
 ---
 
-<img src="https://img.shields.io/badge/🖥️_macOS-000000?style=for-the-badge&logo=macos&logoColor=white" alt="macOS">
+<img src="https://img.shields.io/badge/🖥️_Mac-000000?style=for-the-badge&logo=macos&logoColor=white" alt="Mac">
 
 <p align="center">
-  <img src="snapshots/Targets/macOS/Search.png" width="380" alt="macOS Search">
+  <img src="snapshots/Targets/macOS/Search.png" width="380" alt="Mac Search">
   &nbsp;&nbsp;
-  <img src="snapshots/Targets/macOS/CreateAccount.png" width="380" alt="macOS Create Account">
+  <img src="snapshots/Targets/macOS/CreateAccount.png" width="380" alt="Mac Create Account">
 </p>
 
 - 3-column NavigationSplitView
@@ -90,12 +90,12 @@
 
 ---
 
-<img src="https://img.shields.io/badge/📺_tvOS-000000?style=for-the-badge&logo=appletv&logoColor=white" alt="tvOS">
+<img src="https://img.shields.io/badge/📺_Apple_TV-000000?style=for-the-badge&logo=appletv&logoColor=white" alt="Apple TV">
 
 <p align="center">
-  <img src="snapshots/Targets/tvOS/Photo.png" width="380" alt="tvOS Photo">
+  <img src="snapshots/Targets/tvOS/Photo.png" width="380" alt="Apple TV Photo">
   &nbsp;&nbsp;
-  <img src="snapshots/Targets/tvOS/Settings.png" width="380" alt="tvOS Settings">
+  <img src="snapshots/Targets/tvOS/Settings.png" width="380" alt="Apple TV Settings">
 </p>
 
 - Focus Engine navigation with Siri Remote
@@ -106,16 +106,16 @@
 
 ---
 
-<img src="https://img.shields.io/badge/🥽_visionOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="visionOS">
+<img src="https://img.shields.io/badge/🥽_Apple_Vision_Pro-000000?style=for-the-badge&logo=apple&logoColor=white" alt="Apple Vision Pro">
 
 <p align="center">
-  <img src="snapshots/Targets/visionOS/Links.png" width="350" alt="visionOS Links">
+  <img src="snapshots/Targets/visionOS/Links.png" width="350" alt="Apple Vision Pro Links">
 </p>
 
 <p align="center">
-  <img src="snapshots/Targets/visionOS/Lofin.png" width="350" alt="visionOS Login">
+  <img src="snapshots/Targets/visionOS/Lofin.png" width="350" alt="Apple Vision Pro Login">
   &nbsp;&nbsp;
-  <img src="snapshots/Targets/visionOS/DeepL.png" width="350" alt="visionOS DeepL">
+  <img src="snapshots/Targets/visionOS/DeepL.png" width="350" alt="Apple Vision Pro DeepL">
 </p>
 
 - **Immersive 3D Gallery** — Circular layout with up to 12 mangas
@@ -125,10 +125,12 @@
 
 ---
 
-<img src="https://img.shields.io/badge/⌚_watchOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="watchOS">
+<img src="https://img.shields.io/badge/⌚_Apple_Watch-000000?style=for-the-badge&logo=apple&logoColor=white" alt="Apple Watch">
 
 <p align="center">
-  <img src="snapshots/Targets/watchOS/Icon.png" width="140" alt="watchOS Icon">
+  <img src="snapshots/Targets/watchOS/Icon.png" width="140" alt="Apple Watch Icon">
+  &nbsp;&nbsp;&nbsp;
+  <img src="snapshots/Targets/watchOS/List.png" width="140" alt="Apple Watch List">
 </p>
 
 - Compact collection list
@@ -141,9 +143,9 @@
 <img src="https://img.shields.io/badge/🧩_WIDGETS-FF2D55?style=for-the-badge" alt="Widgets">
 
 <p align="center">
-  <img src="snapshots/Widgets/HomeScreen.png" width="280" alt="Home Screen Widgets">
+  <img src="snapshots/Widgets/HomeScreen.png" width="240" alt="Home Screen Widgets">
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="snapshots/Widgets/LockScreen.png" width="200" alt="Lock Screen Widgets">
+  <img src="snapshots/Widgets/LockScreen.png" width="240" alt="Lock Screen Widgets">
 </p>
 
 **Home Screen**
