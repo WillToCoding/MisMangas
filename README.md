@@ -352,10 +352,10 @@ open MisMangas.xcodeproj
 <img src="https://img.shields.io/badge/🛟_SUPPORT-7F8C8D?style=for-the-badge" alt="Support">
 
 <p align="center">
-  <a href="https://www.willtocoding.com/proyectos/mismangas/privacy">Privacy Policy</a> ·
-  <a href="https://www.willtocoding.com/proyectos/mismangas/accessibility">Accessibility</a> ·
-  <a href="https://www.willtocoding.com/proyectos/mismangas/terms">Terms</a> ·
-  <a href="https://www.willtocoding.com/proyectos/mismangas/contact">Contact</a>
+  <a href="https://www.willtocoding.com/projects/mismangas/privacy">Privacy Policy</a> ·
+  <a href="https://www.willtocoding.com/projects/mismangas/accessibility">Accessibility</a> ·
+  <a href="https://www.willtocoding.com/projects/mismangas/terms">Terms</a> ·
+  <a href="https://www.willtocoding.com/projects/mismangas/contact">Contact</a>
 </p>
 
 ---
