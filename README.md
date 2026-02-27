@@ -1,7 +1,7 @@
 # MisMangas
 
 <p align="center">
-  <img src="snapshots/App.png" width="150" alt="MisMangas App Icon">
+  <img src="snapshots/App.png" width="120" alt="MisMangas App Icon">
 </p>
 
 <h3 align="center">Manga collection manager for all Apple platforms</h3>
@@ -11,10 +11,6 @@
   <img src="https://img.shields.io/badge/Platforms-6-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Platforms">
   <img src="https://img.shields.io/badge/Clean_Architecture-MVVM-9B59B6?style=for-the-badge" alt="Architecture">
   <img src="https://img.shields.io/badge/License-MIT-2ECC71?style=for-the-badge" alt="License">
-</p>
-
-<p align="center">
-  <img src="snapshots/Targets.png" width="700" alt="All Platforms">
 </p>
 
 <p align="center">
@@ -38,17 +34,131 @@
 
 ---
 
-<img src="https://img.shields.io/badge/📸_SCREENSHOTS-3498DB?style=for-the-badge" alt="Screenshots">
+<img src="https://img.shields.io/badge/🚀_ONBOARDING-9B59B6?style=for-the-badge" alt="Onboarding">
 
-<!-- Add your screenshots here -->
+<p align="center">
+  <img src="snapshots/Onboarding/Next1.png" width="200" alt="Onboarding Step 1">
+  &nbsp;&nbsp;&nbsp;
+  <img src="snapshots/Onboarding/Next2.png" width="200" alt="Onboarding Step 2">
+  &nbsp;&nbsp;&nbsp;
+  <img src="snapshots/Onboarding/Next3.png" width="200" alt="Onboarding Step 3">
+</p>
 
-| iOS | macOS | visionOS |
-|:---:|:-----:|:--------:|
-| <img src="snapshots/ios.png" width="200"> | <img src="snapshots/macos.png" width="300"> | <img src="snapshots/visionos.png" width="300"> |
+---
 
-| tvOS | watchOS | Widgets |
-|:----:|:-------:|:-------:|
-| <img src="snapshots/tvos.png" width="300"> | <img src="snapshots/watchos.png" width="120"> | <img src="snapshots/widgets.png" width="200"> |
+<img src="https://img.shields.io/badge/📱_iOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iOS">
+
+<p align="center">
+  <img src="snapshots/Targets/iOS/Home.png" width="200" alt="iOS Home">
+  &nbsp;&nbsp;&nbsp;
+  <img src="snapshots/Targets/iOS/Profile.jpeg" width="200" alt="iOS Profile">
+</p>
+
+- Tab navigation with adaptive layouts
+- Haptic feedback throughout the app
+- Siri Shortcuts with App Intents
+- Photo picker for profile image
+
+---
+
+<img src="https://img.shields.io/badge/📱_iPadOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iPadOS">
+
+<p align="center">
+  <img src="snapshots/Targets/iPadOS/MyCollection.png" width="380" alt="iPadOS Collection">
+  &nbsp;&nbsp;
+  <img src="snapshots/Targets/iPadOS/RelatedManga.png" width="380" alt="iPadOS Related Manga">
+</p>
+
+- Split view navigation optimized for large screens
+- Drag & drop support
+- Keyboard shortcuts
+
+---
+
+<img src="https://img.shields.io/badge/🖥️_macOS-000000?style=for-the-badge&logo=macos&logoColor=white" alt="macOS">
+
+<p align="center">
+  <img src="snapshots/Targets/macOS/Search.png" width="380" alt="macOS Search">
+  &nbsp;&nbsp;
+  <img src="snapshots/Targets/macOS/CreateAccount.png" width="380" alt="macOS Create Account">
+</p>
+
+- 3-column NavigationSplitView
+- Keyboard shortcuts: `⌘F` search, `⌘R` refresh, `⌘,` preferences
+- Menu bar commands
+- Resizable window (min 900×600)
+
+---
+
+<img src="https://img.shields.io/badge/📺_tvOS-000000?style=for-the-badge&logo=appletv&logoColor=white" alt="tvOS">
+
+<p align="center">
+  <img src="snapshots/Targets/tvOS/Photo.png" width="380" alt="tvOS Photo">
+  &nbsp;&nbsp;
+  <img src="snapshots/Targets/tvOS/Settings.png" width="380" alt="tvOS Settings">
+</p>
+
+- Focus Engine navigation with Siri Remote
+- Hero carousel with top-rated mangas
+- Large cards (400×600) optimized for 10-foot UI
+- 20 selectable avatars in 5 categories
+- Haptic feedback (Siri Remote 2nd gen+)
+
+---
+
+<img src="https://img.shields.io/badge/🥽_visionOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="visionOS">
+
+<p align="center">
+  <img src="snapshots/Targets/visionOS/Links.png" width="350" alt="visionOS Links">
+</p>
+
+<p align="center">
+  <img src="snapshots/Targets/visionOS/Lofin.png" width="350" alt="visionOS Login">
+  &nbsp;&nbsp;
+  <img src="snapshots/Targets/visionOS/DeepL.png" width="350" alt="visionOS DeepL">
+</p>
+
+- **Immersive 3D Gallery** — Circular layout with up to 12 mangas
+- RealityKit rendering with spatial gestures
+- Glassmorphic cards with hover effects
+- Spatial windows (1200×800)
+
+---
+
+<img src="https://img.shields.io/badge/⌚_watchOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="watchOS">
+
+<p align="center">
+  <img src="snapshots/Targets/watchOS/Icon.png" width="140" alt="watchOS Icon">
+</p>
+
+- Compact collection list
+- Swipe "+1" for quick volume tracking
+- Stats header with progress
+- Shared session via iPhone Keychain
+
+---
+
+<img src="https://img.shields.io/badge/🧩_WIDGETS-FF2D55?style=for-the-badge" alt="Widgets">
+
+<p align="center">
+  <img src="snapshots/Widgets/HomeScreen.png" width="280" alt="Home Screen Widgets">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="snapshots/Widgets/LockScreen.png" width="200" alt="Lock Screen Widgets">
+</p>
+
+**Home Screen**
+| Size | Mangas | Stats |
+|:----:|:------:|:-----:|
+| Small | 1 | Total + Progress |
+| Medium | 3 | Total + Completed + Reading + Progress |
+| Large | 6 | Total + Completed + Reading + Progress |
+
+**Lock Screen**
+| Type | Content |
+|:----:|:--------|
+| Circular | Progress gauge + volume |
+| Rectangular | Title + Vol. X/Y + progress bar |
+| Inline | "Title - Vol. X/Y" |
 
 ---
 
@@ -101,75 +211,6 @@ MisMangas/
 ├── 📦 Packages/NetworkAPI/    # Swift Package
 └── 🧪 MisMangasTests/         # Tests
 ```
-
----
-
-<img src="https://img.shields.io/badge/💻_PLATFORMS-007AFF?style=for-the-badge" alt="Platforms">
-
-<br>
-
-<img src="https://img.shields.io/badge/iOS_/_iPadOS-000000?style=flat-square&logo=apple&logoColor=white" alt="iOS">
-
-- Tab navigation with adaptive layouts
-- Haptic feedback throughout the app
-- Widgets: Home Screen (S/M/L) + Lock Screen (3 types)
-- Siri Shortcuts with App Intents
-- Photo picker for profile image
-
-<br>
-
-<img src="https://img.shields.io/badge/macOS-000000?style=flat-square&logo=macos&logoColor=white" alt="macOS">
-
-- 3-column NavigationSplitView
-- Keyboard shortcuts: `⌘F` search, `⌘R` refresh, `⌘,` preferences
-- Menu bar commands
-- Resizable window (min 900×600)
-
-<br>
-
-<img src="https://img.shields.io/badge/tvOS-000000?style=flat-square&logo=appletv&logoColor=white" alt="tvOS">
-
-- Focus Engine navigation with Siri Remote
-- Hero carousel with top-rated mangas
-- Large cards (400×600) optimized for 10-foot UI
-- 20 selectable avatars in 5 categories
-- Haptic feedback (Siri Remote 2nd gen+)
-
-<br>
-
-<img src="https://img.shields.io/badge/visionOS-000000?style=flat-square&logo=apple&logoColor=white" alt="visionOS">
-
-- **Immersive 3D Gallery** — Circular layout with up to 12 mangas
-- RealityKit rendering with spatial gestures
-- Glassmorphic cards with hover effects
-- Spatial windows (1200×800)
-
-<br>
-
-<img src="https://img.shields.io/badge/watchOS-000000?style=flat-square&logo=apple&logoColor=white" alt="watchOS">
-
-- Compact collection list
-- Swipe "+1" for quick volume tracking
-- Stats header with progress
-- Shared session via iPhone Keychain
-
-<br>
-
-<img src="https://img.shields.io/badge/Widgets-FF2D55?style=flat-square&logo=apple&logoColor=white" alt="Widgets">
-
-**Home Screen**
-| Size | Mangas | Stats |
-|:----:|:------:|:-----:|
-| Small | 1 | Total + Progress |
-| Medium | 3 | Total + Completed + Reading + Progress |
-| Large | 6 | Total + Completed + Reading + Progress |
-
-**Lock Screen**
-| Type | Content |
-|:----:|:--------|
-| Circular | Progress gauge + volume |
-| Rectangular | Title + Vol. X/Y + progress bar |
-| Inline | "Title - Vol. X/Y" |
 
 ---
 
