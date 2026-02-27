@@ -73,7 +73,6 @@
 </p>
 
 - Split view navigation optimized for large screens
-- Keyboard shortcuts for power users
 - Adaptive grid layouts for all orientations
 - Swipe actions for collection management
 
@@ -109,7 +108,6 @@
 - Large cards (400×600) optimized for 10-foot UI
 - 20 selectable avatars in 5 categories
 - Haptic feedback (Siri Remote 2nd gen+)
-- Parallax effect on focused elements
 
 ---
 
