@@ -1,151 +1,250 @@
 # MisMangas
 
 <p align="center">
-  <img src="snapshots/App.png" width="128" alt="MisMangas App Icon">
+  <img src="snapshots/App.png" width="150" alt="MisMangas App Icon">
+</p>
+
+<h3 align="center">Manga collection manager for all Apple platforms</h3>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Swift-6.0-F05138?style=for-the-badge&logo=swift&logoColor=white" alt="Swift">
+  <img src="https://img.shields.io/badge/Platforms-6-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Platforms">
+  <img src="https://img.shields.io/badge/Clean_Architecture-MVVM-9B59B6?style=for-the-badge" alt="Architecture">
+  <img src="https://img.shields.io/badge/License-MIT-2ECC71?style=for-the-badge" alt="License">
 </p>
 
 <p align="center">
-  <strong>Manga collection manager for all Apple platforms</strong>
+  <img src="snapshots/Targets.png" width="700" alt="All Platforms">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white" alt="Swift">
-  <img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20iPadOS%20%7C%20macOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20visionOS-007AFF" alt="Platforms">
-  <img src="https://img.shields.io/badge/Architecture-Clean%20MVVM-purple" alt="Architecture">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+  <b>🎓 Final project for Swift Developer Program 2025 — Apple Coding Academy</b><br>
+  <i>Completed at Deluxe level: 6 platforms + widgets + Siri Shortcuts</i>
 </p>
-
-<p align="center">
-  <img src="snapshots/Targets.png" width="600" alt="All Platforms">
-</p>
-
-> Final project for **Swift Developer Program 2025** (Apple Coding Academy).
-> Completed at **Deluxe level**: 6 platforms + widgets + Siri Shortcuts.
 
 ---
 
-## Features
+<img src="https://img.shields.io/badge/✨_FEATURES-2ECC71?style=for-the-badge" alt="Features">
 
-| Feature | Description |
-|---------|-------------|
-| **Multi-platform** | Native UI for iOS, iPadOS, macOS, watchOS, tvOS, visionOS |
-| **64,000+ Mangas** | Browse, search, and filter the complete catalog |
-| **Cloud Sync** | Collection syncs across devices with conflict resolution |
-| **Widgets** | 3 Home Screen sizes + 3 Lock Screen widgets |
-| **Siri Shortcuts** | Voice commands for quick access |
-| **Offline Mode** | SwiftData persistence with cover caching |
-| **4 Languages** | Spanish, English, Arabic, Japanese |
+| | Feature | Description |
+|:--:|---------|-------------|
+| 📱 | **Multi-platform** | Native UI optimized for each Apple platform |
+| 📚 | **64,000+ Mangas** | Browse, search, and filter the complete catalog |
+| ☁️ | **Cloud Sync** | Collection syncs across devices with conflict resolution |
+| 🧩 | **Widgets** | 3 Home Screen sizes + 3 Lock Screen widgets |
+| 🗣️ | **Siri Shortcuts** | Voice commands for quick access |
+| 💾 | **Offline Mode** | SwiftData persistence with cover caching |
+| 🌍 | **4 Languages** | Spanish, English, Arabic, Japanese |
 
 ---
 
-## Screenshots
+<img src="https://img.shields.io/badge/📸_SCREENSHOTS-3498DB?style=for-the-badge" alt="Screenshots">
 
-<!-- TODO: Add platform screenshots -->
+<!-- Add your screenshots here -->
 
 | iOS | macOS | visionOS |
 |:---:|:-----:|:--------:|
-| ![iOS](snapshots/ios.png) | ![macOS](snapshots/macos.png) | ![visionOS](snapshots/visionos.png) |
+| <img src="snapshots/ios.png" width="200"> | <img src="snapshots/macos.png" width="300"> | <img src="snapshots/visionos.png" width="300"> |
 
 | tvOS | watchOS | Widgets |
 |:----:|:-------:|:-------:|
-| ![tvOS](snapshots/tvos.png) | ![watchOS](snapshots/watchos.png) | ![Widgets](snapshots/widgets.png) |
+| <img src="snapshots/tvos.png" width="300"> | <img src="snapshots/watchos.png" width="120"> | <img src="snapshots/widgets.png" width="200"> |
 
 ---
 
-## Architecture
+<img src="https://img.shields.io/badge/🏗️_ARCHITECTURE-9B59B6?style=for-the-badge" alt="Architecture">
 
-Clean Architecture with MVVM. **No third-party dependencies** — pure Apple frameworks.
+Clean Architecture + MVVM. **Zero third-party dependencies** — pure Apple frameworks.
 
 ```
-┌─────────────────────────────────────┐
-│         Presentation Layer          │
-│    Views · ViewModels · Components  │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│           Domain Layer              │
-│       Models · DTOs · Protocols     │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│            Data Layer               │
-│    Network · Storage · SwiftData    │
-└─────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│          Presentation Layer             │
+│     Views · ViewModels · Components     │
+└───────────────────┬─────────────────────┘
+                    │
+┌───────────────────▼─────────────────────┐
+│            Domain Layer                 │
+│       Models · DTOs · Protocols         │
+└───────────────────┬─────────────────────┘
+                    │
+┌───────────────────▼─────────────────────┐
+│             Data Layer                  │
+│     Network · Storage · SwiftData       │
+└─────────────────────────────────────────┘
 ```
 
 ---
 
-## Tech Stack
+<img src="https://img.shields.io/badge/🛠️_TECH_STACK-E67E22?style=for-the-badge" alt="Tech Stack">
 
 | Category | Technologies |
-|----------|-------------|
-| **UI** | SwiftUI, RealityKit (visionOS) |
-| **Persistence** | SwiftData, Keychain, App Groups |
-| **Concurrency** | async/await, @Observable, Sendable, Actors |
+|:--------:|-------------|
+| **UI** | SwiftUI, RealityKit |
+| **Data** | SwiftData, Keychain, App Groups |
+| **Async** | async/await, @Observable, Sendable, Actors |
 | **APIs** | Academy API, Jikan API, DeepL API |
 | **Testing** | Swift Testing (100+ tests) |
-| **Localization** | String Catalogs (xcstrings) |
+| **i18n** | String Catalogs (xcstrings) |
 
 ---
 
-## Project Structure
+<img src="https://img.shields.io/badge/📂_PROJECT_STRUCTURE-95A5A6?style=for-the-badge" alt="Structure">
 
 ```
 MisMangas/
-├── MisMangas/                 # iOS/iPadOS
-│   ├── Views/                 # SwiftUI views
-│   ├── ViewModel/             # @Observable ViewModels
-│   ├── Model/                 # DTOs (Academy, Jikan)
-│   ├── DataModel/             # SwiftData models
-│   ├── Network/               # Repositories
-│   └── Intents/               # Siri Shortcuts
-├── MisMangas macOS/           # macOS (NavigationSplitView)
-├── MisMangas tvOS/            # tvOS (Focus Engine)
-├── MisMangas visionOS/        # visionOS (RealityKit)
-├── MisMangas watchOS/         # watchOS
-├── MisMangas widget/          # WidgetKit
-├── Packages/NetworkAPI/       # Local Swift Package
-└── MisMangasTests/            # Swift Testing
+├── 📱 MisMangas/              # iOS/iPadOS
+├── 🖥️ MisMangas macOS/        # macOS
+├── 📺 MisMangas tvOS/         # tvOS
+├── 🥽 MisMangas visionOS/     # visionOS
+├── ⌚ MisMangas watchOS/       # watchOS
+├── 🧩 MisMangas widget/       # Widgets
+├── 📦 Packages/NetworkAPI/    # Swift Package
+└── 🧪 MisMangasTests/         # Tests
 ```
 
 ---
 
-## Key Implementations
+<img src="https://img.shields.io/badge/💻_PLATFORMS-007AFF?style=for-the-badge" alt="Platforms">
 
-### Platform-Specific UI
+<br>
 
-- **iOS/iPadOS** — Adaptive layouts with `@Environment(\.horizontalSizeClass)`
-- **macOS** — 3-column `NavigationSplitView` with keyboard shortcuts
-- **tvOS** — Focus Engine with hero carousel
-- **visionOS** — Immersive 3D gallery using RealityKit
-- **watchOS** — Compact views with swipe gestures
+<img src="https://img.shields.io/badge/iOS_/_iPadOS-000000?style=flat-square&logo=apple&logoColor=white" alt="iOS">
 
-### Cloud Sync with Conflict Resolution
+- Tab navigation with adaptive layouts
+- Haptic feedback throughout the app
+- Widgets: Home Screen (S/M/L) + Lock Screen (3 types)
+- Siri Shortcuts with App Intents
+- Photo picker for profile image
 
-```swift
-@ModelActor
-actor DataContainer {
-    func syncCollections(_ remote: [UserMangaCollection]) async throws
-    func resolveConflict(_ item: MangaModel, strategy: ConflictStrategy)
-}
-```
+<br>
 
-### Secure Token Storage
+<img src="https://img.shields.io/badge/macOS-000000?style=flat-square&logo=macos&logoColor=white" alt="macOS">
 
-```swift
-final class KeychainHelper: KeychainServiceProtocol {
-    func save(_ token: String, for key: String) throws
-    func retrieve(for key: String) throws -> String?
-}
-```
+- 3-column NavigationSplitView
+- Keyboard shortcuts: `⌘F` search, `⌘R` refresh, `⌘,` preferences
+- Menu bar commands
+- Resizable window (min 900×600)
+
+<br>
+
+<img src="https://img.shields.io/badge/tvOS-000000?style=flat-square&logo=appletv&logoColor=white" alt="tvOS">
+
+- Focus Engine navigation with Siri Remote
+- Hero carousel with top-rated mangas
+- Large cards (400×600) optimized for 10-foot UI
+- 20 selectable avatars in 5 categories
+- Haptic feedback (Siri Remote 2nd gen+)
+
+<br>
+
+<img src="https://img.shields.io/badge/visionOS-000000?style=flat-square&logo=apple&logoColor=white" alt="visionOS">
+
+- **Immersive 3D Gallery** — Circular layout with up to 12 mangas
+- RealityKit rendering with spatial gestures
+- Glassmorphic cards with hover effects
+- Spatial windows (1200×800)
+
+<br>
+
+<img src="https://img.shields.io/badge/watchOS-000000?style=flat-square&logo=apple&logoColor=white" alt="watchOS">
+
+- Compact collection list
+- Swipe "+1" for quick volume tracking
+- Stats header with progress
+- Shared session via iPhone Keychain
+
+<br>
+
+<img src="https://img.shields.io/badge/Widgets-FF2D55?style=flat-square&logo=apple&logoColor=white" alt="Widgets">
+
+**Home Screen**
+| Size | Mangas | Stats |
+|:----:|:------:|:-----:|
+| Small | 1 | Total + Progress |
+| Medium | 3 | Total + Completed + Reading + Progress |
+| Large | 6 | Total + Completed + Reading + Progress |
+
+**Lock Screen**
+| Type | Content |
+|:----:|:--------|
+| Circular | Progress gauge + volume |
+| Rectangular | Title + Vol. X/Y + progress bar |
+| Inline | "Title - Vol. X/Y" |
 
 ---
 
-## Requirements
+<img src="https://img.shields.io/badge/🌐_APIS-E74C3C?style=for-the-badge" alt="APIs">
+
+| API | Purpose | Auth |
+|:---:|---------|:----:|
+| [**Academy**](https://mymanga-acacademy-5607149ebe3d.herokuapp.com/docs) | Catalog, users, collections | App-Token + JWT |
+| [**Jikan**](https://jikan.moe) | Characters, related mangas | None |
+| [**DeepL**](https://deepl.com/docs-api) | Synopsis translation | API Key |
+
+---
+
+<img src="https://img.shields.io/badge/🔐_SECURITY-F1C40F?style=for-the-badge" alt="Security">
+
+| What | Where |
+|:----:|-------|
+| JWT Tokens | iOS Keychain (hardware encrypted) |
+| API Keys | `AppConfig.swift` (gitignored) |
+| DeepL Key | User-provided, stored in Keychain |
+| Sync | iCloud Keychain across devices |
+
+---
+
+<img src="https://img.shields.io/badge/🧪_TESTING-27AE60?style=for-the-badge" alt="Testing">
+
+**Swift Testing** with dependency injection and mocks.
+
+```swift
+@Suite("MangaViewModel Tests")
+struct MangaVMTests {
+    @Test("Fetches mangas successfully")
+    func fetchMangas() async {
+        let vm = MangaViewModel(repository: NetworkTest())
+        await vm.fetchMangas()
+        #expect(vm.mangas.count > 0)
+    }
+}
+```
+
+| Mock | Purpose |
+|:----:|---------|
+| `NetworkTest` | Returns test data |
+| `NetworkTestWithError` | Simulates network errors |
+
+---
+
+<img src="https://img.shields.io/badge/🌍_LOCALIZATION-1ABC9C?style=for-the-badge" alt="Localization">
+
+| Language | Code | Coverage |
+|:--------:|:----:|:--------:|
+| 🇪🇸 Spanish | `es` | ~96% |
+| 🇺🇸 English | `en` | ~99% |
+| 🇸🇦 Arabic | `ar` | ~99% |
+| 🇯🇵 Japanese | `ja` | ~99% |
+
+**~450 localized strings** using String Catalogs (xcstrings)
+
+---
+
+<img src="https://img.shields.io/badge/♿_ACCESSIBILITY-2980B9?style=for-the-badge" alt="Accessibility">
+
+- **87 accessibility labels** across all platforms
+- VoiceOver optimized with semantic headers (H1, H2, H3)
+- Dynamic Type support
+- Reduce Motion / Reduce Transparency respected
+- High contrast mode compatible
+
+---
+
+<img src="https://img.shields.io/badge/📋_REQUIREMENTS-7F8C8D?style=for-the-badge" alt="Requirements">
 
 | Platform | Version |
-|----------|---------|
-| iOS/iPadOS | 26.2+ |
+|:--------:|:-------:|
+| iOS / iPadOS | 26.1+ |
 | macOS | 26.2+ |
 | tvOS | 26.2+ |
 | watchOS | 26.2+ |
@@ -154,49 +253,41 @@ final class KeychainHelper: KeychainServiceProtocol {
 
 ---
 
-## Installation
+<img src="https://img.shields.io/badge/🚀_INSTALLATION-2ECC71?style=for-the-badge" alt="Installation">
 
 ```bash
 git clone https://github.com/WillToCoding/MisMangas.git
 cd MisMangas
 cp MisMangas/AppConfig.example.swift MisMangas/AppConfig.swift
-# Add your token in AppConfig.swift
+```
+
+Edit `AppConfig.swift` with your tokens:
+
+```swift
+enum AppConfig {
+    static let academyToken = "YOUR_ACADEMY_TOKEN"
+    static let deepLToken = "YOUR_DEEPL_TOKEN"  // Optional
+}
+```
+
+```bash
 open MisMangas.xcodeproj
 ```
 
 ---
 
-## Dependencies
+<img src="https://img.shields.io/badge/📦_DEPENDENCIES-34495E?style=for-the-badge" alt="Dependencies">
 
-- [NetworkAPI](https://github.com/WillToCoding/NetworkAPI) — Networking async/await
-
----
-
-## APIs
-
-| API | Purpose | Auth |
-|-----|---------|------|
-| [Academy](https://mymanga-acacademy-5607149ebe3d.herokuapp.com/docs) | Catalog, users, collections | App-Token + JWT |
-| [Jikan](https://jikan.moe) | Characters, related mangas | None |
-| [DeepL](https://deepl.com/docs-api) | Synopsis translation | API Key |
+| Package | Purpose |
+|:-------:|---------|
+| [**NetworkAPI**](https://github.com/WillToCoding/NetworkAPI) | Async/await networking layer |
 
 ---
 
-## Testing
+<p align="center">
+  <b>MIT License</b> · Made with ❤️ by <b>Juan Carlos</b>
+</p>
 
-```bash
-xcodebuild test -scheme MisMangas \
-  -destination 'platform=iOS Simulator,name=iPhone 16'
-```
-
----
-
-## License
-
-MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-## Author
-
-**Juan Carlos** — Swift Developer Program 2025
+<p align="center">
+  <i>Swift Developer Program 2025 — Apple Coding Academy</i>
+</p>
